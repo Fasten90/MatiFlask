@@ -4,7 +4,7 @@ import datetime
 
 def database_connection():
     mydb = mysql.connector.connect(
-        host='localhost' if not os.getenv('DB_REMOTE', False) else os.getenv('DB_REMOTE'),
+        host='localhost',
         user='fasten',
         password=os.getenv('DB_PASSWORD'),
         database='fasten_mati'
@@ -59,13 +59,16 @@ def get_menetrend(jarat=None, station=None, limit=100):
     print(result)
 
     if station:
-        now = datetime.datetime.now()
-        #for item in result:
-        arrive_minute = result[0][4]
-        actual_minute = now.minute
-        while arrive_minute < actual_minute:
-            arrive_minute += result[0][3]
-        result = "Ennyi perc múlva jön: {}".format(arrive_minute-actual_minute)
+        if result:
+            now = datetime.datetime.now()
+            #for item in result:
+            arrive_minute = result[0][4]
+            actual_minute = now.minute
+            while arrive_minute < actual_minute:
+                arrive_minute += result[0][3]
+            result = 'Ennyi perc múlva jön: {}'.format(arrive_minute-actual_minute)
+        else:
+            result = 'Nincs találat'
 
     return result
 
