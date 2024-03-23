@@ -14,7 +14,7 @@ def database_connection():
 
 
 
-def get_menetrend(jarat=None, station=Nona, limit=100):
+def get_menetrend(jarat=None, station=None, limit=100):
     result = []
 
     mydb = database_connection()
@@ -26,7 +26,6 @@ def get_menetrend(jarat=None, station=Nona, limit=100):
     sql = """
 SELECT *
 FROM mati_menetrend
-LIMIT %(limit)s;
 """
 
     print('Execute SQL command: ' + sql)
