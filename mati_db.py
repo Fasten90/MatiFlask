@@ -1,6 +1,6 @@
 import os
 import mysql.connector
-
+import datetime
 
 def database_connection():
     mydb = mysql.connector.connect(
@@ -57,6 +57,13 @@ def get_menetrend(jarat=None, station=None, limit=100):
 
     # Debug code
     print(result)
+
+    if station:
+        now = datetime.datetime.now()
+        #for item in result:
+        arrive_minute = result[0][4]
+        actual_minute = now.minute
+        "Ennyi perc múlva jön: ".format(arrive_minute-actual_minute)
 
     return result
 
