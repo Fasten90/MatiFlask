@@ -1,6 +1,8 @@
 import os
-import mysql.connector
 import datetime
+
+import mysql.connector
+
 
 def database_connection():
     mydb = mysql.connector.connect(
@@ -11,7 +13,6 @@ def database_connection():
     )
 
     return mydb
-
 
 
 def get_menetrend(jarat=None, station=None, limit=100):
@@ -62,13 +63,21 @@ def get_menetrend(jarat=None, station=None, limit=100):
         if result:
             now = datetime.datetime.now()
             #for item in result:
+            station_found = result[0][5]
             arrive_minute = result[0][4]
             actual_minute = now.minute
             while arrive_minute < actual_minute:
                 arrive_minute += result[0][3]
-            result = 'Ennyi perc múlva jön: {}'.format(arrive_minute-actual_minute)
+            result = 'Megálló: {}\n' \
+                    'Ennyi perc múlva jön: {}'.format(
+                        station_found,
+                        arrive_minute-actual_minute)
         else:
             result = 'Nincs találat'
 
     return result
 
+
+if __name__ == '__main__':
+    # Manual test
+    get_menetrend()
