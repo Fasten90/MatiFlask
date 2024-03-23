@@ -70,7 +70,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
             while arrive_minute < actual_minute:
                 arrive_minute += result[0][3]
             result = 'Megálló: {station}<br />\r\n' \
-                    'Ennyi perc múlva jön a {jarat}: {arrive_minute}'.format(
+                    'Ennyi perc múlva jön a {jarat} járat: {arrive_minute} perc'.format(
                         station=station_found,
                         jarat=jarat_found,
                         arrive_minute=arrive_minute-actual_minute)
