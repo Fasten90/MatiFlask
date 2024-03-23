@@ -63,7 +63,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
         #for item in result:
         arrive_minute = result[0][4]
         actual_minute = now.minute
-        "Ennyi perc múlva jön: ".format(arrive_minute-actual_minute)
+        result = "Ennyi perc múlva jön: ".format(arrive_minute-actual_minute)
 
     return result
 
