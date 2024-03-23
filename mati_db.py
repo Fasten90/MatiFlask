@@ -23,10 +23,23 @@ def get_menetrend(jarat=None, station=None, limit=100):
 
     print('Connected to MySQL')
 
-    sql = """
-SELECT *
-FROM mati_menetrend
-"""
+    if jarat:
+        sql = """
+        SELECT *
+        WHERE jarat={}
+        FROM mati_menetrend
+        """.format(jarat)
+    elif station:
+        sql = """
+        SELECT *
+        WHERE jarat={}
+        FROM mati_menetrend
+        """.format(station)
+    else:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        """
 
     print('Execute SQL command: ' + sql)
     try:
