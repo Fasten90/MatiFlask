@@ -27,7 +27,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
         sql = """
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{}' AND `station`='{}'
+        WHERE `jarat`='{}' AND `station` LIKE'%{}%'
         """.format(jarat, station)
     elif jarat:
         sql = """
@@ -39,7 +39,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
         sql = """
         SELECT *
         FROM mati_menetrend
-        WHERE `station`='{}'
+        WHERE `station` LIKE'%{}%'
         """.format(station)
     else:
         sql = """
