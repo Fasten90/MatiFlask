@@ -3,6 +3,8 @@ import os
 from flask import Flask, render_template, flash, request, redirect, session, send_from_directory
 from flask_wtf import csrf
 
+import mati_db
+
 app = Flask(__name__)
 csrf = csrf.CSRFProtect(app)
 
@@ -70,6 +72,18 @@ def clock():
             return clock_time
     except Exception as e:
         return '[ERROR] ' + str(e)
+
+
+@app.route('/menetrend', methods=['GET'])
+def get_menetrend():
+    if request.method == 'GET':
+        try:
+            jarat = request.args.get('jarat', type = int)
+            station = request.args.get('megallo', type = str)
+            limit = request.args.get('limit', type = int, default=100)
+        except Exception as ex:
+            print('Exception: {}'.format(ex))
+    return mati_db.get_menetrend(jarat, station, limit)
 
 
 # For debug: Start debug mode this file
