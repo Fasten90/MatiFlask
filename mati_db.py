@@ -23,17 +23,23 @@ def get_menetrend(jarat=None, station=None, limit=100):
 
     print('Connected to MySQL')
 
-    if jarat:
+    if jarat and station:
         sql = """
         SELECT *
-        WHERE jarat={}
         FROM mati_menetrend
+        WHERE `jarat`='{}' AND `station`='{}'
+        """.format(jarat, station)
+    elif jarat:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        WHERE `jarat`='{}'
         """.format(jarat)
     elif station:
         sql = """
         SELECT *
-        WHERE jarat={}
         FROM mati_menetrend
+        WHERE `station`='{}'
         """.format(station)
     else:
         sql = """
