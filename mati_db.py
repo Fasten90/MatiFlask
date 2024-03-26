@@ -79,6 +79,8 @@ def get_menetrend(jarat=None, station=None, limit=100):
                             arrive_minute=arrive_minute-actual_minute)
         else:
             html_result = 'Nincs találat'
+    else:
+        html_result = result
 
     return html_result
 
