@@ -26,6 +26,18 @@ def get_next_arrive(menetrend):
     return remained_minute
 
 
+def precheck_menetrend(menetrend):
+    new_menetrend = []
+    now = datetime.datetime.now()
+    actual_hour = now.hour
+    for item in menetrend:
+        min_hour = item[1]
+        max_hour = item[2]
+        if min_hour <= actual_hour<  max_hour:
+            new_menetrend.append(item)
+    return new_menetrend
+
+
 def get_menetrend(jarat=None, station=None, limit=100):
     result = []
 
@@ -74,6 +86,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
     now = datetime.datetime.now()
     if station:
         if result:
+            result = precheck_menetrend(result)
             result = sorted(result, key=get_next_arrive)
             for item in result:
                 #for item in result:
