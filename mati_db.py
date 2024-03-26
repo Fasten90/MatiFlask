@@ -108,7 +108,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
                 arrive_minute_remained = get_next_arrive(item)
                 if jarat_type == 'nappali':
                     text_color = 'black'
-                    background_color = 'white'
+                    background_color = 'blue'
                 elif jarat_type == 'éjszakai':
                     text_color = 'white'
                     background_color = 'black'
