@@ -92,7 +92,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
         html_result = result
         # TODO: jarat keresés improvement
 
-    html_result += '{hour}:{minute}'.format(now.hour, now.minute)
+    html_result += '{hour}:{minute}'.format(hour=now.hour, minute=now.minute)
 
     return html_result
 
