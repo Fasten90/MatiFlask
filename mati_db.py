@@ -15,6 +15,17 @@ def database_connection():
     return mydb
 
 
+def get_next_arrive(menetrend):
+    now = datetime.datetime.now()
+    actual_minute = now.minute
+    idokoz = menetrend[3]
+    arrive_minute = menetrend[4]
+    while arrive_minute < actual_minute:
+        arrive_minute += idokoz
+    remained_minute = arrive_minute - actual_minute
+    return remained_minute
+
+
 def get_menetrend(jarat=None, station=None, limit=100):
     result = []
 
@@ -63,24 +74,23 @@ def get_menetrend(jarat=None, station=None, limit=100):
     now = datetime.datetime.now()
     if station:
         if result:
+            result = sorted(result, key=get_next_arrive)
             for item in result:
                 #for item in result:
                 jarat_found = item[0]
                 station_found = item[5]
-                arrive_minute = item[4]
-                actual_minute = now.minute
-                while arrive_minute < actual_minute:
-                    arrive_minute += item[3]
+                arrive_minute_remained = get_next_arrive(item)
                 html_result += 'Megálló: {station}<br />\r\n' \
                         'Ennyi perc múlva jön a {jarat} járat: {arrive_minute} perc<br />\r\n' \
                         '<hr>\r\n'.format(
                             station=station_found,
                             jarat=jarat_found,
-                            arrive_minute=arrive_minute-actual_minute)
+                            arrive_minute=arrive_minute_remained)
         else:
             html_result = 'Nincs találat'
     else:
         html_result = result
+        # TODO: jarat keresés improvement
 
     html_result += '{hour}:{minute}'.format(now.hour, now.minute)
 
