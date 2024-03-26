@@ -59,6 +59,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
     # Debug code
     print(result)
 
+    html_result = ''
     if station:
         if result:
             now = datetime.datetime.now()
@@ -70,16 +71,16 @@ def get_menetrend(jarat=None, station=None, limit=100):
                 actual_minute = now.minute
                 while arrive_minute < actual_minute:
                     arrive_minute += item[3]
-                result = 'Megálló: {station}<br />\r\n' \
+                html_result += 'Megálló: {station}<br />\r\n' \
                         'Ennyi perc múlva jön a {jarat} járat: {arrive_minute} perc<br />\r\n' \
                         '<hr>\r\n'.format(
                             station=station_found,
                             jarat=jarat_found,
                             arrive_minute=arrive_minute-actual_minute)
         else:
-            result = 'Nincs találat'
+            html_result = 'Nincs találat'
 
-    return result
+    return html_result
 
 
 if __name__ == '__main__':
