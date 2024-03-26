@@ -36,13 +36,13 @@ def precheck_menetrend(menetrend):
         if min_hour <= actual_hour < max_hour:
             # Nappali járat
             if 'm' in item[0].lower():
-                item.append('metro')
+                item = item + ('metro',)
             else:
-                item.append('nappali')
+                item = item + ('nappali',)
             new_menetrend.append(item)
         elif min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour:
             # Éjszakai járat
-            item.append('éjszakai')
+            item = item + ('éjszakai',)
             new_menetrend.append(item)
         else:
             pass
