@@ -60,9 +60,9 @@ def get_menetrend(jarat=None, station=None, limit=100):
     print(result)
 
     html_result = ''
+    now = datetime.datetime.now()
     if station:
         if result:
-            now = datetime.datetime.now()
             for item in result:
                 #for item in result:
                 jarat_found = item[0]
@@ -81,6 +81,8 @@ def get_menetrend(jarat=None, station=None, limit=100):
             html_result = 'Nincs találat'
     else:
         html_result = result
+
+    html_result += '{hour}:{minute}'.format(now.hour, now.minute)
 
     return html_result
 
