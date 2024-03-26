@@ -33,8 +33,19 @@ def precheck_menetrend(menetrend):
     for item in menetrend:
         min_hour = item[1]
         max_hour = item[2]
-        if min_hour <= actual_hour<  max_hour:
+        if min_hour <= actual_hour < max_hour:
+            # Nappali járat
+            if 'm' in item[0].lower():
+                item.append('metro')
+            else:
+                item.append('nappali')
             new_menetrend.append(item)
+        elif min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour:
+            # Éjszakai járat
+            item.append('éjszakai')
+            new_menetrend.append(item)
+        else:
+            pass
     return new_menetrend
 
 
@@ -88,17 +99,35 @@ def get_menetrend(jarat=None, station=None, limit=100):
         if result:
             result = precheck_menetrend(result)
             result = sorted(result, key=get_next_arrive)
+            html_result += '<table>'
             for item in result:
-                #for item in result:
+                html_result += '<tr>'
                 jarat_found = item[0]
                 station_found = item[5]
+                jarat_type = item[-1]
                 arrive_minute_remained = get_next_arrive(item)
-                html_result += 'Megálló: {station}<br />\r\n' \
-                        'Ennyi perc múlva jön a {jarat} járat: {arrive_minute} perc<br />\r\n' \
-                        '<hr>\r\n'.format(
+                if jarat_type == 'nappali':
+                    text_color = 'black'
+                    background_color = 'white'
+                elif jarat_type == 'éjszakai':
+                    text_color = 'white'
+                    background_color = 'black'
+                elif jarat_type == 'metro':
+                    text_color = 'black'
+                    background_color = 'orange'
+                else:
+                    text_color = 'black'
+                    background_color = 'white'
+                html_result += '<td>Megálló: {station}</td>' \
+                        '<td>Ennyi perc múlva jön a </td><td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td><td> járat: {arrive_minute} perc</td>' \
+                        '\r\n'.format(
                             station=station_found,
+                            background_color=background_color,
+                            text_color=text_color,
                             jarat=jarat_found,
                             arrive_minute=arrive_minute_remained)
+                html_result += '</tr>'
+            html_result += '</table>'
         else:
             html_result = 'Nincs találat'
     else:
