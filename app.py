@@ -83,7 +83,7 @@ def get_menetrend():
             limit = request.args.get('limit', type = int, default=100)
         except Exception as ex:
             print('Exception: {}'.format(ex))
-    return mati_db.get_menetrend(jarat, station, limit)
+    return mati_db.get_menetrend_wrap(jarat, station, limit)
 
 
 # For debug: Start debug mode this file
