@@ -47,8 +47,9 @@ def precheck_menetrend(menetrend):
             new_menetrend.append(item)
         elif min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour:
             # Éjszakai járat
-            item = item + ('éjszakai',)
-            new_menetrend.append(item)
+            if 'm' not in item[0].lower():  # Nem metro
+                item = item + ('éjszakai',)
+                new_menetrend.append(item)
         else:
             pass
     return new_menetrend
@@ -101,7 +102,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result = 'Nincs találat :('
     elif jarat:
         html_result += '<table>'
-        html_result += '<tr><td>Járat</td><td></td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>'
+        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>'
         for item in result:
             html_result += '<tr>'
             html_result += '<td>{jarat}</td>'.format(jarat=item[0])
