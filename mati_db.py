@@ -49,6 +49,22 @@ def precheck_menetrend(menetrend):
     return new_menetrend
 
 
+def get_color_by_jarmu_type(jarat_type):
+    if jarat_type == 'nappali':
+        text_color = 'black'
+        background_color = 'blue'
+    elif jarat_type == 'éjszakai':
+        text_color = 'white'
+        background_color = 'black'
+    elif jarat_type == 'metro':
+        text_color = 'black'
+        background_color = 'orange'
+    else:
+        text_color = 'black'
+        background_color = 'white'
+    return text_color, background_color
+
+
 def get_menetrend(jarat=None, station=None, limit=100):
     result = []
 
@@ -86,9 +102,11 @@ def get_menetrend(jarat=None, station=None, limit=100):
     try:
         mycursor.execute(sql, {'limit': limit})
         result = mycursor.fetchall()
+        column_headers = mycursor.column_names  # TODO: Use
     except Exception as ex:
         # TODO: Temporary error handling
         result = [str(ex)]
+    mydb.close()
 
     # Debug code
     print(result)
@@ -106,18 +124,7 @@ def get_menetrend(jarat=None, station=None, limit=100):
                 station_found = item[5]
                 jarat_type = item[-1]
                 arrive_minute_remained = get_next_arrive(item)
-                if jarat_type == 'nappali':
-                    text_color = 'black'
-                    background_color = 'blue'
-                elif jarat_type == 'éjszakai':
-                    text_color = 'white'
-                    background_color = 'black'
-                elif jarat_type == 'metro':
-                    text_color = 'black'
-                    background_color = 'orange'
-                else:
-                    text_color = 'black'
-                    background_color = 'white'
+                text_color, background_color = get_menetrend(jarat_type)
                 html_result += '<td>Megálló: {station}</td>' \
                         '<td>Ennyi perc múlva jön a </td><td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td><td> járat: {arrive_minute} perc</td>' \
                         '\r\n'.format(
@@ -129,7 +136,19 @@ def get_menetrend(jarat=None, station=None, limit=100):
                 html_result += '</tr>'
             html_result += '</table>'
         else:
-            html_result = 'Nincs találat'
+            html_result = 'Nincs találat :('
+    elif jarat:
+        html_result += '<table>'
+        html_result += '<tr><td>Járat</td><td></td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>'
+        for item in result:
+            html_result += '<tr>'
+            html_result += '<td>' + item[0] + '</td>'
+            html_result += '<td>' + item[1] + ':' + item[4] + '</td>'
+            html_result += '<td>' + item[2] + ':00' + '</td>'
+            html_result += '<td>' + item[3] + ' perc' + '</td>'
+            html_result += '<td>' + item[5] + '</td>'
+            html_result += '</tr>'
+        html_result += '</table>'
     else:
         html_result = result
         # TODO: jarat keresés improvement
