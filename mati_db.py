@@ -72,6 +72,29 @@ def get_color_by_jarmu_type(jarat_type):
     return text_color, background_color
 
 
+def update_menetrend_with_arrive_minutes(result):
+    new_result = []
+    for item in result:
+        new_item = item + (get_next_arrive(item),)
+        new_result.append(new_item)
+    return new_result
+
+
+def extend_get_next_menetrends(result):
+    new_result = []
+    for item in result:
+        new_result.append(item)
+        for index in range(1,4):
+            #now = datetime.now().time.minute
+            modified_item = item[::-1] + (index * item[3], )
+            new_result.append(modified_item)
+    return new_result
+
+
+def order_of_arrive(menetrend):
+    return menetrend[-1]
+
+
 def get_menetrend(jarat=None, station=None, result=None):
     """ fill the menetrend table by SQL/DB result (rows) """
     html_result = ''
@@ -79,14 +102,16 @@ def get_menetrend(jarat=None, station=None, result=None):
     if station:
         if result:
             result = precheck_menetrend(result)
-            result = sorted(result, key=get_next_arrive)
+            result = update_menetrend_with_arrive_minutes(result)
+            result = extend_get_next_menetrends(result)
+            result = sorted(result, key=order_of_arrive)
             html_result += '<table>'
             for item in result:
                 html_result += '<tr>'
                 jarat_found = item[0]
                 station_found = item[5]
-                jarat_type = item[-1]
-                arrive_minute_remained = get_next_arrive(item)
+                jarat_type = item[-2]
+                arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_type)
                 html_result += '<td>Megálló: {station}</td>' \
                         '<td>Ennyi perc múlva jön a </td><td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td><td> járat: {arrive_minute} perc</td>' \
@@ -176,5 +201,6 @@ if __name__ == '__main__':
     #get_menetrend_wrap()
     # Test menetrend with fake result
     sql_fake_result = [('6', 8, 20, 15, 0, 'Megálló')]
-    res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
+    #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
+    res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
     print(res)
