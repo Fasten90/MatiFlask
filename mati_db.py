@@ -167,7 +167,7 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
     # Debug code
     print(result)
 
-    get_menetrend_wrap(result)
+    return get_menetrend(result)
 
 
 if __name__ == '__main__':
