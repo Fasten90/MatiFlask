@@ -86,7 +86,9 @@ def extend_get_next_menetrends(result):
         new_result.append(item)
         for index in range(1,4):
             #now = datetime.now().time.minute
-            modified_item = item[::-1] + (index * item[3], )
+            # Last element is the 'arriving minute'
+            new_arrive_minute = item[-1] + index * item[3]  # last arrive + n * járatsűrűség
+            modified_item = item[:-1] + (new_arrive_minute, )
             new_result.append(modified_item)
     return new_result
 
@@ -106,28 +108,30 @@ def get_menetrend(jarat=None, station=None, result=None):
             result = extend_get_next_menetrends(result)
             result = sorted(result, key=order_of_arrive)
             html_result += '<table>'
+            html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\r\n'
             for item in result:
-                html_result += '<tr>'
                 jarat_found = item[0]
                 station_found = item[5]
                 jarat_type = item[-2]
                 arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_type)
-                html_result += '<td>Megálló: {station}</td>' \
-                        '<td>Ennyi perc múlva jön a </td><td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td><td> járat: {arrive_minute} perc</td>' \
-                        '\r\n'.format(
+                html_result += '<tr>'
+                html_result += '<td>{station}</td>' \
+                        '<td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td>' \
+                        '<td>{arrive_minute}</td>' \
+                        ''.format(
                             station=station_found,
                             background_color=background_color,
                             text_color=text_color,
                             jarat=jarat_found,
                             arrive_minute=arrive_minute_remained)
-                html_result += '</tr>'
-            html_result += '</table>'
+                html_result += '</tr>\r\n'
+            html_result += '</table>\r\n'
         else:
             html_result = 'Nincs találat :('
     elif jarat:
-        html_result += '<table>'
-        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>'
+        html_result += '<table>\r\n'
+        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
         for item in result:
             html_result += '<tr>'
             html_result += '<td>{jarat}</td>'.format(jarat=item[0])
@@ -135,8 +139,8 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '<td>{max_hour}:00</td>'.format(max_hour=item[2])
             html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
             html_result += '<td>{megallo}</td>'.format(megallo=item[5])
-            html_result += '</tr>'
-        html_result += '</table>'
+            html_result += '</tr>\r\n'
+        html_result += '</table>\r\n'
     else:
         html_result = result
         # TODO: jarat keresés improvement
@@ -200,7 +204,7 @@ if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
     # Test menetrend with fake result
-    sql_fake_result = [('6', 8, 20, 15, 0, 'Megálló')]
+    sql_fake_result = [('6', 8, 20, 15, 0, 'Blaha Lujza tér')]
     #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
     res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
     print(res)
