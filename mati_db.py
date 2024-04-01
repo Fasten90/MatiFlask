@@ -38,16 +38,19 @@ def precheck_menetrend(menetrend):
     for item in menetrend:
         min_hour = item[1]
         max_hour = item[2]
+        jarat = item[0]
         if min_hour <= actual_hour < max_hour:
             # Nappali járat
-            if 'm' in item[0].lower():
+            if 'm' in jarat.lower():
                 item = item + ('metro',)
+            elif jarat.startswith('3'):
+                item = item + ('villamos',)
             else:
                 item = item + ('nappali',)
             new_menetrend.append(item)
         elif min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour:
             # Éjszakai járat
-            if 'm' not in item[0].lower():  # Nem metro
+            if 'm' not in jarat.lower():  # Nem metro
                 item = item + ('éjszakai',)
                 new_menetrend.append(item)
         else:
@@ -55,7 +58,7 @@ def precheck_menetrend(menetrend):
     return new_menetrend
 
 
-def get_color_by_jarmu_type(jarat_type):
+def get_color_by_jarmu_type(jarat, jarat_type):
     """ Get color (text and background) by járat type """
     if jarat_type == 'nappali':
         text_color = 'black'
@@ -63,9 +66,21 @@ def get_color_by_jarmu_type(jarat_type):
     elif jarat_type == 'éjszakai':
         text_color = 'white'
         background_color = 'black'
+    elif jarat_type == 'villamos':
+        text_color = 'black'
+        background_color = 'yellow'
     elif jarat_type == 'metro':
         text_color = 'black'
-        background_color = 'orange'
+        if jarat == 'M1':
+            background_color = 'orange'
+        elif jarat == 'M2':
+            background_color = 'green'
+        elif jarat == 'M3':
+            background_color = 'red'
+        elif jarat == 'M4':
+            background_color = 'red'
+        else:
+            background_color = 'blue'
     else:
         text_color = 'black'
         background_color = 'white'
@@ -114,7 +129,7 @@ def get_menetrend(jarat=None, station=None, result=None):
                 station_found = item[5]
                 jarat_type = item[-2]
                 arrive_minute_remained = item[-1]
-                text_color, background_color = get_color_by_jarmu_type(jarat_type)
+                text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
                 html_result += '<td>{station}</td>' \
                         '<td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td>' \
