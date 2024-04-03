@@ -149,9 +149,14 @@ def get_menetrend(jarat=None, station=None, result=None):
         html_result += '<table>\r\n'
         html_result += '<tr><td>Járat</td><td>Indulási idő</td>'
         html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
+        result = precheck_menetrend(result)
         for item in result:
+            jarat=item[0]
+            jarat_type = item[-1]
+            text_color, background_color = get_color_by_jarmu_type(jarat, jarat_type)
             html_result += '<tr>'
-            html_result += '<td>{jarat}</td>'.format(jarat=item[0])
+            html_result += f'<td bgcolor="{background_color}">'
+            html_result += f'<font color="{text_color}">{jarat}</font></td>'
             html_result += '<td>{:02}:{:02}</td>'.format(item[1], item[4])  # Hour, Minute
             html_result += '<td>{max_hour:02}:00</td>'.format(max_hour=item[2])
             html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
