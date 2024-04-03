@@ -157,8 +157,17 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '</tr>\r\n'
         html_result += '</table>\r\n'
     else:
-        html_result = result
-        # TODO: jarat keresés improvement
+        html_result += '<table>\r\n'
+        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
+        for item in result:
+            html_result += '<tr>'
+            html_result += '<td>{jarat}</td>'.format(jarat=item[0])
+            html_result += '<td>{star_hour}:{minute}</td>'.format(star_hour=item[1], minute=item[4])
+            html_result += '<td>{max_hour}:00</td>'.format(max_hour=item[2])
+            html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
+            html_result += '<td>{megallo}</td>'.format(megallo=item[5])
+            html_result += '</tr>\r\n'
+        html_result += '</table>\r\n'
 
     html_result += '{hour}:{minute}'.format(hour=now.hour, minute=now.minute)
 
