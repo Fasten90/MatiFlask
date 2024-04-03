@@ -153,7 +153,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '<tr>'
             html_result += '<td>{jarat}</td>'.format(jarat=item[0])
             html_result += '<td>{:02}:{:02}</td>'.format(item[1], item[4])  # Hour, Minute
-            html_result += '<td>{max_hour}:00</td>'.format(max_hour=item[2])
+            html_result += '<td>{max_hour:02}:00</td>'.format(max_hour=item[2])
             html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
             html_result += '<td>{megallo}</td>'.format(megallo=item[5])
             html_result += '</tr>\r\n'
