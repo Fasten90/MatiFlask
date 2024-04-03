@@ -19,7 +19,8 @@ def database_connection():
 
 
 def get_next_arrive(menetrend):
-    """ Calculate the arrive minutes, and check the next, and return with how many minutes are remained """
+    """ Calculate the arrive minutes, and check the next,
+        and return with how many minutes are remained """
     now = datetime.datetime.now()
     actual_minute = now.minute
     idokoz = menetrend[3]
@@ -134,34 +135,20 @@ def get_menetrend(jarat=None, station=None, result=None):
                 arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
-                html_result += '<td>{station}</td>' \
-                        '<td bgcolor="{background_color}"><font color="{text_color}">{jarat}</font></td>' \
-                        '<td>{arrive_minute}</td>' \
-                        ''.format(
-                            station=station_found,
-                            background_color=background_color,
-                            text_color=text_color,
-                            jarat=jarat_found,
-                            arrive_minute=arrive_minute_remained)
+                html_result += f'<td>{station_found}</td>' \
+                        '<td bgcolor="{background_color}">' \
+                        '<font color="{text_color}">{jarat_found}</font>' \
+                        '</td>' \
+                        '<td>{arrive_minute_remained}</td>'
                 html_result += '</tr>\r\n'
             html_result += '</table>\r\n'
         else:
             html_result = 'Nincs találat :('
-    elif jarat:
-        html_result += '<table>\r\n'
-        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
-        for item in result:
-            html_result += '<tr>'
-            html_result += '<td>{jarat}</td>'.format(jarat=item[0])
-            html_result += '<td>{star_hour}:{minute}</td>'.format(star_hour=item[1], minute=item[4])
-            html_result += '<td>{max_hour}:00</td>'.format(max_hour=item[2])
-            html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
-            html_result += '<td>{megallo}</td>'.format(megallo=item[5])
-            html_result += '</tr>\r\n'
-        html_result += '</table>\r\n'
+    #elif jarat:
     else:
         html_result += '<table>\r\n'
-        html_result += '<tr><td>Járat</td><td>Indulási idő</td><td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
+        html_result += '<tr><td>Járat</td><td>Indulási idő</td>'
+        html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
         for item in result:
             html_result += '<tr>'
             html_result += '<td>{jarat}</td>'.format(jarat=item[0])
@@ -172,7 +159,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '</tr>\r\n'
         html_result += '</table>\r\n'
 
-    html_result += '{hour}:{minute}'.format(hour=now.hour, minute=now.minute)
+    html_result += f'{now.hour}:{now.minute}'
 
     return html_result
 
@@ -216,8 +203,7 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
         mycursor.execute(sql, {'limit': limit})
         result = mycursor.fetchall()
         column_headers = mycursor.column_names  # TODO: Use
-    except Exception as ex:
-        # TODO: Temporary error handling
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         result = [str(ex)]
     mydb.close()
 
@@ -232,6 +218,7 @@ if __name__ == '__main__':
     #get_menetrend_wrap()
     # Test menetrend with fake result
     sql_fake_result = [('6', 8, 20, 15, 0, 'Blaha Lujza tér')]
-    #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
+    res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
+    print(res)
     res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
     print(res)
