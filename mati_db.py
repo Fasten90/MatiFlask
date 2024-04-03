@@ -31,7 +31,7 @@ def get_next_arrive(menetrend):
     return remained_minute
 
 
-def precheck_menetrend(menetrend):
+def precheck_menetrend(menetrend, get_all=False):
     """ Precheck menetrend, for it is travelling or not, and what is the type of járat """
     new_menetrend = []
     now = datetime.datetime.now()
@@ -40,20 +40,22 @@ def precheck_menetrend(menetrend):
         min_hour = item[1]
         max_hour = item[2]
         jarat = item[0]
-        if min_hour <= actual_hour < max_hour:
+        if min_hour < max_hour:
             # Nappali járat
-            if 'm' in jarat.lower():
-                item = item + ('metro',)
-            elif jarat.startswith('3'):
-                item = item + ('villamos',)
-            else:
-                item = item + ('nappali',)
-            new_menetrend.append(item)
-        elif min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour:
-            # Éjszakai járat
-            if 'm' not in jarat.lower():  # Nem metro
-                item = item + ('éjszakai',)
+            if min_hour < actual_hour < max_hour or get_all:
+                if 'm' in jarat.lower():
+                    item = item + ('metro',)
+                elif jarat.startswith('3'):
+                    item = item + ('villamos',)
+                else:
+                    item = item + ('nappali',)
                 new_menetrend.append(item)
+        elif min_hour > max_hour:
+            if min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour or get_all:
+                # Éjszakai járat
+                if 'm' not in jarat.lower():
+                    item = item + ('éjszakai',)
+                    new_menetrend.append(item)
         else:
             pass
     return new_menetrend
@@ -146,10 +148,13 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result = 'Nincs találat :('
     #elif jarat:
     else:
+        get_all = True
+        if jarat:
+            get_all = False
         html_result += '<table>\r\n'
         html_result += '<tr><td>Járat</td><td>Indulási idő</td>'
         html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
-        result = precheck_menetrend(result)
+        result = precheck_menetrend(result, get_all)
         for item in result:
             jarat=item[0]
             jarat_type = item[-1]
@@ -226,4 +231,6 @@ if __name__ == '__main__':
     res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
     print(res)
     res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
+    print(res)
+    res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
     print(res)
