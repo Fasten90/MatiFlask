@@ -145,7 +145,7 @@ def get_menetrend(jarat=None, station=None, result=None):
                 html_result += '</tr>\r\n'
             html_result += '</table>\r\n'
         else:
-            html_result = 'Nincs találat :(\r\n'
+            html_result = 'Nincs találat :(<br />\r\n'
     #elif jarat:
     else:
         get_all = True
