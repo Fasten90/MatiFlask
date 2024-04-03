@@ -88,6 +88,7 @@ def get_color_by_jarmu_type(jarat, jarat_type):
 
 
 def update_menetrend_with_arrive_minutes(result):
+    """ Add new column with arrive minute """
     new_result = []
     for item in result:
         new_item = item + (get_next_arrive(item),)
@@ -96,6 +97,7 @@ def update_menetrend_with_arrive_minutes(result):
 
 
 def extend_get_next_menetrends(result):
+    """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
         new_result.append(item)
@@ -109,6 +111,7 @@ def extend_get_next_menetrends(result):
 
 
 def order_of_arrive(menetrend):
+    """ ordering with remained arrive minutes """
     return menetrend[-1]
 
 
