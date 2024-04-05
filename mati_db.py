@@ -118,6 +118,22 @@ def order_of_arrive(menetrend):
     return menetrend[-1]
 
 
+def update_late_menetrends(menetrend):
+    """ Update arrive minutes to real time """
+    new_menetrend = []
+    time = datetime.datetime.now()
+    for item in menetrend:
+        arrive_minute = item[-1]
+        if arrive_minute > 60:
+            delta = datetime.timedelta(minutes=arrive_minute)
+            arrive_time = datetime.datetime.strftime(time + delta, '%H:%M')
+            new_item = item[:-1] + (arrive_time, )
+        else:
+            new_item = item
+        new_menetrend.append(new_item)
+    return new_menetrend
+
+
 def get_menetrend(jarat=None, station=None, result=None):
     """ fill the menetrend table by SQL/DB result (rows) """
     html_result = ''
@@ -128,6 +144,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             result = update_menetrend_with_arrive_minutes(result)
             result = extend_get_next_menetrends(result)
             result = sorted(result, key=order_of_arrive)
+            result = update_late_menetrends(result)
             html_result += '<table>'
             html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\r\n'
             for item in result:
