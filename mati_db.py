@@ -45,7 +45,7 @@ def precheck_menetrend(menetrend, get_all=False):
             if min_hour < actual_hour < max_hour or get_all:
                 if 'm' in jarat.lower():
                     item = item + ('metro',)
-                elif jarat.startswith('3'):
+                elif jarat.startswith('2') and len(jarat) >= 2:
                     item = item + ('villamos',)
                 else:
                     item = item + ('nappali',)
