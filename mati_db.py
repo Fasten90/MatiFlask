@@ -64,7 +64,7 @@ def precheck_menetrend(menetrend, get_all=False):
 def get_color_by_jarmu_type(jarat, jarat_type):
     """ Get color (text and background) by járat type """
     if jarat_type == 'nappali':
-        text_color = 'black'
+        text_color = 'white'
         background_color = 'blue'
     elif jarat_type == 'éjszakai':
         text_color = 'white'
