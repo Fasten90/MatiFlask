@@ -125,11 +125,15 @@ def update_late_menetrends(menetrend):
     for item in menetrend:
         arrive_minute = item[-1]
         max_hour = item[2]
+        min_hour = item[1]
         if arrive_minute > 60:
             delta = datetime.timedelta(minutes=arrive_minute)
             arrive_time = time + delta
             if arrive_time.hour >= max_hour:
-                # Skip this
+                # Már nem jár
+                continue
+            if min_hour < max_hour and arrive_time.day != time.day:
+                # Nappali járat, holnapi dátum
                 continue
             arrive_time = datetime.datetime.strftime(arrive_time, '%H:%M')
             new_item = item[:-1] + (arrive_time, )
@@ -249,7 +253,7 @@ if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
     # Test menetrend with fake result
-    sql_fake_result = [('6', 8, 17, 15, 0, 'Blaha Lujza tér')]
+    sql_fake_result = [('6', 8, 22, 50, 0, 'Blaha Lujza tér')]
     #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
     #print(res)
     res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
