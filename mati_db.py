@@ -104,7 +104,7 @@ def extend_get_next_menetrends(result):
     new_result = []
     for item in result:
         new_result.append(item)
-        for index in range(1,11):
+        for index in range(1,28):
             #now = datetime.now().time.minute
             # Last element is the 'arriving minute'
             new_arrive_minute = item[-1] + index * item[3]  # last arrive + n * járatsűrűség
