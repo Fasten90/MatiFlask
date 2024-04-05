@@ -138,10 +138,10 @@ def get_menetrend(jarat=None, station=None, result=None):
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
                 html_result += f'<td>{station_found}</td>' \
-                        '<td bgcolor="{background_color}">' \
-                        '<font color="{text_color}">{jarat_found}</font>' \
+                        f'<td bgcolor="{background_color}">' \
+                        f'<font color="{text_color}">{jarat_found}</font>' \
                         '</td>' \
-                        '<td>{arrive_minute_remained}</td>'
+                        f'<td>{arrive_minute_remained}</td>'
                 html_result += '</tr>\r\n'
             html_result += '</table>\r\n'
         else:
