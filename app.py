@@ -85,6 +85,16 @@ def get_menetrend():
             print('Exception: {}'.format(ex))
     return mati_db.get_menetrend_wrap(jarat, station, limit)
 
+@app.route('/nyomtatas', methods=['GET'])
+def get_menetrend_nyomtatas():
+    if request.method == 'GET':
+        try:
+            station = request.args.get('megallo', type = str)
+        except Exception as ex:
+            print('Exception: {}'.format(ex))
+    return mati_db.get_menetrend_nyomtatas(station)
+
+
 
 # For debug: Start debug mode this file
 if __name__ == '__main__':

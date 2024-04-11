@@ -200,8 +200,7 @@ def get_menetrend(jarat=None, station=None, result=None):
     return html_result
 
 
-def get_menetrend_wrap(jarat=None, station=None, limit=100):
-    """ Get menetrend with járat or megálló """
+def get_db(jarat=None, station=None, limit=100):
     result = []
 
     mydb = database_connection()
@@ -245,9 +244,59 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
 
     # Debug code
     print(result)
+    return result
 
+
+def get_menetrend_wrap(jarat=None, station=None, limit=100):
+    """ Get menetrend with járat or megálló """
+    result = get_db(jarat, station)
     return get_menetrend(jarat, station, result)
 
+
+def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
+    if db:
+        result = get_db(station=station)
+    else:
+        pass
+        # Use parameter 'result'
+    html_result = ''
+    station_found = result[0][5]
+    html_result += '<html><body><table cellpadding="10" border="3">'
+    html_result += '<tr><td><font size="24">Megálló</font></td>'
+    html_result += f'<td><font size="24">{station_found}</font></td></tr>\r\n'
+    jarat_map = set()
+    for item in result:
+        jarat_found = item[0]
+        jarat_map.add(jarat_found)
+    html_result += '<tr>'
+    for item in jarat_map:
+        jarat_this = item
+        html_result += f'<td><font size="24">{jarat_this}</font></td>'
+    html_result += '</tr>\r\n'
+
+    for jarat_this in jarat_map:
+        jarat_this
+        if db:
+            result = get_db(jarat=jarat_this)
+        this_station_has_found = False
+        for item in result:
+            station_found = item[5]
+            html_result += '<tr>'
+            if this_station_has_found:
+                # New stations
+                text_color = 'black'
+            else:
+                if station_found == station:
+                    # Here!
+                    this_station_has_found = True
+                    text_color = 'blue'
+                else:
+                    # previous station
+                    text_color = 'grey'
+            html_result += f'<td><font color="{text_color}">{station_found}</font></td>'
+            html_result += '</tr>\r\n'
+    html_result += '</table></body></html>\r\n'
+    return html_result
 
 if __name__ == '__main__':
     # Manual test
@@ -260,3 +309,5 @@ if __name__ == '__main__':
     print(res)
     #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
     #print(res)
+    res = get_menetrend_nyomtatas(jarat=None, station="Bolya utca", db=False, result=sql_fake_result)
+    print(res)
