@@ -93,7 +93,10 @@ def get_menetrend_nyomtatas():
             station = request.args.get('megallo', type = str)
         except Exception as ex:
             print('Exception: {}'.format(ex))
-    return mati_db.get_menetrend_nyomtatas(jarat=None, station=station)
+        result = mati_db.get_menetrend_nyomtatas(jarat=None, station=station)
+    else:
+        result = 'It only works with ?megallo=<megallonev>'
+    return result
 
 
 # For debug: Start debug mode this file

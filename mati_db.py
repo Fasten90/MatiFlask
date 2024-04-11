@@ -274,14 +274,16 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         html_result += f'<td><font size="24">{jarat_this}</font></td>'
     html_result += '</tr>\r\n'
 
+    html_result += '<tr>'
     for jarat_this in jarat_map:
-        jarat_this
         if db:
             result = get_db(jarat=jarat_this)
         this_station_has_found = False
+        html_result += '<td>'
+        html_result += '<table>'
         for item in result:
             station_found = item[5]
-            html_result += '<tr>'
+            html_result += '<tr><td>'
             if this_station_has_found:
                 # New stations
                 text_color = 'black'
@@ -293,8 +295,11 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
                 else:
                     # previous station
                     text_color = 'grey'
-            html_result += f'<td><font color="{text_color}">{station_found}</font></td>'
-            html_result += '</tr>\r\n'
+            html_result += f'<td><font color="{text_color}">{station_found}</font>'
+            html_result += '</td></tr>'
+        html_result += '</table>'
+        html_result += '</td>\r\n'
+    html_result += '</tr>'
     html_result += '</table></body></html>\r\n'
     return html_result
 
