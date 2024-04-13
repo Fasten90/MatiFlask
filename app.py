@@ -104,7 +104,7 @@ def get_menetrend_bus():
     if request.method == 'GET':
         try:
             line = request.args.get('line', type = str)
-            get_lines = request.args.get('lines', type = bool)
+            get_lines = request.args.get('lines', type = bool, default=False)
         except Exception as ex:
             print('Exception: {}'.format(ex))
         if get_lines:
