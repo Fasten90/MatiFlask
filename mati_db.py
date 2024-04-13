@@ -309,7 +309,7 @@ def get_all_lines():
     line_set = set()
     for item in result:
         line_set.add(item[0])
-    return list(line_set)
+    return {'lines': list(line_set) }
 
 def get_line_info(line):
     result = get_db(jarat=line)
