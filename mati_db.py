@@ -317,6 +317,7 @@ def get_line_info(line):
     if result:
         now = datetime.datetime.now()
         end_station = 'Végállomás'
+        last_start_minute = 0
         time_calculated = False
         for item in result:
             min_hour = item[1]
@@ -324,7 +325,9 @@ def get_line_info(line):
             jaratsuruseg = item[3]
             start_minute = item[4]
             actual_bus_station = item[5]
-            end_station = actual_bus_station  # Save this for end_station
+            if last_start_minute < start_minute:
+                end_station = actual_bus_station  # Save this for end_station
+                last_start_minute = start_minute
             if not time_calculated:
                 if now.hour in range(min_hour, max_hour):
                     # Proper hour
@@ -335,6 +338,8 @@ def get_line_info(line):
                             # Found end_station
                             time_calculated = True
                             break
+                else:
+                    res_dict['actual_bus_station'] = 'Ma már nem közlekedik'
             # Do not exit, because the finding end_station
             if not time_calculated:
                 res_dict['actual_bus_station'] = 'Most épp nem jár, a végállomáson vár'
