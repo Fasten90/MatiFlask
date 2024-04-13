@@ -100,7 +100,7 @@ def get_menetrend_nyomtatas():
 
 
 @app.route('/bus', methods=['GET'])
-def get_menetrend_nyomtatas():
+def get_menetrend_bus():
     if request.method == 'GET':
         try:
             line = request.args.get('line', type = str)
