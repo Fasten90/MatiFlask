@@ -99,6 +99,25 @@ def get_menetrend_nyomtatas():
     return result
 
 
+@app.route('/bus', methods=['GET'])
+def get_menetrend_nyomtatas():
+    if request.method == 'GET':
+        try:
+            line = request.args.get('line', type = str)
+            get_lines = request.args.get('line', type = bool)
+        except Exception as ex:
+            print('Exception: {}'.format(ex))
+        if get_lines:
+            result = mati_db.get_all_lines()
+        elif line:
+            result = mati_db.get_line_info(line)
+        else:
+            result = 'It only works with bus?line=5 or bus?lines'
+    else:
+        result = 'It only works with bus?line=5 or bus?lines'
+    return result
+
+
 # For debug: Start debug mode this file
 if __name__ == '__main__':
     app.run()

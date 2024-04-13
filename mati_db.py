@@ -104,7 +104,7 @@ def extend_get_next_menetrends(result):
     new_result = []
     for item in result:
         new_result.append(item)
-        for index in range(1,28):
+        for index in range(1, 28):
             #now = datetime.now().time.minute
             # Last element is the 'arriving minute'
             new_arrive_minute = item[-1] + index * item[3]  # last arrive + n * járatsűrűség
@@ -182,7 +182,7 @@ def get_menetrend(jarat=None, station=None, result=None):
         html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
         result = precheck_menetrend(result, get_all)
         for item in result:
-            jarat=item[0]
+            jarat = item[0]
             jarat_type = item[-1]
             text_color, background_color = get_color_by_jarmu_type(jarat, jarat_type)
             html_result += '<tr>'
@@ -302,6 +302,43 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     html_result += '</tr>'
     html_result += '</table></body></html>\r\n'
     return html_result
+
+
+def get_all_lines():
+    result = get_db()
+    line_set = set()
+    for item in result:
+        line_set.add(item[0])
+    return list(line_set)
+
+def get_line_info(line):
+    result = get_db(line)
+    res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás'}
+    if result:
+        now = datetime.datetime.now().time
+        end_station = 'Végállomás'
+        time_calculated = False
+        for item in result:
+            min_hour = item[1]
+            max_hour = item[2]
+            jaratsuruseg = item[3]
+            start_minute = item[4]
+            actual_bus_station = item[5]
+            end_station = actual_bus_station  # Save this
+            if not time_calculated:
+                if now.hour in range(min_hour, max_hour):
+                    # Proper hour
+                    for min in range(start_minute, 59, jaratsuruseg):
+                        if now.minute == min:
+                            # Found!
+                            res_dict['actual_bus_station'] = actual_bus_station
+                            # Found end_station
+                            break
+                time_calculated = True
+            # Do not exit
+        res_dict['end_station'] = end_station
+    return result
+
 
 if __name__ == '__main__':
     # Manual test
