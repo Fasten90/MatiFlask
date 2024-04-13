@@ -333,8 +333,8 @@ def get_line_info(line):
                             # Found!
                             res_dict['actual_bus_station'] = actual_bus_station
                             # Found end_station
+                            time_calculated = True
                             break
-                    time_calculated = True
             # Do not exit
         res_dict['end_station'] = end_station
     return res_dict
