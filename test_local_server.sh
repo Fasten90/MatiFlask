@@ -6,4 +6,4 @@ if [ -z "${DB_PASSWORD}"]; then
 fi
 curl 127.0.0.1:5000/menetrend?jarat=3
 curl 127.0.0.1:5000/nyomtatas?megallo="Bolya"
-
+curl 127.0.0.1:5000/bus?line=0

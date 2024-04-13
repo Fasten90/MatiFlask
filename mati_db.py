@@ -312,10 +312,10 @@ def get_all_lines():
     return list(line_set)
 
 def get_line_info(line):
-    result = get_db(line)
+    result = get_db(jarat=line)
     res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás'}
     if result:
-        now = datetime.datetime.now().time
+        now = datetime.datetime.now()
         end_station = 'Végállomás'
         time_calculated = False
         for item in result:
