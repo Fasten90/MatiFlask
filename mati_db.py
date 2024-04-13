@@ -337,7 +337,7 @@ def get_line_info(line):
                 time_calculated = True
             # Do not exit
         res_dict['end_station'] = end_station
-    return result
+    return res_dict
 
 
 if __name__ == '__main__':
