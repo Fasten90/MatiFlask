@@ -279,7 +279,12 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         if db:
             result = get_db(jarat=jarat_this)
         this_station_has_found = False
+        this_station_index = 0
         html_result += '<td>'
+        # Station + Starting time tables
+        html_result += '<table>'
+        html_result += '<tr><td>'
+        # Station table
         html_result += '<table>'
         for item in result:
             station_found = item[5]
@@ -291,13 +296,36 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
                 if station_found == station:
                     # Here!
                     this_station_has_found = True
+                    this_station_index = result.index(item)
                     text_color = 'blue'
                 else:
                     # previous station
                     text_color = 'grey'
             html_result += f'<td><font color="{text_color}">{station_found}</font>'
             html_result += '</td></tr>'
-        html_result += '</table>'
+        html_result += '</table>'  # End of station table
+        html_result += '</td>'
+        html_result += '<td>\r\n'
+        html_result += '<table>'  # Menetrend table
+        # result = jarat db
+        if this_station_has_found:
+            item = result[this_station_index]
+            min_hour = item[1]
+            max_hour = item[2]
+            jaratsuruseg_minute = item[3]
+            start_minute = item[4]
+            for hour in range(min_hour, max_hour):
+                html_result += '<tr>'
+                html_result += f'<td>{hour}:</td>'
+                for minute in range (start_minute, 60, jaratsuruseg_minute):
+                    html_result += f'<td>{minute}</td>'
+                html_result += '</tr>\r\n'
+        else:
+            # Error
+            pass
+        html_result += '</table>\r\n'  # End of menetrend table
+        html_result += '</td></tr>'
+        html_result += '</table>\r\n'  # End of station + starting time table
         html_result += '</td>\r\n'
     html_result += '</tr>'
     html_result += '</table></body></html>\r\n'
