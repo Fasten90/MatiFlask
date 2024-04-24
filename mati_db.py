@@ -318,7 +318,7 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
                 html_result += '<tr>'
                 html_result += f'<td>{hour}:</td>'
                 for minute in range (start_minute, 60, jaratsuruseg_minute):
-                    html_result += f'<td>{minute:02d}</td>'
+                    html_result += f'<td>{minute:02d},</td>'
                 html_result += '</tr>\r\n'
         else:
             # Error
