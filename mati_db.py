@@ -341,12 +341,12 @@ def get_all_lines():
 
 def get_line_info(line):
     result = get_db(jarat=line)
-    res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás'}
+    res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás', 'next_bus_station': 'Következő állomás'}
     if result:
         now = datetime.datetime.now()
         end_station = 'Végállomás'
         last_start_minute = 0
-        time_calculated = False
+        time_calculated = 0
         for item in result:
             min_hour = item[1]
             max_hour = item[2]
@@ -356,6 +356,9 @@ def get_line_info(line):
             if last_start_minute < start_minute:
                 end_station = actual_bus_station  # Save this for end_station
                 last_start_minute = start_minute
+            if time_calculated == 1:
+                time_calculated += 1
+                res_dict['next_bus_station'] = item[5]
             if not time_calculated:
                 if now.hour in range(min_hour, max_hour):
                     # Proper hour
@@ -364,7 +367,7 @@ def get_line_info(line):
                             # Found!
                             res_dict['actual_bus_station'] = actual_bus_station
                             # Found end_station
-                            time_calculated = True
+                            time_calculated = 1
                             break
                 else:
                     res_dict['actual_bus_station'] = 'Ma már nem közlekedik'
