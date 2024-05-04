@@ -411,6 +411,7 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
                 end_station = station  # Set the end station
         # We have this line
         lines.append((jarat_item, first_station, end_station, jarat_type))
+        lines.append((jarat_item, end_station, first_station, jarat_type))
 
     html_result = '<html><body><table>'
     for jarat in lines:
