@@ -389,6 +389,8 @@ def get_line_info(line):  # For 'Bus app'
 
 
 def get_all_lines_html():  # For 'MatiBudapestGO'
+    """ Get all lines for MatiBudapestGO - HTML format """
+
     result = get_db()
     line_set = set()
     lines = []
@@ -416,7 +418,7 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         first_station = jarat[1]
         end_station = jarat[2]
         jarat_type = jarat[3]
-        text_color, background_color = get_color_by_jarmu_type(jarat_type)
+        text_color, background_color = get_color_by_jarmu_type(jarat_number, jarat_type)
         html_result += '<tr>'
         html_result += f'<td bgcolor="{background_color}">'
         html_result += f'<font color="{text_color}">{jarat_number}</font></td>'
