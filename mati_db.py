@@ -410,20 +410,18 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
                     jarat_type = item[6]
                 end_station = station  # Set the end station
         # We have this line
-        lines.append((jarat_item, first_station, end_station, jarat_type))
-        lines.append((jarat_item, end_station, first_station, jarat_type))
+        lines.append((jarat_item, first_station, jarat_type))
+        lines.append((jarat_item, end_station, jarat_type))
 
     html_result = '<html><body><table>'
     for jarat in lines:
         jarat_number = jarat[0]
-        first_station = jarat[1]
-        end_station = jarat[2]
-        jarat_type = jarat[3]
+        end_station = jarat[1]
+        jarat_type = jarat[2]
         text_color, background_color = get_color_by_jarmu_type(jarat_number, jarat_type)
         html_result += '<tr>'
         html_result += f'<td bgcolor="{background_color}">'
         html_result += f'<font color="{text_color}">{jarat_number}</font></td>'
-        html_result += f'<td>{first_station}</td>'
         html_result += f'<td>{end_station}</td>'
         html_result += '</tr>'
     html_result += '</table></body></html>'
