@@ -63,27 +63,36 @@ def precheck_menetrend(menetrend, get_all=False):
 
 def get_color_by_jarmu_type(jarat, jarat_type):
     """ Get color (text and background) by járat type """
-    if jarat_type == 'nappali':
+    if jarat_type == 'BUSZ':
         text_color = 'white'
         background_color = 'blue'
-    elif jarat_type == 'éjszakai':
+    elif jarat_type == 'ÉJSZAKAI':
         text_color = 'white'
         background_color = 'black'
-    elif jarat_type == 'villamos':
+    elif jarat_type.startswith('V'):  # villamos
         text_color = 'black'
         background_color = 'yellow'
-    elif jarat_type == 'metro':
+    elif jarat_type == 'VOLÁNBUSZ':
+        text_color = 'black'
+        background_color = 'orange'
+    elif jarat_type == 'M':     # metro
         text_color = 'black'
         if jarat == 'M1':
-            background_color = 'orange'
+            background_color = 'yellow'
         elif jarat == 'M2':
-            background_color = 'green'
+            background_color = 'red'
         elif jarat == 'M3':
-            background_color = 'red'
+            background_color = 'blue'
         elif jarat == 'M4':
-            background_color = 'red'
+            background_color = 'green'
         else:
             background_color = 'blue'
+    elif jarat_type == 'H':  # Hév
+        text_color = 'white'
+        background_color = 'green'
+    elif jarat_type == 'BUSZTROLI':  # Troli
+        text_color = 'white'
+        background_color = 'red'
     else:
         text_color = 'black'
         background_color = 'white'
@@ -159,7 +168,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             for item in result:
                 jarat_found = item[0]
                 station_found = item[5]
-                jarat_type = item[-2]
+                jarat_type = item[7]
                 arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
@@ -183,7 +192,7 @@ def get_menetrend(jarat=None, station=None, result=None):
         result = precheck_menetrend(result, get_all)
         for item in result:
             jarat = item[0]
-            jarat_type = item[-1]
+            jarat_type = item[7]
             text_color, background_color = get_color_by_jarmu_type(jarat, jarat_type)
             html_result += '<tr>'
             html_result += f'<td bgcolor="{background_color}">'
