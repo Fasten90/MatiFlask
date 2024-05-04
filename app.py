@@ -86,6 +86,11 @@ def get_menetrend():
     return mati_db.get_menetrend_wrap(jarat, station, limit)
 
 
+@app.route('/all_lines', methods=['GET'])
+def get_menetrend():
+    return mati_db.get_all_lines_html()
+
+
 @app.route('/nyomtatas', methods=['GET'])
 def get_menetrend_nyomtatas():
     if request.method == 'GET':

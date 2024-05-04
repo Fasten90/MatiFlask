@@ -341,14 +341,15 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     return html_result
 
 
-def get_all_lines():
+def get_all_lines():  # For 'Bus app'
     result = get_db()
     line_set = set()
     for item in result:
         line_set.add(item[0])
     return {'lines': list(line_set) }
 
-def get_line_info(line):
+
+def get_line_info(line):  # For 'Bus app'
     result = get_db(jarat=line)
     res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás', 'next_bus_station': 'Következő állomás'}
     if result:
@@ -385,6 +386,45 @@ def get_line_info(line):
                 res_dict['actual_bus_station'] = 'Most épp nem jár, a végállomáson vár'
         res_dict['end_station'] = end_station
     return res_dict
+
+
+def get_all_lines_html():  # For 'MatiBudapestGO'
+    result = get_db()
+    line_set = set()
+    lines = []
+    for item in result:
+        line_set.add(item[0])
+    for jarat_item in line_set:
+        # Find in all items
+        first_station = None
+        end_station = None
+        for item in result:
+            jarat = item[0]
+            if jarat_item == jarat:
+                # Get the first element
+                station = item[5]
+                if not first_station:
+                    first_station = station
+                    jarat_type = item[6]
+                end_station = station  # Set the end station
+        # We have this line
+        lines.append((jarat_item, first_station, end_station, jarat_type))
+
+    html_result = '<html><body><table>'
+    for jarat in lines:
+        jarat_number = jarat[0]
+        first_station = jarat[1]
+        end_station = jarat[2]
+        jarat_type = jarat[3]
+        text_color, background_color = get_color_by_jarmu_type(jarat_type)
+        html_result += '<tr>'
+        html_result += f'<td bgcolor="{background_color}">'
+        html_result += f'<font color="{text_color}">{jarat_number}</font></td>'
+        html_result += f'<td>{first_station}</td>'
+        html_result += f'<td>{end_station}</td>'
+        html_result += '</tr>'
+    html_result += '</table></body></html>'
+    return lines
 
 
 if __name__ == '__main__':
