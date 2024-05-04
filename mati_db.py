@@ -426,7 +426,7 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         html_result += f'<td>{end_station}</td>'
         html_result += '</tr>'
     html_result += '</table></body></html>'
-    return lines
+    return html_result
 
 
 if __name__ == '__main__':
