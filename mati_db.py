@@ -69,12 +69,12 @@ def get_color_by_jarmu_type(jarat, jarat_type):
     elif jarat_type == 'ÉJSZAKAI':
         text_color = 'white'
         background_color = 'black'
+    elif jarat_type == 'VOLÁNBUSZ':  # Shall be before the villamos (V)
+        text_color = 'black'
+        background_color = 'orange'
     elif jarat_type.startswith('V'):  # villamos
         text_color = 'black'
         background_color = 'yellow'
-    elif jarat_type == 'VOLÁNBUSZ':
-        text_color = 'black'
-        background_color = 'orange'
     elif jarat_type == 'M':     # metro
         text_color = 'black'
         if jarat == 'M1':
