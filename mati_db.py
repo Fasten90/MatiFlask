@@ -168,7 +168,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             for item in result:
                 jarat_found = item[0]
                 station_found = item[5]
-                jarat_type = item[7]
+                jarat_type = item[6]
                 arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
@@ -192,7 +192,7 @@ def get_menetrend(jarat=None, station=None, result=None):
         result = precheck_menetrend(result, get_all)
         for item in result:
             jarat = item[0]
-            jarat_type = item[7]
+            jarat_type = item[6]
             text_color, background_color = get_color_by_jarmu_type(jarat, jarat_type)
             html_result += '<tr>'
             html_result += f'<td bgcolor="{background_color}">'
