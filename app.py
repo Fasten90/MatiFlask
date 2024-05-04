@@ -87,7 +87,7 @@ def get_menetrend():
 
 
 @app.route('/all_lines', methods=['GET'])
-def get_menetrend():
+def get_all_lines():
     return mati_db.get_all_lines_html()
 
 
