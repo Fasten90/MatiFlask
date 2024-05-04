@@ -23,8 +23,15 @@ def get_next_arrive(menetrend):
         and return with how many minutes are remained """
     now = datetime.datetime.now()
     actual_minute = now.minute
+    actual_hour = now.hour
+    min_hour = menetrend[1]
+    max_hour = menetrend[2]
     idokoz = menetrend[3]
-    arrive_minute = menetrend[4]
+    arrive_minute = menetrend[4]  # start_minute
+    if min_hour < max_hour:
+        while min_hour > actual_hour:
+            arrive_minute += 60  # hour = 60minutes
+            actual_hour += 1  # Check next "actual (fake)" hour
     while arrive_minute < actual_minute:
         arrive_minute += idokoz
     remained_minute = arrive_minute - actual_minute
