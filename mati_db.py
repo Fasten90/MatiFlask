@@ -158,7 +158,7 @@ def get_menetrend(jarat=None, station=None, result=None):
     now = datetime.datetime.now()
     if station:
         if result:
-            result = precheck_menetrend(result)
+            #result = precheck_menetrend(result)
             result = update_menetrend_with_arrive_minutes(result)
             result = extend_get_next_menetrends(result)
             result = sorted(result, key=order_of_arrive)
