@@ -431,8 +431,8 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         html_result += '<td>'
         # Inner table
         html_result += '<table>'
-        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font>  {first_station}</td></tr>\n'
-        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font>  {end_station}</td></tr>\n'
+        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font></td><td>{first_station}</td></tr>\n'
+        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font></td><td>{end_station}</td></tr>\n'
         html_result += '</table>\n'
         #
         html_result += '</td>'
