@@ -417,21 +417,27 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
                     jarat_type = item[6]
                 end_station = station  # Set the end station
         # We have this line
-        lines.append((jarat_item, first_station, jarat_type))
-        lines.append((jarat_item, end_station, jarat_type))
+        lines.append((jarat_item, first_station, end_station, jarat_type))
 
-    html_result = '<html><body><table>'
+    html_result = '<html><body><table>\n'
     for jarat in lines:
+        # Create 2 lines, with first station and with end station
         jarat_number = jarat[0]
-        end_station = jarat[1]
-        jarat_type = jarat[2]
+        first_station = jarat[1]
+        end_station = jarat[2]
+        jarat_type = jarat[3]
         text_color, background_color = get_color_by_jarmu_type(jarat_number, jarat_type)
         html_result += '<tr>'
-        html_result += f'<td bgcolor="{background_color}">'
-        html_result += f'<font color="{text_color}">{jarat_number}</font></td>'
-        html_result += f'<td>{end_station}</td>'
-        html_result += '</tr>'
-    html_result += '</table></body></html>'
+        html_result += '<td>'
+        # Inner table
+        html_result += '<table>'
+        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font>  {first_station}</td></tr>\n'
+        html_result += f'<tr><td bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font>  {end_station}</td></tr>\n'
+        html_result += '</table>\n'
+        #
+        html_result += '</td>'
+        html_result += '</tr>\n'
+    html_result += '</table></body></html>\n'
     return html_result
 
 
