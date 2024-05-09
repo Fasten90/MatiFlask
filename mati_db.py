@@ -292,9 +292,11 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     html_result += '<tr>'
     for cnt, item in enumerate(list(jarat_map)):
         jarat_this = item
-        if need_to_break and need_to_break > cnt:
+        if need_to_break and need_to_break < cnt:
+            # Second parts
             break_header += f'<td><font size="24">{jarat_this}</font></td>'
         else:
+            # if not needed to break + first some
             html_result += f'<td><font size="24">{jarat_this}</font></td>'
     html_result += '</tr>\r\n'
 
