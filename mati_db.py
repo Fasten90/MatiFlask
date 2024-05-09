@@ -285,13 +285,17 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     html_result += '<tr><td><font size="24">Megálló</font></td>'
     html_result += f'<td><font size="24">{station_found}</font></td></tr>\r\n'
     jarat_map = set()
-    for item in result:
+    break_header = ''
+    for  item in result:
         jarat_found = item[0]
         jarat_map.add(jarat_found)
     html_result += '<tr>'
-    for item in jarat_map:
+    for cnt, item in enumerate(jarat_map):
         jarat_this = item
-        html_result += f'<td><font size="24">{jarat_this}</font></td>'
+        if need_to_break and need_to_break >= cnt:
+            break_header += f'<td><font size="24">{jarat_this}</font></td>'
+        else:
+            html_result += f'<td><font size="24">{jarat_this}</font></td>'
     html_result += '</tr>\r\n'
 
     html_result += '<tr>'  # This shall be closed when we have too much lines
@@ -302,6 +306,9 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         this_station_index = 0
         if need_to_break and need_to_break == cnt:
             html_result += '</tr>'  # Closed because the too much lines
+            html_result += '<tr>'  # Another lines header
+            html_result += need_to_break
+            html_result += '</tr>'
             html_result += '<tr>'
         html_result += '<td>'
         # Station + Starting time tables
