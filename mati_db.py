@@ -307,7 +307,7 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         if need_to_break and need_to_break == cnt:
             html_result += '</tr>'  # Closed because the too much lines
             html_result += '<tr>'  # Another lines header
-            html_result += need_to_break
+            html_result += break_header
             html_result += '</tr>'
             html_result += '<tr>'
         html_result += '<td>'
