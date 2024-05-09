@@ -2,7 +2,7 @@
 
 import os
 import datetime
-
+import math
 import mysql.connector
 
 
@@ -275,6 +275,10 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     else:
         pass
         # Use parameter 'result'
+    need_to_break = False
+    if len(result) >= 8:
+        need_to_break = math.floor(len(result)/2 + 0.5)
+
     html_result = ''
     station_found = result[0][5]
     html_result += '<html><body><table cellpadding="10" border="3">'
@@ -290,12 +294,15 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         html_result += f'<td><font size="24">{jarat_this}</font></td>'
     html_result += '</tr>\r\n'
 
-    html_result += '<tr>'
-    for jarat_this in jarat_map:
+    html_result += '<tr>'  # This shall be closed when we have too much lines
+    for cnt, jarat_this in enumerate(jarat_map):
         if db:
             result = get_db(jarat=jarat_this)
         this_station_has_found = False
         this_station_index = 0
+        if need_to_break and need_to_break == cnt:
+            html_result += '</tr>'  # Closed because the too much lines
+            html_result += '<tr>'
         html_result += '<td>'
         # Station + Starting time tables
         html_result += '<table>'
