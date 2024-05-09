@@ -277,7 +277,7 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
         # Use parameter 'result'
     need_to_break = False
     if len(result) >= 8:
-        need_to_break = math.floor(len(result)/2 + 0.5)
+        need_to_break = math.floor(len(result)/2)
 
     html_result = ''
     station_found = result[0][5]
@@ -292,7 +292,7 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     html_result += '<tr>'
     for cnt, item in enumerate(list(jarat_map)):
         jarat_this = item
-        if need_to_break and need_to_break < cnt:
+        if need_to_break and need_to_break <= cnt:
             # Second parts
             break_header += f'<td><font size="24">{jarat_this}</font></td>'
         else:
