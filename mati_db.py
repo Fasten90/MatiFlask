@@ -58,7 +58,7 @@ def get_next_arrive(menetrend):
                     remained_minute = (60 - actual_minute) + (arrive_hour - actual_hour) + arrive_minute
                 break
             else:
-                # less, calculate the next arrive!
+                # less minute then the actual, calculate the next arrive!
                 pass
     else:
         # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
@@ -477,6 +477,20 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         html_result += '</td>'
         html_result += '</tr>\n'
     html_result += '</table></body></html>\n'
+    return html_result
+
+
+def get_all_nyomtatas_link():
+    result = get_db()
+    station_set = set()
+    for item in result:
+        station = item[5]
+        station_set.add(station)
+
+    html_result = '<html><table>\n'
+    for station in list(station_set):
+        html_result += f'<tr><td><a href="https://mati.e5tv.hu/nyomtatas?megallo="{station}>{station}</a></td></tr>\n'
+    html_result = '</table></html>\n'
     return html_result
 
 

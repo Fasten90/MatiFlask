@@ -104,6 +104,11 @@ def get_menetrend_nyomtatas():
     return result
 
 
+@app.route('/get_all_nyomtatas', methods=['GET'])
+def get_all_nyomtatas():
+    return mati_db.get_all_nyomtatas_link()
+
+
 @app.route('/bus', methods=['GET'])
 def get_menetrend_bus():
     if request.method == 'GET':
