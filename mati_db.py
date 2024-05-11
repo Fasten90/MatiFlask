@@ -26,15 +26,45 @@ def get_next_arrive(menetrend):
     actual_hour = now.hour
     min_hour = menetrend[1]
     max_hour = menetrend[2]
-    idokoz = menetrend[3]
+    jaratsuruseg = menetrend[3]
     arrive_minute = menetrend[4]  # start_minute
-    if min_hour < max_hour:
-        while min_hour > actual_hour:
+    start_minute = menetrend[4]
+    if min_hour < max_hour:  # Normal line
+        while actual_hour < min_hour:
             arrive_minute += 60  # hour = 60minutes
             actual_hour += 1  # Check next "actual (fake)" hour
-    while arrive_minute < actual_minute:
-        arrive_minute += idokoz
-    remained_minute = arrive_minute - actual_minute
+    if jaratsuruseg >= 60:
+        #    arrive_minute
+        delta_hour = math.floor(jaratsuruseg / 60)
+        remained_minute = jaratsuruseg - (delta_hour * 60)
+        arrive_hour = min_hour
+        # arrive_minute = start_minute (menetrend[4])
+        is_ok = False
+        while not is_ok:
+            while arrive_hour < actual_hour:
+                arrive_hour += delta_hour
+            arrive_minute += remained_minute
+            # Check, if it is after the max_hour...
+            if arrive_hour > max_hour:
+                # It is after the job, exit!
+                return None
+            if arrive_hour > actual_hour or arrive_minute > actual_minute:
+                # Arrive in the next hours or in this hour, but late minute
+                # It is good!
+                is_ok = True
+                if arrive_hour == actual_hour:
+                    remained_minute = arrive_minute - actual_minute
+                else:
+                    remained_minute = (60 - actual_minute) + (arrive_hour - actual_hour) + arrive_minute
+                break
+            else:
+                # less, calculate the next arrive!
+                pass
+    else:
+        # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
+        while arrive_minute < actual_minute:  # If it went, calculate the next
+            arrive_minute += jaratsuruseg
+        remained_minute = arrive_minute - actual_minute
     return remained_minute
 
 
@@ -46,25 +76,16 @@ def precheck_menetrend(menetrend, get_all=False):
     for item in menetrend:
         min_hour = item[1]
         max_hour = item[2]
-        jarat = item[0]
         if min_hour < max_hour:
-            # Nappali járat
+            # Nappali járat - most jár éppen
             if min_hour < actual_hour < max_hour or get_all:
-                if 'm' in jarat.lower():
-                    item = item + ('metro',)
-                elif jarat.startswith('2') and len(jarat) >= 2:
-                    item = item + ('villamos',)
-                else:
-                    item = item + ('nappali',)
                 new_menetrend.append(item)
         elif min_hour > max_hour:
+            # Éjszakai járat
             if min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour or get_all:
-                # Éjszakai járat
-                if 'm' not in jarat.lower():
-                    item = item + ('éjszakai',)
-                    new_menetrend.append(item)
+                new_menetrend.append(item)
         else:
-            pass
+            new_menetrend.append(item)
     return new_menetrend
 
 
@@ -110,7 +131,7 @@ def update_menetrend_with_arrive_minutes(result):
     """ Add new column with arrive minute """
     new_result = []
     for item in result:
-        new_item = item + (get_next_arrive(item),)
+        new_item = item + (get_next_arrive(item),)  # Add arrive_minute to last field/column
         new_result.append(new_item)
     return new_result
 
@@ -119,12 +140,14 @@ def extend_get_next_menetrends(result):
     """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
+        jaratsuruseg = item[3]
         new_result.append(item)
         for index in range(1, 28):
             #now = datetime.now().time.minute
             # Last element is the 'arriving minute'
-            new_arrive_minute = item[-1] + index * item[3]  # last arrive + n * járatsűrűség
-            modified_item = item[:-1] + (new_arrive_minute, )
+            # item[-1] = arrive minute!
+            new_arrive_minute = item[-1] + index * jaratsuruseg  # last arrive + n * járatsűrűség
+            modified_item = item[:-1] + (new_arrive_minute, )  # Add a new item with updated arrive minute
             new_result.append(modified_item)
     return new_result
 
@@ -134,7 +157,7 @@ def order_of_arrive(menetrend):
     return menetrend[-1]
 
 
-def update_late_menetrends(menetrend):
+def update_late_arrive_time_to_clock(menetrend):
     """ Update arrive minutes to real time """
     new_menetrend = []
     time = datetime.datetime.now()
@@ -169,7 +192,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             result = update_menetrend_with_arrive_minutes(result)
             result = extend_get_next_menetrends(result)
             result = sorted(result, key=order_of_arrive)
-            result = update_late_menetrends(result)
+            result = update_late_arrive_time_to_clock(result)
             html_result += '<table>'
             html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\r\n'
             for item in result:
