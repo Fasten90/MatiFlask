@@ -490,7 +490,7 @@ def get_all_nyomtatas_link():
     html_result = '<html><table>\n'
     for station in list(station_set):
         html_result += f'<tr><td><a href="https://mati.e5tv.hu/nyomtatas?megallo="{station}>{station}</a></td></tr>\n'
-    html_result = '</table></html>\n'
+    html_result += '</table></html>\n'
     return html_result
 
 
