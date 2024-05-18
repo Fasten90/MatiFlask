@@ -292,7 +292,8 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
-def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
+def get_menetrend_nyomtatas(station="valami", db=True, result=None):
+    """ Menetrend for one station """
     if db:
         result = get_db(station=station)
     else:
@@ -309,18 +310,25 @@ def get_menetrend_nyomtatas(jarat=None, station="valami", db=True, result=None):
     html_result += f'<td><font size="24">{station_found}</font></td></tr>\r\n'
     jarat_map = set()
     break_header = ''
+    jarat_types = {}
     for  item in result:
         jarat_found = item[0]
         jarat_map.add(jarat_found)
+        if jarat_found not in jarat_types:
+            jarat_type = item[6]
+            jarat_types[jarat_found] = jarat_type
     html_result += '<tr>'
     for cnt, item in enumerate(list(jarat_map)):
         jarat_this = item
+        jarat_type = jarat_types[jarat_this]
+        text_color, background_color = get_color_by_jarmu_type(jarat_this, jarat_type)
+        jarat_html = f'<td bgcolor="{background_color}"><font size="24" color="{text_color}">{jarat_this}</font></td>'
         if need_to_break and need_to_break <= cnt:
             # Second parts
-            break_header += f'<td><font size="24">{jarat_this}</font></td>'
+            break_header += jarat_html
         else:
             # if not needed to break + first some
-            html_result += f'<td><font size="24">{jarat_this}</font></td>'
+            html_result += jarat_html
     html_result += '</tr>\r\n'
 
     html_result += '<tr>'  # This shall be closed when we have too much lines
@@ -507,5 +515,5 @@ if __name__ == '__main__':
     print(res)
     #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
     #print(res)
-    res = get_menetrend_nyomtatas(jarat=None, station="Bolya utca", db=False, result=sql_fake_result)
+    res = get_menetrend_nyomtatas(station="Bolya utca", db=False, result=sql_fake_result)
     print(res)
