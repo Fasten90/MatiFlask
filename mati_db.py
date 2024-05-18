@@ -121,6 +121,9 @@ def get_color_by_jarmu_type(jarat, jarat_type):
     elif jarat_type == 'BUSZTROLI':  # Troli
         text_color = 'white'
         background_color = 'red'
+    elif jarat_type == 'DHAJO':  # Hajó / ship
+        text_color = 'black'
+        background_color = 'pink'
     else:
         text_color = 'black'
         background_color = 'white'
