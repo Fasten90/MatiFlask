@@ -118,6 +118,14 @@ def get_color_by_jarmu_type(jarat, jarat_type):
     elif jarat_type == 'H':  # Hév
         text_color = 'white'
         background_color = 'green'
+        if jarat == 'H5':
+            background_color = 'purple'  # Lila
+        elif jarat == 'H6':
+            background_color = 'brown'
+        elif jarat == 'H7':
+            background_color = 'orange'
+        elif jarat == 'H8':
+            background_color = 'DeepPink'
     elif jarat_type == 'BUSZTROLI':  # Troli
         text_color = 'white'
         background_color = 'red'
