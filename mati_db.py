@@ -18,6 +18,53 @@ def database_connection():
     return mydb
 
 
+def get_db(jarat=None, station=None, limit=100):
+    result = []
+
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    print('Connected to MySQL')
+
+    if jarat and station:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        WHERE `jarat`='{}' AND `station` LIKE'%{}%'
+        """.format(jarat, station)
+    elif jarat:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        WHERE `jarat`='{}'
+        """.format(jarat)
+    elif station:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        WHERE `station` LIKE'%{}%'
+        """.format(station)
+    else:
+        sql = """
+        SELECT *
+        FROM mati_menetrend
+        """
+
+    print('Execute SQL command: ' + sql)
+    try:
+        mycursor.execute(sql, {'limit': limit})
+        result = mycursor.fetchall()
+        column_headers = mycursor.column_names  # TODO: Use
+    except Exception as ex:  # pylint: disable=broad-exception-caught
+        result = [str(ex)]
+    mydb.close()
+
+    # Debug code
+    print(result)
+    return result
+
+
 def get_next_arrive(menetrend):
     """ Calculate the arrive minutes, and check the next,
         and return with how many minutes are remained """
@@ -248,53 +295,6 @@ def get_menetrend(jarat=None, station=None, result=None):
     html_result += f'{now.hour:02}:{now.minute:02}'
 
     return html_result
-
-
-def get_db(jarat=None, station=None, limit=100):
-    result = []
-
-    mydb = database_connection()
-
-    mycursor = mydb.cursor()
-
-    print('Connected to MySQL')
-
-    if jarat and station:
-        sql = """
-        SELECT *
-        FROM mati_menetrend
-        WHERE `jarat`='{}' AND `station` LIKE'%{}%'
-        """.format(jarat, station)
-    elif jarat:
-        sql = """
-        SELECT *
-        FROM mati_menetrend
-        WHERE `jarat`='{}'
-        """.format(jarat)
-    elif station:
-        sql = """
-        SELECT *
-        FROM mati_menetrend
-        WHERE `station` LIKE'%{}%'
-        """.format(station)
-    else:
-        sql = """
-        SELECT *
-        FROM mati_menetrend
-        """
-
-    print('Execute SQL command: ' + sql)
-    try:
-        mycursor.execute(sql, {'limit': limit})
-        result = mycursor.fetchall()
-        column_headers = mycursor.column_names  # TODO: Use
-    except Exception as ex:  # pylint: disable=broad-exception-caught
-        result = [str(ex)]
-    mydb.close()
-
-    # Debug code
-    print(result)
-    return result
 
 
 def get_menetrend_wrap(jarat=None, station=None, limit=100):
