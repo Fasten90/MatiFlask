@@ -232,7 +232,14 @@ def update_late_arrive_time_to_clock(menetrend):
         arrive_minute = item['arrive_minute']
         max_hour = item['max_hour']
         min_hour = item['min_hour']
-        if arrive_minute > 60:
+        if isinstance(arrive_minute, str) and ':' in arrive_minute:
+            arrive_time = datetime.datetime.strptime(arrive_minute, '%H:%M')
+            if min_hour < arrive_time.hour < max_hour:
+                # It is OK
+                new_item = item
+            else:
+                continue
+        elif arrive_minute > 60:
             delta = datetime.timedelta(minutes=arrive_minute)
             arrive_time = time + delta
             if arrive_time.hour >= max_hour:
@@ -530,12 +537,43 @@ if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
     # Test menetrend with fake result
-    sql_fake_result = [('6', 8, 22, 50, 0, 'Blaha Lujza tér')]
+    #sql_fake_result = [('6', 8, 22, 50, 0, 'Blaha Lujza tér')]
+
+    import csv
+    sql_fake_result = []
+    with open('test_db.csv', newline='', encoding='utf-8') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
+        header_done = False
+        for row in spamreader:
+            if not header_done:
+                header_done = row
+            else:
+                new_dict = {}
+                for index, item in enumerate(row):
+                    field_name = header_done[index]
+                    new_dict[field_name] = item
+                sql_fake_result.append(new_dict)
+    # Beautify
+    for item in sql_fake_result:
+        # jarat;min_hour;max_hour;jaratsuruseg_minute;start_minute;station;jarat_tipus;jaratsuruseg_hetvege;varos
+        int_values = ['min_hour', 'max_hour', 'jaratsuruseg_minute', 'start_minute', 'jaratsuruseg_hetvege']
+        for key, val in item.items():
+            if val == '"0"':
+                item[key] = 0
+            elif val == '':
+                item[key] = None
+            elif key in int_values:
+                item[key] = int(val)
+
     #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
     #print(res)
-    res = get_menetrend(jarat=None, station='Teszt', result=sql_fake_result)
+    res = get_menetrend(jarat=None, station='Teszt1', result=sql_fake_result)
     print(res)
     #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
     #print(res)
-    res = get_menetrend_nyomtatas(station="Bolya utca", db=False, result=sql_fake_result)
-    print(res)
+
+    test_nyomtatas = False
+    if test_nyomtatas:
+        res = get_menetrend_nyomtatas(station="Bolya utca", db=False, result=sql_fake_result)
+        print(res)
+
