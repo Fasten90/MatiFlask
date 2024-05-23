@@ -19,6 +19,8 @@ def database_connection():
 
 
 def get_db(jarat=None, station=None, limit=100):
+    """ Get lines (jarat) or station (megallo) from DB """
+
     result = []
 
     mydb = database_connection()
@@ -28,23 +30,23 @@ def get_db(jarat=None, station=None, limit=100):
     print('Connected to MySQL')
 
     if jarat and station:
-        sql = """
+        sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{}' AND `station` LIKE'%{}%'
-        """.format(jarat, station)
+        WHERE `jarat`='{jarat}' AND `station` LIKE'%{station}%'
+        """
     elif jarat:
-        sql = """
+        sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{}'
-        """.format(jarat)
+        WHERE `jarat`='{jarat}'
+        """
     elif station:
-        sql = """
+        sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `station` LIKE'%{}%'
-        """.format(station)
+        WHERE `station` LIKE'%{station}%'
+        """
     else:
         sql = """
         SELECT *
@@ -55,8 +57,8 @@ def get_db(jarat=None, station=None, limit=100):
     try:
         mycursor.execute(sql, {'limit': limit})
         result = mycursor.fetchall()
-        column_headers = mycursor.column_names  # TODO: Use
-    except Exception as ex:  # pylint: disable=broad-exception-caught
+        column_headers = mycursor.column_names
+    except Exception as ex:  # pylint: disable=broad-except
         result = [str(ex)]
     else:
         # Move content into directory
@@ -112,7 +114,7 @@ def get_next_arrive(menetrend):
                 else:
                     remained_minute = (60 - actual_minute) + (arrive_hour - actual_hour) + arrive_minute
                 break
-            else:
+            else:  # pylint: disable=no-else-break
                 # less minute then the actual, calculate the next arrive!
                 pass
     else:
@@ -144,7 +146,7 @@ def precheck_menetrend(menetrend, get_all=False):
     return new_menetrend
 
 
-def get_color_by_jarmu_type(jarat, jarat_type):
+def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-branches
     """ Get color (text and background) by járat type """
     if jarat_type == 'BUSZ':
         text_color = 'white'
@@ -302,10 +304,10 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '<tr>'
             html_result += f'<td bgcolor="{background_color}">'
             html_result += f'<font color="{text_color}">{jarat}</font></td>'
-            html_result += '<td>{:02}:{:02}</td>'.format(item['min_hour'], item['start_minute'])  # Hour, Minute
-            html_result += '<td>{max_hour:02}:00</td>'.format(max_hour=item['max_hour'])
-            html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item['jaratsuruseg_minute'])
-            html_result += '<td>{megallo}</td>'.format(megallo=item['station'])
+            html_result += f'<td>{item["min_hour"]:02}:{item["start_minute"]:02}</td>' # Hour, Minute
+            html_result += f'<td>{item["max_hour"]:02}:00</td>'
+            html_result += f'<td>{item["jaratsuruseg_minute"]} perc</td>'
+            html_result += f'<td>{item["station"]}</td>'
             html_result += '</tr>\r\n'
         html_result += '</table>\r\n'
 
@@ -316,13 +318,13 @@ def get_menetrend(jarat=None, station=None, result=None):
 
 def get_menetrend_wrap(jarat=None, station=None, limit=100):
     """ Get menetrend with járat or megálló """
-    result = get_db(jarat, station)
+    result = get_db(jarat, station, limit)
     return get_menetrend(jarat, station, result)
 
 
-def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
+def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # pylint: disable=too-many-locals disable=too-many-branches disable=too-many-statements
     """ Menetrend for one station """
-    if db:
+    if database:
         result = get_db(station=station)
     else:
         pass
@@ -341,10 +343,10 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
     jarat_types = {}
     for item in result:
         assert isinstance(item, dict)
-        jarat_found = item['jarat']
+        jarat_found = item['jarat']  # pylint: disable=invalid-sequence-index
         jarat_map.add(jarat_found)
         if jarat_found not in jarat_types:
-            jarat_type = item['jarat_tipus']
+            jarat_type = item['jarat_tipus']  # pylint: disable=invalid-sequence-index
             jarat_types[jarat_found] = jarat_type
     html_result += '<tr>'
     for cnt, item in enumerate(list(jarat_map)):
@@ -362,7 +364,7 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
 
     html_result += '<tr>'  # This shall be closed when we have too much lines
     for cnt, jarat_this in enumerate(jarat_map):
-        if db:
+        if database:
             result = get_db(jarat=jarat_this)
         this_station_has_found = False
         this_station_index = 0
@@ -379,7 +381,7 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
         # Station table
         html_result += '<table>'
         for item in result:
-            station_found = item['station']
+            station_found = item['station']  # pylint: disable=invalid-sequence-index
             html_result += '<tr><td>'
             if this_station_has_found:
                 # New stations
@@ -425,38 +427,40 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
 
 
 def get_all_lines():  # For 'Bus app'
+    """ Get all lines for Bus app. Useful for selecting a line (where you get on) """
     result = get_db()
     line_set = set()
     for item in result:
-        line_set.add(item['jarat'])
+        line_set.add(item['jarat'])  # pylint: disable=invalid-sequence-index
     return {'lines': list(line_set) }
 
 
 def get_line_info(line):  # For 'Bus app'
+    """ Get a fix line information for the Bus application """
     result = get_db(jarat=line)
     res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás', 'next_bus_station': 'Következő állomás'}
-    if result:
+    if result:  # pylint: disable=too-many-nested-blocks
         now = datetime.datetime.now()
         end_station = 'Végállomás'
         last_start_minute = 0
         time_calculated = 0
         for item in result:
-            min_hour = item['min_hour']
-            max_hour = item['max_hour']
-            jaratsuruseg = item['jaratsuruseg_minute']
-            start_minute = item['start_minute']
-            actual_bus_station = item['station']
+            min_hour = item['min_hour']  # pylint: disable=invalid-sequence-index
+            max_hour = item['max_hour']  # pylint: disable=invalid-sequence-index
+            jaratsuruseg = item['jaratsuruseg_minute']  # pylint: disable=invalid-sequence-index
+            start_minute = item['start_minute']  # pylint: disable=invalid-sequence-index
+            actual_bus_station = item['station']  # pylint: disable=invalid-sequence-index
             if last_start_minute < start_minute:
                 end_station = actual_bus_station  # Save this for end_station
                 last_start_minute = start_minute
             if time_calculated == 1:
                 time_calculated += 1
-                res_dict['next_bus_station'] = item['station']
+                res_dict['next_bus_station'] = item['station']  # pylint: disable=invalid-sequence-index
             if not time_calculated:
                 if now.hour in range(min_hour, max_hour):
                     # Proper hour
-                    for min in range(start_minute, 59, jaratsuruseg):
-                        if now.minute == min:
+                    for minute in range(start_minute, 59, jaratsuruseg):
+                        if now.minute == minute:
                             # Found!
                             res_dict['actual_bus_station'] = actual_bus_station
                             # Found end_station
@@ -478,19 +482,19 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
     line_set = set()
     lines = []
     for item in result:
-        line_set.add(item['jarat'])
+        line_set.add(item['jarat'])  # pylint: disable=invalid-sequence-index
     for jarat_item in line_set:
         # Find in all items
         first_station = None
         end_station = None
         for item in result:
-            jarat = item['jarat']
+            jarat = item['jarat']  # pylint: disable=invalid-sequence-index
             if jarat_item == jarat:
                 # Get the first element
-                station = item['station']
+                station = item['station']  # pylint: disable=invalid-sequence-index
                 if not first_station:
                     first_station = station
-                    jarat_type = item['jarat_tipus']
+                    jarat_type = item['jarat_tipus']  # pylint: disable=invalid-sequence-index
                 end_station = station  # Set the end station
         # We have this line
         lines.append((jarat_item, first_station, end_station, jarat_type))
@@ -518,10 +522,11 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
 
 
 def get_all_nyomtatas_link():
+    """ Get all links for the stations, which can be printed """
     result = get_db()
     station_set = set()
     for item in result:
-        station = item['station']
+        station = item['station']   # pylint: disable=invalid-sequence-index
         station_set.add(station)
 
     html_result = '<html><table>\n'
@@ -543,14 +548,14 @@ if __name__ == '__main__':
     sql_fake_result = []
     with open('test_db.csv', newline='', encoding='utf-8') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
-        header_done = False
+        header_done = False  # pylint: disable=invalid-name
         for row in spamreader:
             if not header_done:
                 header_done = row
             else:
                 new_dict = {}
                 for index, item in enumerate(row):
-                    field_name = header_done[index]
+                    field_name = header_done[index]  # pylint: disable=unsubscriptable-object
                     new_dict[field_name] = item
                 sql_fake_result.append(new_dict)
     # Beautify
@@ -572,8 +577,7 @@ if __name__ == '__main__':
     #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
     #print(res)
 
-    test_nyomtatas = False
-    if test_nyomtatas:
-        res = get_menetrend_nyomtatas(station="Bolya utca", db=False, result=sql_fake_result)
+    TEST_NYOMTATAS = False
+    if TEST_NYOMTATAS:
+        res = get_menetrend_nyomtatas(station="Bolya utca", database=False, result=sql_fake_result)
         print(res)
-
