@@ -58,6 +58,15 @@ def get_db(jarat=None, station=None, limit=100):
         column_headers = mycursor.column_names  # TODO: Use
     except Exception as ex:  # pylint: disable=broad-exception-caught
         result = [str(ex)]
+    else:
+        # Move content into directory
+        results_with_dict = []
+        for item in result:
+            new_item = {}
+            for index, column in enumerate(column_headers):
+                new_item[column] = item[index]
+            results_with_dict.append(new_item)
+        result = results_with_dict
     mydb.close()
 
     # Debug code
@@ -71,11 +80,10 @@ def get_next_arrive(menetrend):
     now = datetime.datetime.now()
     actual_minute = now.minute
     actual_hour = now.hour
-    min_hour = menetrend[1]
-    max_hour = menetrend[2]
-    jaratsuruseg = menetrend[3]
-    arrive_minute = menetrend[4]  # start_minute
-    start_minute = menetrend[4]
+    min_hour = menetrend['min_hour']
+    max_hour = menetrend['max_hour']
+    jaratsuruseg = menetrend['jaratsuruseg_minute']
+    arrive_minute = menetrend['start_minute']
     if min_hour < max_hour:  # Normal line
         while actual_hour < min_hour:
             arrive_minute += 60  # hour = 60minutes
@@ -85,7 +93,7 @@ def get_next_arrive(menetrend):
         delta_hour = math.floor(jaratsuruseg / 60)
         remained_minute = jaratsuruseg - (delta_hour * 60)
         arrive_hour = min_hour
-        # arrive_minute = start_minute (menetrend[4])
+        # arrive_minute = start_minute (menetrend['start_minute'])
         is_ok = False
         while not is_ok:
             while arrive_hour < actual_hour:
@@ -121,8 +129,8 @@ def precheck_menetrend(menetrend, get_all=False):
     now = datetime.datetime.now()
     actual_hour = now.hour
     for item in menetrend:
-        min_hour = item[1]
-        max_hour = item[2]
+        min_hour = item['min_hour']
+        max_hour = item['max_hour']
         if min_hour < max_hour:
             # Nappali járat - most jár éppen
             if min_hour < actual_hour < max_hour or get_all:
@@ -198,7 +206,7 @@ def extend_get_next_menetrends(result):
     """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
-        jaratsuruseg = item[3]
+        jaratsuruseg = item['jaratsuruseg_minute']
         new_result.append(item)
         for index in range(1, 28):
             #now = datetime.now().time.minute
@@ -221,8 +229,8 @@ def update_late_arrive_time_to_clock(menetrend):
     time = datetime.datetime.now()
     for item in menetrend:
         arrive_minute = item[-1]
-        max_hour = item[2]
-        min_hour = item[1]
+        max_hour = item['max_hour']
+        min_hour = item['min_hour']
         if arrive_minute > 60:
             delta = datetime.timedelta(minutes=arrive_minute)
             arrive_time = time + delta
@@ -254,9 +262,9 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '<table>'
             html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\r\n'
             for item in result:
-                jarat_found = item[0]
-                station_found = item[5]
-                jarat_type = item[6]
+                jarat_found = item['jarat']
+                station_found = item['station']
+                jarat_type = item['jarat_tipus']
                 arrive_minute_remained = item[-1]
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
@@ -279,16 +287,16 @@ def get_menetrend(jarat=None, station=None, result=None):
         html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
         result = precheck_menetrend(result, get_all)
         for item in result:
-            jarat = item[0]
-            jarat_type = item[6]
+            jarat = item['jarat']
+            jarat_type = item['jarat_tipus']
             text_color, background_color = get_color_by_jarmu_type(jarat, jarat_type)
             html_result += '<tr>'
             html_result += f'<td bgcolor="{background_color}">'
             html_result += f'<font color="{text_color}">{jarat}</font></td>'
-            html_result += '<td>{:02}:{:02}</td>'.format(item[1], item[4])  # Hour, Minute
-            html_result += '<td>{max_hour:02}:00</td>'.format(max_hour=item[2])
-            html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item[3])
-            html_result += '<td>{megallo}</td>'.format(megallo=item[5])
+            html_result += '<td>{:02}:{:02}</td>'.format(item['min_hour'], item['start_minute'])  # Hour, Minute
+            html_result += '<td>{max_hour:02}:00</td>'.format(max_hour=item['max_hour'])
+            html_result += '<td>{jaratsuruseg} perc</td>'.format(jaratsuruseg=item['jaratsuruseg_minute'])
+            html_result += '<td>{megallo}</td>'.format(megallo=item['station'])
             html_result += '</tr>\r\n'
         html_result += '</table>\r\n'
 
@@ -315,7 +323,7 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=None):
         need_to_break = math.floor(len(result)/2)
 
     html_result = ''
-    station_found = result[0][5]
+    station_found = result[0]['station']
     html_result += '<html><body><table cellpadding="10" border="3">'
     html_result += '<tr><td><font size="24">Megálló</font></td>'
     html_result += f'<td><font size="24">{station_found}</font></td></tr>\r\n'
@@ -323,10 +331,10 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=None):
     break_header = ''
     jarat_types = {}
     for  item in result:
-        jarat_found = item[0]
+        jarat_found = item['jarat']
         jarat_map.add(jarat_found)
         if jarat_found not in jarat_types:
-            jarat_type = item[6]
+            jarat_type = item['jarat_tipus']
             jarat_types[jarat_found] = jarat_type
     html_result += '<tr>'
     for cnt, item in enumerate(list(jarat_map)):
@@ -361,7 +369,7 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=None):
         # Station table
         html_result += '<table>'
         for item in result:
-            station_found = item[5]
+            station_found = item['station']
             html_result += '<tr><td>'
             if this_station_has_found:
                 # New stations
@@ -384,10 +392,10 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=None):
         # result = jarat db
         if this_station_has_found:
             item = result[this_station_index]
-            min_hour = item[1]
-            max_hour = item[2]
-            jaratsuruseg_minute = item[3]
-            start_minute = item[4]
+            min_hour = item['min_hour']
+            max_hour = item['max_hour']
+            jaratsuruseg_minute = item['jaratsuruseg_minute']
+            start_minute = item['start_minute']
             for hour in range(min_hour, max_hour):
                 html_result += '<tr>'
                 html_result += f'<td>{hour}:</td>'
@@ -410,7 +418,7 @@ def get_all_lines():  # For 'Bus app'
     result = get_db()
     line_set = set()
     for item in result:
-        line_set.add(item[0])
+        line_set.add(item['jarat'])
     return {'lines': list(line_set) }
 
 
@@ -423,17 +431,17 @@ def get_line_info(line):  # For 'Bus app'
         last_start_minute = 0
         time_calculated = 0
         for item in result:
-            min_hour = item[1]
-            max_hour = item[2]
-            jaratsuruseg = item[3]
-            start_minute = item[4]
-            actual_bus_station = item[5]
+            min_hour = item['min_hour']
+            max_hour = item['max_hour']
+            jaratsuruseg = item['jaratsuruseg_minute']
+            start_minute = item['start_minute']
+            actual_bus_station = item['station']
             if last_start_minute < start_minute:
                 end_station = actual_bus_station  # Save this for end_station
                 last_start_minute = start_minute
             if time_calculated == 1:
                 time_calculated += 1
-                res_dict['next_bus_station'] = item[5]
+                res_dict['next_bus_station'] = item['station']
             if not time_calculated:
                 if now.hour in range(min_hour, max_hour):
                     # Proper hour
@@ -460,19 +468,19 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
     line_set = set()
     lines = []
     for item in result:
-        line_set.add(item[0])
+        line_set.add(item['jarat'])
     for jarat_item in line_set:
         # Find in all items
         first_station = None
         end_station = None
         for item in result:
-            jarat = item[0]
+            jarat = item['jarat']
             if jarat_item == jarat:
                 # Get the first element
-                station = item[5]
+                station = item['station']
                 if not first_station:
                     first_station = station
-                    jarat_type = item[6]
+                    jarat_type = item['jarat_tipus']
                 end_station = station  # Set the end station
         # We have this line
         lines.append((jarat_item, first_station, end_station, jarat_type))
@@ -480,7 +488,7 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
     html_result = '<html><body><table>\n'
     for jarat in lines:
         # Create 2 lines, with first station and with end station
-        jarat_number = jarat[0]
+        jarat_number = jarat['jarat']
         first_station = jarat[1]
         end_station = jarat[2]
         jarat_type = jarat[3]
@@ -503,7 +511,7 @@ def get_all_nyomtatas_link():
     result = get_db()
     station_set = set()
     for item in result:
-        station = item[5]
+        station = item['station']
         station_set.add(station)
 
     html_result = '<html><table>\n'
