@@ -70,7 +70,7 @@ def get_db(jarat=None, station=None, limit=100):
     mydb.close()
 
     # Debug code
-    print(result)
+    #print(result)
     return result
 
 
@@ -210,17 +210,17 @@ def extend_get_next_menetrends(result):
         new_result.append(item)
         for index in range(1, 28):
             #now = datetime.now().time.minute
-            # Last element is the 'arriving minute'
-            # item[-1] = arrive minute!
-            new_arrive_minute = item[-1] + index * jaratsuruseg  # last arrive + n * járatsűrűség
-            modified_item = item[:-1] + (new_arrive_minute, )  # Add a new item with updated arrive minute
+            # Last element is the 'arriving minute' - it is calculated
+            new_arrive_minute = item['arrive_minute'] + index * jaratsuruseg  # last arrive + n * járatsűrűség
+            modified_item = item
+            modified_item['arrive_minute'] = new_arrive_minute  # Add a new item with updated arrive minute
             new_result.append(modified_item)
     return new_result
 
 
 def order_of_arrive(menetrend):
     """ ordering with remained arrive minutes """
-    return menetrend[-1]
+    return menetrend['arrive_minute']  # Calculated field
 
 
 def update_late_arrive_time_to_clock(menetrend):
@@ -228,7 +228,7 @@ def update_late_arrive_time_to_clock(menetrend):
     new_menetrend = []
     time = datetime.datetime.now()
     for item in menetrend:
-        arrive_minute = item[-1]
+        arrive_minute = item['arrive_minute']
         max_hour = item['max_hour']
         min_hour = item['min_hour']
         if arrive_minute > 60:
@@ -241,7 +241,8 @@ def update_late_arrive_time_to_clock(menetrend):
                 # Nappali járat, holnapi dátum
                 continue
             arrive_time = datetime.datetime.strftime(arrive_time, '%H:%M')
-            new_item = item[:-1] + (arrive_time, )
+            new_item = item
+            new_item['arrive_minute'] = arrive_time
         else:
             new_item = item
         new_menetrend.append(new_item)
@@ -265,7 +266,7 @@ def get_menetrend(jarat=None, station=None, result=None):
                 jarat_found = item['jarat']
                 station_found = item['station']
                 jarat_type = item['jarat_tipus']
-                arrive_minute_remained = item[-1]
+                arrive_minute_remained = item['arrive_minute']
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 html_result += '<tr>'
                 html_result += f'<td>{station_found}</td>' \
@@ -311,7 +312,7 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
-def get_menetrend_nyomtatas(station="valami", db=True, result=None):
+def get_menetrend_nyomtatas(station="valami", db=True, result=[]):
     """ Menetrend for one station """
     if db:
         result = get_db(station=station)
@@ -330,7 +331,8 @@ def get_menetrend_nyomtatas(station="valami", db=True, result=None):
     jarat_map = set()
     break_header = ''
     jarat_types = {}
-    for  item in result:
+    for item in result:
+        assert isinstance(item, dict)
         jarat_found = item['jarat']
         jarat_map.add(jarat_found)
         if jarat_found not in jarat_types:
