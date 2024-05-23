@@ -213,7 +213,7 @@ def extend_get_next_menetrends(result):
             #now = datetime.now().time.minute
             # Last element is the 'arriving minute' - it is calculated
             new_arrive_minute = item['arrive_minute'] + index * jaratsuruseg  # last arrive + n * járatsűrűség
-            modified_item = item
+            modified_item = item.copy()
             modified_item['arrive_minute'] = new_arrive_minute  # Add a new item with updated arrive minute
             new_result.append(modified_item)
     return new_result
