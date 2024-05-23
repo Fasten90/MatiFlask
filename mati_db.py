@@ -197,7 +197,7 @@ def update_menetrend_with_arrive_minutes(result):
     """ Add new column with arrive minute """
     new_result = []
     for item in result:
-        new_item = item + (get_next_arrive(item),)  # Add arrive_minute to last field/column
+        new_item = item['arrive_minute'] = get_next_arrive(item)  # Add a calculated field
         new_result.append(new_item)
     return new_result
 
