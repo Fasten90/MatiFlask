@@ -326,26 +326,16 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
 def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute):
     """ Auxuliary HTML generate for jaratsuruseg (line department) table """
     html = ''
-    # result = jarat db
     min_hour = line['min_hour']
     max_hour = line['max_hour']
-    #jaratsuruseg_minute = line['jaratsuruseg_minute']  # workday jaratsuruseg
     start_minute = line['start_minute']
-    # IF you modify these, please consider to syncing with the content at below
     for hour in range(min_hour, max_hour):
         html += '<tr>'
         html += f'<td>{hour}:</td>'
         for minute in range(start_minute, 60, jaratsuruseg_minute):
             html += f'<td>{minute:02d},</td>'
         html += '</tr>\r\n'
-    #get_jaratsuruseg_by_day_type(line['jaratsuruseg_minute'], line['jaratsuruseg_hetvege'])
 
-    for hour in range(min_hour, max_hour):
-        html += '<tr>'
-        html += f'<td>{hour}:</td>'
-        for minute in range(start_minute, 60, jaratsuruseg_minute):
-            html += f'<td>{minute:02d},</td>'
-        html += '</tr>\r\n'
     return html
 
 
@@ -437,7 +427,7 @@ def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # py
         ####
         # Welcome to the new world, where the non-workday menetrend (line deparment table) has been appeared :)
         html_result += '<table>'  # Menetrend table
-        jaratsuruseg_minute = item['jaratsuruseg_minute']  # non-workday jaratsuruseg
+        jaratsuruseg_minute = item['jaratsuruseg_hetvege']  # non-workday jaratsuruseg
         html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
         html_result += '</table>\r\n'  # End of menetrend table
         ####
