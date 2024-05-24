@@ -3,6 +3,7 @@
 import os
 import datetime
 import math
+from enum import Enum
 import mysql.connector
 
 
@@ -84,7 +85,7 @@ def get_next_arrive(menetrend):
     actual_hour = now.hour
     min_hour = menetrend['min_hour']
     max_hour = menetrend['max_hour']
-    jaratsuruseg = menetrend['jaratsuruseg_minute']
+    jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
     arrive_minute = menetrend['start_minute']
     if min_hour < max_hour:  # Normal line
         while actual_hour < min_hour:
@@ -114,7 +115,7 @@ def get_next_arrive(menetrend):
                 else:
                     remained_minute = (60 - actual_minute) + (arrive_hour - actual_hour) + arrive_minute
                 break
-            else:  # pylint: disable=no-else-break
+            else:
                 # less minute then the actual, calculate the next arrive!
                 pass
     else:
@@ -209,7 +210,7 @@ def extend_get_next_menetrends(result):
     """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
-        jaratsuruseg = item['jaratsuruseg_minute']
+        jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
         new_result.append(item)
         for index in range(1, 28):
             #now = datetime.now().time.minute
@@ -322,6 +323,37 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
+def generate_html_rows_by_jaratsuruseg(this_station_has_found, result, this_station_index, jaratsuruseg_minute):
+    """ Auxuliary HTML generate for jaratsuruseg (line department) table """
+    html = ''
+    # result = jarat db
+    if this_station_has_found:
+        item = result[this_station_index]
+        min_hour = item['min_hour']
+        max_hour = item['max_hour']
+        #jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
+        start_minute = item['start_minute']
+        # IF you modify these, please consider to syncing with the content at below
+        for hour in range(min_hour, max_hour):
+            html += '<tr>'
+            html += f'<td>{hour}:</td>'
+            for minute in range(start_minute, 60, jaratsuruseg_minute):
+                html += f'<td>{minute:02d},</td>'
+            html += '</tr>\r\n'
+        #get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
+
+        for hour in range(min_hour, max_hour):
+            html += '<tr>'
+            html += f'<td>{hour}:</td>'
+            for minute in range(start_minute, 60, jaratsuruseg_minute):
+                html += f'<td>{minute:02d},</td>'
+            html += '</tr>\r\n'
+    else:
+        # Error
+        pass
+    return html
+
+
 def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # pylint: disable=too-many-locals disable=too-many-branches disable=too-many-statements
     """ Menetrend for one station """
     if database:
@@ -400,24 +432,20 @@ def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # py
         html_result += '</table>'  # End of station table
         html_result += '</td>'
         html_result += '<td>\r\n'
-        html_result += '<table>'  # Menetrend table
-        # result = jarat db
-        if this_station_has_found:
-            item = result[this_station_index]
-            min_hour = item['min_hour']
-            max_hour = item['max_hour']
-            jaratsuruseg_minute = item['jaratsuruseg_minute']
-            start_minute = item['start_minute']
-            for hour in range(min_hour, max_hour):
-                html_result += '<tr>'
-                html_result += f'<td>{hour}:</td>'
-                for minute in range (start_minute, 60, jaratsuruseg_minute):
-                    html_result += f'<td>{minute:02d},</td>'
-                html_result += '</tr>\r\n'
-        else:
-            # Error
-            pass
+        # Menetrend table
+        html_result += '<table>'
+        jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
+        html_result += generate_html_rows_by_jaratsuruseg(this_station_has_found, result, this_station_index, jaratsuruseg_minute)
         html_result += '</table>\r\n'  # End of menetrend table
+        html_result += '\r\n'
+        ####
+        # Welcome to the new world, where the non-workday menetrend (line deparment table) has been appeared :)
+        html_result += '<table>'  # Menetrend table
+        jaratsuruseg_minute = item['jaratsuruseg_minute']  # non-workday jaratsuruseg
+        html_result += generate_html_rows_by_jaratsuruseg(this_station_has_found, result, this_station_index, jaratsuruseg_minute)
+        html_result += '</table>\r\n'  # End of menetrend table
+        ####
+
         html_result += '</td></tr>'
         html_result += '</table>\r\n'  # End of station + starting time table
         html_result += '</td>\r\n'
@@ -432,7 +460,7 @@ def get_all_lines():  # For 'Bus app'
     line_set = set()
     for item in result:
         line_set.add(item['jarat'])  # pylint: disable=invalid-sequence-index
-    return {'lines': list(line_set) }
+    return {'lines': list(line_set)}
 
 
 def get_line_info(line):  # For 'Bus app'
@@ -447,7 +475,7 @@ def get_line_info(line):  # For 'Bus app'
         for item in result:
             min_hour = item['min_hour']  # pylint: disable=invalid-sequence-index
             max_hour = item['max_hour']  # pylint: disable=invalid-sequence-index
-            jaratsuruseg = item['jaratsuruseg_minute']  # pylint: disable=invalid-sequence-index
+            jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])  # pylint: disable=invalid-sequence-index
             start_minute = item['start_minute']  # pylint: disable=invalid-sequence-index
             actual_bus_station = item['station']  # pylint: disable=invalid-sequence-index
             if last_start_minute < start_minute:
@@ -538,6 +566,30 @@ def get_all_nyomtatas_link():
     return html_result
 
 
+class DayType(Enum):
+    """ Enum for daytypes (workday or not) """
+    NONE = 0
+    WORKDAY = 1
+    NOTWORKDAY = 2
+
+def check_actual_day_type():
+    """ Check the day type of actual date """
+    now = datetime.datetime.now()
+    if 1 <= now.date <= 5:
+        return DayType.WORKDAY
+    return DayType.NOTWORKDAY
+
+
+def get_jaratsuruseg_by_day_type(jaratsuruseg_workday, jaratsuruseg_nonworkday):
+    """ Get jaratsuruseg (proper) by actual date (daytype) """
+    workday_type = check_actual_day_type()
+    if workday_type == DayType.WORKDAY:
+        return jaratsuruseg_workday
+    elif workday_type == DayType.NOTWORKDAY:
+        return jaratsuruseg_nonworkday
+    return jaratsuruseg_workday
+
+
 if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
@@ -570,14 +622,19 @@ if __name__ == '__main__':
             elif key in int_values:
                 item[key] = int(val)
 
-    #res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
-    #print(res)
-    res = get_menetrend(jarat=None, station='Teszt1', result=sql_fake_result)
-    print(res)
-    #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
-    #print(res)
+    TEST_MENETREND_JARAT = False
+    if TEST_MENETREND_JARAT:
+        res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
+        print(res)
 
-    TEST_NYOMTATAS = False
+    TEST_MENETREND_STATION = False
+    if TEST_MENETREND_STATION:
+        res = get_menetrend(jarat=None, station='Teszt1', result=sql_fake_result)
+        print(res)
+        #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
+        #print(res)
+
+    TEST_NYOMTATAS = True
     if TEST_NYOMTATAS:
         res = get_menetrend_nyomtatas(station="Bolya utca", database=False, result=sql_fake_result)
         print(res)
