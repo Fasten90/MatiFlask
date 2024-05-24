@@ -9,4 +9,7 @@ https://mati.e5tv.hu/menetrend?megallo=valami
 https://mati.e5tv.hu/menetrend?jarat=3
 
 https://mati.e5tv.hu/bus?lines=True
+https://mati.e5tv.hu/all_lines
 
+
+https://mati.e5tv.hu/nyomtatas?megallo=lármákl utca
