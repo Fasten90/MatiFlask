@@ -326,16 +326,18 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
 def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute):
     """ Auxuliary HTML generate for jaratsuruseg (line department) table """
     html = ''
-    min_hour = line['min_hour']
-    max_hour = line['max_hour']
-    start_minute = line['start_minute']
-    for hour in range(min_hour, max_hour):
-        html += '<tr>'
-        html += f'<td>{hour}:</td>'
-        for minute in range(start_minute, 60, jaratsuruseg_minute):
-            html += f'<td>{minute:02d},</td>'
-        html += '</tr>\r\n'
-
+    if jaratsuruseg_minute:
+        min_hour = line['min_hour']
+        max_hour = line['max_hour']
+        start_minute = line['start_minute']
+        for hour in range(min_hour, max_hour):
+            html += '<tr>'
+            html += f'<td>{hour}:</td>'
+            for minute in range(start_minute, 60, jaratsuruseg_minute):
+                html += f'<td>{minute:02d},</td>'
+            html += '</tr>\r\n'
+    else:
+        html += '<tr><td>A járat nem közlekedik hétvégén és nem-munkanapokon!</td></tr>\r\n'
     return html
 
 
