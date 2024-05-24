@@ -429,18 +429,16 @@ def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # py
         html_result += '<td>\r\n'
         # Menetrend table
         html_result += '<table>\r\n'
-        if this_station_has_found:
-            jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
-            line = result[this_station_index]
-            html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
+        jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
+        line = result[this_station_index]
+        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
         html_result += '</table>\r\n'  # End of menetrend table
         html_result += '\r\n'
         ####
         # Welcome to the new world, where the non-workday menetrend (line deparment table) has been appeared :)
         html_result += '<table>'  # Menetrend table
-        if this_station_has_found:
-            jaratsuruseg_minute = item['jaratsuruseg_minute']  # non-workday jaratsuruseg
-            html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
+        jaratsuruseg_minute = item['jaratsuruseg_minute']  # non-workday jaratsuruseg
+        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
         html_result += '</table>\r\n'  # End of menetrend table
         ####
 
