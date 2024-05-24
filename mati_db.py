@@ -323,9 +323,10 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
-def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute):
+def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
     """ Auxuliary HTML generate for jaratsuruseg (line department) table """
     html = ''
+    html += f'<tr><td>{daytype_text}</td></tr>\r\n'
     if jaratsuruseg_minute:
         min_hour = line['min_hour']
         max_hour = line['max_hour']
@@ -337,7 +338,7 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute):
                 html += f'<td>{minute:02d},</td>'
             html += '</tr>\r\n'
     else:
-        html += '<tr><td>A járat nem közlekedik hétvégén és nem-munkanapokon!</td></tr>\r\n'
+        html += '<tr><td>A járat nem közlekedik!</td></tr>\r\n'
     return html
 
 
@@ -423,14 +424,14 @@ def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # py
         html_result += '<table>\r\n'
         jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
         line = result[this_station_index]
-        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
+        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, 'Hétköznap és munkanap')
         html_result += '</table>\r\n'  # End of menetrend table
         html_result += '\r\n'
         ####
         # Welcome to the new world, where the non-workday menetrend (line deparment table) has been appeared :)
         html_result += '<table>'  # Menetrend table
         jaratsuruseg_minute = item['jaratsuruseg_hetvege']  # non-workday jaratsuruseg
-        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute)
+        html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, 'Hétvégén és munkaszüneti napokon')
         html_result += '</table>\r\n'  # End of menetrend table
         ####
 
