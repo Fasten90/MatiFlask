@@ -40,13 +40,13 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{jarat}' AND `station` LIKE'%{station}%'
+        WHERE `jarat`='{jarat}' AND `station` LIKE '%{station}%'
         """
     elif jarat and city:
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{jarat}  AND `city`=`{city}`'
+        WHERE `jarat`='{jarat}'  AND `city`=`{city}`
         """
     elif jarat:
         sql = f"""
@@ -58,13 +58,13 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `station`='{station}  AND `city`=`{city}`'
+        WHERE `station` LIKE '%{station}%'  AND `city`=`{city}`
         """
     elif station:
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `station` LIKE'%{station}%'
+        WHERE `station` LIKE '%{station}%'
         """
     else:
         sql = """

@@ -76,14 +76,13 @@ def clock():
 
 @app.route('/menetrend', methods=['GET'])
 def get_menetrend():
-    if request.method == 'GET':
-        try:
-            line = request.args.get('jarat', type = int)
-            station = request.args.get('megallo', type = str)
-            city = request.args.get('varos', type = str)
-            limit = request.args.get('limit', type = int, default=100)
-        except Exception as ex:
-            print('Exception: {}'.format(ex))
+    try:
+        line = request.args.get('jarat', type = int)
+        station = request.args.get('megallo', type = str)
+        city = request.args.get('varos', type = str)
+        limit = request.args.get('limit', type = int, default=100)
+    except Exception as ex:
+        print('Exception: {}'.format(ex))
     return mati_db.get_menetrend_wrap(line, station, city, limit)
 
 
