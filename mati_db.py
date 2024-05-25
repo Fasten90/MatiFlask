@@ -325,7 +325,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             result = sorted(result, key=order_of_arrive)
             result = update_late_arrive_time_to_clock(result)
             html_result += '<table>'
-            html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\r\n'
+            html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\n'
             for item in result:
                 jarat_found = item['jarat']
                 station_found = item['station']
@@ -338,18 +338,18 @@ def get_menetrend(jarat=None, station=None, result=None):
                         f'<font color="{text_color}">{jarat_found}</font>' \
                         '</td>' \
                         f'<td>{arrive_minute_remained}</td>'
-                html_result += '</tr>\r\n'
-            html_result += '</table>\r\n'
+                html_result += '</tr>\n'
+            html_result += '</table>\n'
         else:
-            html_result = 'Nincs találat :(<br />\r\n'
+            html_result = 'Nincs találat :(<br />\n'
     #elif jarat:
     else:
         get_all = True
         if jarat:
             get_all = False
-        html_result += '<table>\r\n'
+        html_result += '<table>\n'
         html_result += '<tr><td>Járat</td><td>Indulási idő</td>'
-        html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\r\n'
+        html_result += '<td>Eddig közlekedik</td><td>Járatsűrűség</td><td>Megálló</td></tr>\n'
         result = precheck_menetrend(result, get_all)
         for item in result:
             jarat = item['jarat']
@@ -362,8 +362,8 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += f'<td>{item["max_hour"]:02}:00</td>'
             html_result += f'<td>{item["jaratsuruseg_minute"]} perc</td>'
             html_result += f'<td>{item["station"]}</td>'
-            html_result += '</tr>\r\n'
-        html_result += '</table>\r\n'
+            html_result += '</tr>\n'
+        html_result += '</table>\n'
 
     html_result += f'{now.hour:02}:{now.minute:02}'
 
@@ -381,7 +381,7 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
         Needed for 'get_menetrend_nyomtatas'
     """
     html = ''
-    html += f'<tr><td>{daytype_text}</td></tr>\r\n'
+    html += f'<tr><td>{daytype_text}</td></tr>\n'
     if jaratsuruseg_minute:
         min_hour = line['min_hour']
         max_hour = line['max_hour']
@@ -391,9 +391,9 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
             html += f'<td>{hour}:</td>'
             for minute in range(start_minute, 60, jaratsuruseg_minute):
                 html += f'<td>{minute:02d},</td>'
-            html += '</tr>\r\n'
+            html += '</tr>\n'
     else:
-        html += '<tr><td>A járat nem közlekedik!</td></tr>\r\n'
+        html += '<tr><td>A járat nem közlekedik!</td></tr>\n'
     return html
 
 
@@ -417,7 +417,7 @@ def get_menetrend_nyomtatas(station="valami", line=None, database=True, result=N
     station_found = result[0]['station']
     html_result += '<html><body><table cellpadding="10" border="3">'
     html_result += '<tr><td><font size="24">Megálló</font></td>'
-    html_result += f'<td><font size="24">{station_found}</font></td></tr>\r\n'
+    html_result += f'<td><font size="24">{station_found}</font></td></tr>\n'
     jarat_map = set()
     break_header = ''
     jarat_types = {}
@@ -440,7 +440,7 @@ def get_menetrend_nyomtatas(station="valami", line=None, database=True, result=N
         else:
             # if not needed to break + first some
             html_result += jarat_html
-    html_result += '</tr>\r\n'
+    html_result += '</tr>\n'
 
     html_result += '<tr>'  # This shall be closed when we have too much lines
     for cnt, jarat_this in enumerate(jarat_map):
@@ -479,27 +479,27 @@ def get_menetrend_nyomtatas(station="valami", line=None, database=True, result=N
             html_result += '</td></tr>'
         html_result += '</table>'  # End of station table
         html_result += '</td>'
-        html_result += '<td>\r\n'
+        html_result += '<td>\n'
         # Menetrend table
-        html_result += '<table>\r\n'
+        html_result += '<table>\n'
         jaratsuruseg_minute = item['jaratsuruseg_minute']  # workday jaratsuruseg
         line = result[this_station_index]
         html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, 'Hétköznap és munkanap')
-        html_result += '</table>\r\n'  # End of menetrend table
-        html_result += '\r\n'
+        html_result += '</table>\n'  # End of menetrend table
+        html_result += '\n'
         ####
         # Welcome to the new world, where the non-workday menetrend (line deparment table) has been appeared :)
         html_result += '<table>'  # Menetrend table
         jaratsuruseg_minute = item['jaratsuruseg_hetvege']  # non-workday jaratsuruseg
         html_result += generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, 'Hétvégén és munkaszüneti napokon')
-        html_result += '</table>\r\n'  # End of menetrend table
+        html_result += '</table>\n'  # End of menetrend table
         ####
 
         html_result += '</td></tr>'
-        html_result += '</table>\r\n'  # End of station + starting time table
-        html_result += '</td>\r\n'
+        html_result += '</table>\n'  # End of station + starting time table
+        html_result += '</td>\n'
     html_result += '</tr>'
-    html_result += '</table></body></html>\r\n'
+    html_result += '</table></body></html>\n'
     return html_result
 
 
