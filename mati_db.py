@@ -19,7 +19,7 @@ def database_connection():
     return mydb
 
 
-def get_db(jarat=None, station=None, limit=100):
+def get_db(jarat=None, station=None, city=None, limit=100):
     """ Get lines (jarat) or station (megallo) from DB """
 
     result = []
@@ -36,11 +36,23 @@ def get_db(jarat=None, station=None, limit=100):
         FROM mati_menetrend
         WHERE `jarat`='{jarat}' AND `station` LIKE'%{station}%'
         """
+    elif jarat and city:
+        sql = f"""
+        SELECT *
+        FROM mati_menetrend
+        WHERE `jarat`='{jarat}  AND `city`=`{city}`'
+        """
     elif jarat:
         sql = f"""
         SELECT *
         FROM mati_menetrend
         WHERE `jarat`='{jarat}'
+        """
+    elif station and city:
+        sql = f"""
+        SELECT *
+        FROM mati_menetrend
+        WHERE `station`='{station}  AND `city`=`{city}`'
         """
     elif station:
         sql = f"""
@@ -74,6 +86,29 @@ def get_db(jarat=None, station=None, limit=100):
 
     # Debug code
     #print(result)
+    return result
+
+
+def get_db_cities():
+    """ Get all available cities from db """
+
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    sql = f"""
+        SELECT varos
+        FROM `mati_menetrend`
+        GROUP by varos;
+        """
+    print('Execute SQL command: ' + sql)
+    try:
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+    except Exception as ex:  # pylint: disable=broad-except
+        result = [str(ex)]
+
+    mydb.close()
     return result
 
 
@@ -326,9 +361,9 @@ def get_menetrend(jarat=None, station=None, result=None):
     return html_result
 
 
-def get_menetrend_wrap(jarat=None, station=None, limit=100):
+def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     """ Get menetrend with járat or megálló """
-    result = get_db(jarat, station, limit)
+    result = get_db(jarat, station, city, limit)
     return get_menetrend(jarat, station, result)
 
 
@@ -591,10 +626,16 @@ def get_jaratsuruseg_by_day_type(jaratsuruseg_workday, jaratsuruseg_nonworkday):
 
 
 def check_if_it_is_going(menetrend):
-    if get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege']):
+    """ Check if the line is going today. Maybe it does not go on non-workday """
+    if get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege']):  # pylint: disable=simplifiable-if-statement
         return True
     else:  # Example: None jaratsuruseg
         return False
+
+
+def get_all_available_cities():  # For MatiGO
+    """ Get all available cities """
+    return get_db_cities()
 
 
 if __name__ == '__main__':
