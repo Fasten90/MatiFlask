@@ -115,7 +115,7 @@ def get_db_cities():
         mycursor.execute(sql)
         result = mycursor.fetchall()
     except Exception as ex:  # pylint: disable=broad-except
-        result = [str(ex)]
+        raise Exception(ex)
 
     mydb.close()
     return result
@@ -574,7 +574,7 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
     html_result = '<html><body><table>\n'
     for jarat in lines:
         # Create 2 lines, with first station and with end station
-        jarat_number = jarat['jarat']
+        jarat_number = jarat[0]
         first_station = jarat[1]
         end_station = jarat[2]
         jarat_type = jarat[3]
