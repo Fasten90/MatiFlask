@@ -397,10 +397,15 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
     return html
 
 
-def get_menetrend_nyomtatas(station="valami", database=True, result=None):  # pylint: disable=too-many-locals disable=too-many-branches disable=too-many-statements
+def get_menetrend_nyomtatas(station="valami", line=None, database=True, result=None):  # pylint: disable=too-many-locals disable=too-many-branches disable=too-many-statements
     """ Menetrend for one station """
     if database:
-        result = get_db(station=station)
+        if station:
+            result = get_db(station=station)
+        elif line:
+            result = get_db(jarat=line)
+        else:
+            raise Exception('Nyomtatas not handled without station/line')
     else:
         pass
         # Use parameter 'result'
@@ -583,8 +588,8 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         html_result += '<td>'
         # Inner table
         html_result += '<table border="1">'
-        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font></td><td>{first_station}</td></tr>\n'
-        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}">{jarat_number}</font></td><td>{end_station}</td></tr>\n'
+        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{first_station}</td></tr>\n'
+        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{end_station}</td></tr>\n'
         html_result += '</table>\n'
         #
         html_result += '</td>'

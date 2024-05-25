@@ -103,10 +103,11 @@ def get_all_available_cities():
 def get_menetrend_nyomtatas():
     if request.method == 'GET':
         try:
-            station = request.args.get('megallo', type = str)
+            station = request.args.get('megallo', type=str, default=None)
+            line = request.args.get('jarat', type=str, default=None)
         except Exception as ex:
             print('Exception: {}'.format(ex))
-        result = mati_db.get_menetrend_nyomtatas(station=station)
+        result = mati_db.get_menetrend_nyomtatas(station=station, line=line)
     else:
         result = 'It only works with ?megallo=<megallonev>'
     return result
