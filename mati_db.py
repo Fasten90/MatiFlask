@@ -603,8 +603,8 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         html_result += '<td>'
         # Inner table
         html_result += '<table border="1">'
-        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{first_station}</td></tr>\n'
-        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{end_station}</td></tr>\n'
+        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a style="color:{text_color};" href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{first_station}</td></tr>\n'
+        html_result += f'<tr><td border="1" bgcolor="{background_color}"><font color="{text_color}"><a style="color:{text_color};" href="nyomtatas?jarat={jarat_number}">{jarat_number}</a></font></td><td>{end_station}</td></tr>\n'
         html_result += '</table>\n'
         #
         html_result += '</td>'
