@@ -564,7 +564,7 @@ class DayType(Enum):
 def check_actual_day_type():
     """ Check the day type of actual date """
     now = datetime.datetime.now()
-    if 1 <= now.date <= 5:
+    if 1 <= now.isoweekday() <= 5:
         return DayType.WORKDAY
     return DayType.NOTWORKDAY
 
@@ -627,3 +627,5 @@ if __name__ == '__main__':
     if TEST_NYOMTATAS:
         res = get_menetrend_nyomtatas(station="Bolya utca", database=False, result=sql_fake_result)
         print(res)
+
+    check_actual_day_type()
