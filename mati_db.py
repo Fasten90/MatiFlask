@@ -8,6 +8,8 @@ import mysql.connector
 
 
 CITY_DONTCARE_TEXT = 'Minden város'
+DEBUG = False
+
 
 def database_connection():
     """ Connect to the Database """
@@ -78,7 +80,7 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         result = mycursor.fetchall()
         column_headers = mycursor.column_names
     except Exception as ex:  # pylint: disable=broad-except
-        raise str(ex)
+        raise Exception(ex)
     else:
         # Move content into directory
         results_with_dict = []
@@ -90,8 +92,9 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         result = results_with_dict
     mydb.close()
 
-    # Debug code
-    #print(result)
+    if DEBUG:
+        print(result)
+
     return result
 
 
