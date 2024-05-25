@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta, date
 
 from flask import Flask, render_template, flash, request, redirect, session, send_from_directory
 from flask_wtf import csrf
@@ -32,7 +33,6 @@ def robots_txt():
 
 clock_time = '13:26:41'
 last_set_time = None
-from datetime import datetime, timedelta, date
 @app.route('/clock', methods=['GET', 'POST'])
 def clock():
     global clock_time
@@ -43,9 +43,9 @@ def clock():
             return clock_time
         elif request.method == 'GET':
             try:
-                hour = request.args.get('hour', type = int)
-                minute = request.args.get('minute', type = int)
-                second = request.args.get('second', type = int)
+                hour = request.args.get('hour', type=int)
+                minute = request.args.get('minute', type=int)
+                second = request.args.get('second', type=int)
                 if not hour or not minute or not second:
                     print('missed value, skip it')
                     if not last_set_time:
@@ -77,10 +77,10 @@ def clock():
 @app.route('/menetrend', methods=['GET'])
 def get_menetrend():
     try:
-        line = request.args.get('jarat', type = int)
-        station = request.args.get('megallo', type = str)
-        city = request.args.get('varos', type = str)
-        limit = request.args.get('limit', type = int, default=100)
+        line = request.args.get('jarat', type=int)
+        station = request.args.get('megallo', type=str)
+        city = request.args.get('varos', type=str)
+        limit = request.args.get('limit', type=int, default=100)
         result = mati_db.get_menetrend_wrap(line, station, city, limit)
     except Exception as ex:
         result = 'FATAL ERROR: Please report it to Apa/Vizi Gábor:<br />\r\n' \
@@ -122,8 +122,8 @@ def get_all_nyomtatas():
 def get_menetrend_bus():
     if request.method == 'GET':
         try:
-            line = request.args.get('line', type = str)
-            get_lines = request.args.get('lines', type = bool, default=False)
+            line = request.args.get('line', type=str)
+            get_lines = request.args.get('lines', type=bool, default=False)
         except Exception as ex:
             print('Exception: {}'.format(ex))
         if get_lines:
