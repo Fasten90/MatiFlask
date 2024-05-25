@@ -397,6 +397,19 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
     return html
 
 
+
+def get_html_format_css():
+    html_code = ''
+    html_code += '<head>\n'
+    html_code += '<style>\n'
+    html_code += 'a:link { text-decoration: none; border-bottom:none;}'
+    html_code += 'a:visited { text-decoration: none; border-bottom:none;}'
+    html_code += 'a:active { text-decoration: none; border-bottom:none;}'
+    html_code += '</style>\n'
+    html_code += '</head>'
+    return html_code
+
+
 def get_menetrend_nyomtatas(station="valami", line=None, database=True, result=None):  # pylint: disable=too-many-locals disable=too-many-branches disable=too-many-statements
     """ Menetrend for one station """
     if database:
@@ -576,7 +589,9 @@ def get_all_lines_html():  # For 'MatiBudapestGO'
         # We have this line
         lines.append((jarat_item, first_station, end_station, jarat_type))
 
-    html_result = '<html><body><table>\n'
+    html_result = '<html>\n'
+    html_result += get_html_format_css()
+    html_result += '<body><table>\n'
     for jarat in lines:
         # Create 2 lines, with first station and with end station
         jarat_number = jarat[0]
