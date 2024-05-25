@@ -85,7 +85,7 @@ def get_next_arrive(menetrend):
     actual_hour = now.hour
     min_hour = menetrend['min_hour']
     max_hour = menetrend['max_hour']
-    jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
+    jaratsuruseg = get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege'])
     arrive_minute = menetrend['start_minute']
     if min_hour < max_hour:  # Normal line
         while actual_hour < min_hour:

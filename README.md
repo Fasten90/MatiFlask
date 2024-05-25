@@ -13,3 +13,4 @@ https://mati.e5tv.hu/all_lines
 
 
 https://mati.e5tv.hu/nyomtatas?megallo=lármákl utca
+https://mati.e5tv.hu/get_all_nyomtatas
