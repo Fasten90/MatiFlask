@@ -127,7 +127,7 @@ def get_next_arrive(menetrend):
 
 
 def precheck_menetrend(menetrend, get_all=False):
-    """ Precheck menetrend, for it is travelling or not, and what is the type of járat """
+    """ Precheck menetrend, for it is travelling or not  """
     new_menetrend = []
     now = datetime.datetime.now()
     actual_hour = now.hour
@@ -143,6 +143,15 @@ def precheck_menetrend(menetrend, get_all=False):
             if min_hour <= actual_hour < 24 or 0 <= actual_hour <= max_hour or get_all:
                 new_menetrend.append(item)
         else:
+            new_menetrend.append(item)
+    return new_menetrend
+
+
+def precheck_menetrend2(menetrend, get_all=False):
+    """ Precheck line(s) if they are going or not (e.g. workday or not) """
+    new_menetrend = []
+    for item in menetrend:
+        if check_if_it_is_going(item):
             new_menetrend.append(item)
     return new_menetrend
 
@@ -266,7 +275,7 @@ def get_menetrend(jarat=None, station=None, result=None):
     now = datetime.datetime.now()
     if station:
         if result:
-            #result = precheck_menetrend(result)
+            result = precheck_menetrend2(result)
             result = update_menetrend_with_arrive_minutes(result)
             result = extend_get_next_menetrends(result)
             result = sorted(result, key=order_of_arrive)
@@ -324,7 +333,9 @@ def get_menetrend_wrap(jarat=None, station=None, limit=100):
 
 
 def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
-    """ Auxuliary HTML generate for jaratsuruseg (line department) table """
+    """ Auxuliary HTML generate for jaratsuruseg (line department) table
+        Needed for 'get_menetrend_nyomtatas'
+    """
     html = ''
     html += f'<tr><td>{daytype_text}</td></tr>\r\n'
     if jaratsuruseg_minute:
@@ -579,6 +590,13 @@ def get_jaratsuruseg_by_day_type(jaratsuruseg_workday, jaratsuruseg_nonworkday):
     return jaratsuruseg_workday
 
 
+def check_if_it_is_going(menetrend):
+    if get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege']):
+        return True
+    else:  # Example: None jaratsuruseg
+        return False
+
+
 if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
@@ -616,14 +634,14 @@ if __name__ == '__main__':
         res = get_menetrend(jarat='6', station=None, result=sql_fake_result)
         print(res)
 
-    TEST_MENETREND_STATION = False
+    TEST_MENETREND_STATION = True
     if TEST_MENETREND_STATION:
         res = get_menetrend(jarat=None, station='Teszt1', result=sql_fake_result)
         print(res)
         #res = get_menetrend(jarat=None, station=None, result=sql_fake_result)
         #print(res)
 
-    TEST_NYOMTATAS = True
+    TEST_NYOMTATAS = False
     if TEST_NYOMTATAS:
         res = get_menetrend_nyomtatas(station="Bolya utca", database=False, result=sql_fake_result)
         print(res)
