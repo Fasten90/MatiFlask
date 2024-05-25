@@ -635,7 +635,11 @@ def check_if_it_is_going(menetrend):
 
 def get_all_available_cities():  # For MatiGO
     """ Get all available cities """
-    return get_db_cities()
+    result = get_db_cities()
+    new_result = []
+    for item in result:
+        new_result.append(item[0])
+    return new_result
 
 
 if __name__ == '__main__':
