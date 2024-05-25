@@ -83,8 +83,8 @@ def get_menetrend():
         limit = request.args.get('limit', type = int, default=100)
         result = mati_db.get_menetrend_wrap(line, station, city, limit)
     except Exception as ex:
-        result = 'FATAL ERROR: Please report it to Apa/Vizi Gábor:\r\n' \
-                'https://github.com/Fasten90/MatiFlask\r\n'  \
+        result = 'FATAL ERROR: Please report it to Apa/Vizi Gábor:<br />\r\n' \
+                'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
                 f'{ex}'
     return result
 
