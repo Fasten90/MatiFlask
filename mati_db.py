@@ -7,6 +7,8 @@ from enum import Enum
 import mysql.connector
 
 
+CITY_DONTCARE_TEXT = 'Minden város'
+
 def database_connection():
     """ Connect to the Database """
     mydb = mysql.connector.connect(
@@ -29,6 +31,10 @@ def get_db(jarat=None, station=None, city=None, limit=100):
     mycursor = mydb.cursor()
 
     print('Connected to MySQL')
+
+    # Check city:
+    if city == CITY_DONTCARE_TEXT:
+        city = None
 
     if jarat and station:
         sql = f"""
@@ -638,7 +644,10 @@ def get_all_available_cities():  # For MatiGO
     result = get_db_cities()
     new_result = []
     for item in result:
-        new_result.append(item[0])
+        if item[0] is None:
+            new_result.append(CITY_DONTCARE_TEXT)
+        else:
+            new_result.append(item[0])
     return new_result
 
 
