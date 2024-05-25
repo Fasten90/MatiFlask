@@ -81,9 +81,10 @@ def get_menetrend():
         station = request.args.get('megallo', type = str)
         city = request.args.get('varos', type = str)
         limit = request.args.get('limit', type = int, default=100)
+        result = mati_db.get_menetrend_wrap(line, station, city, limit)
     except Exception as ex:
-        print('Exception: {}'.format(ex))
-    return mati_db.get_menetrend_wrap(line, station, city, limit)
+        result = f'Exception: {ex}'
+    return result
 
 
 @app.route('/all_lines', methods=['GET'])

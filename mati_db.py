@@ -46,7 +46,7 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `jarat`='{jarat}'  AND `city`=`{city}`
+        WHERE `jarat`='{jarat}' AND `city`=`{city}`
         """
     elif jarat:
         sql = f"""
@@ -58,7 +58,7 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         sql = f"""
         SELECT *
         FROM mati_menetrend
-        WHERE `station` LIKE '%{station}%'  AND `city`=`{city}`
+        WHERE `station` LIKE '%{station}%' AND `city`=`{city}`
         """
     elif station:
         sql = f"""
@@ -78,7 +78,7 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         result = mycursor.fetchall()
         column_headers = mycursor.column_names
     except Exception as ex:  # pylint: disable=broad-except
-        result = [str(ex)]
+        raise str(ex)
     else:
         # Move content into directory
         results_with_dict = []
