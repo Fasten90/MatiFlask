@@ -255,7 +255,8 @@ def update_menetrend_with_arrive_minutes(result):
     for item in result:
         new_item = item
         new_item['arrive_minute'] = get_next_arrive(item)  # Add a calculated field
-        new_result.append(new_item)
+        if new_item['arrive_minute'] :
+            new_result.append(new_item)
     return new_result
 
 
@@ -264,20 +265,38 @@ def extend_get_next_menetrends(result):
     new_result = []
     for item in result:
         jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
-        new_result.append(item)
-        for index in range(1, 28):
-            #now = datetime.now().time.minute
-            # Last element is the 'arriving minute' - it is calculated
-            new_arrive_minute = item['arrive_minute'] + index * jaratsuruseg  # last arrive + n * járatsűrűség
-            modified_item = item.copy()
-            modified_item['arrive_minute'] = new_arrive_minute  # Add a new item with updated arrive minute
-            new_result.append(modified_item)
+        if jaratsuruseg:
+            new_result.append(item)
+            for index in range(1, 28):
+                #now = datetime.now().time.minute
+                # Last element is the 'arriving minute' - it is calculated
+                new_arrive_minute = item['arrive_minute'] + index * jaratsuruseg  # last arrive + n * járatsűrűség
+                modified_item = item.copy()
+                modified_item['arrive_minute'] = new_arrive_minute  # Add a new item with updated arrive minute
+                new_result.append(modified_item)
     return new_result
 
 
 def order_of_arrive(menetrend):
     """ ordering with remained arrive minutes """
     return menetrend['arrive_minute']  # Calculated field
+
+
+def check_if_proper_hour(min_hour, max_hour, arrive_time, time):
+    if min_hour < max_hour and arrive_time.day != time.day:
+        # daytime line, tomorrow day
+        return False
+    if min_hour <= arrive_time.hour < max_hour:  # The normal
+        # E.g. min hour: 6, actual hour: 14, max hour: 19
+        return True
+    if min_hour > max_hour:  # Night travel
+        if min_hour <= arrive_time.hour and arrive_time.day == time.day:  # Same day
+            return True
+        elif arrive_time.hour < max_hour and arrive_time.day == (time.day + 1):  # Next day
+            return True
+        else:
+            return False
+    return True
 
 
 def update_late_arrive_time_to_clock(menetrend):
@@ -290,25 +309,28 @@ def update_late_arrive_time_to_clock(menetrend):
         min_hour = item['min_hour']
         if isinstance(arrive_minute, str) and ':' in arrive_minute:
             arrive_time = datetime.datetime.strptime(arrive_minute, '%H:%M')
-            if min_hour < arrive_time.hour < max_hour:
+            if check_if_proper_hour(min_hour, max_hour, arrive_time, time):
                 # It is OK
                 new_item = item
             else:
                 continue
-        elif arrive_minute > 60:
+        elif arrive_minute > 60:  # Lot of minutes, format it!
             delta = datetime.timedelta(minutes=arrive_minute)
             arrive_time = time + delta
-            if arrive_time.hour >= max_hour:
-                # Már nem jár
+            if check_if_proper_hour(min_hour, max_hour, arrive_time, time):
+                # Format for readable
+                arrive_time = datetime.datetime.strftime(arrive_time, '%H:%M')
+                new_item = item
+                new_item['arrive_minute'] = arrive_time
+            else:
                 continue
-            if min_hour < max_hour and arrive_time.day != time.day:
-                # Nappali járat, holnapi dátum
+        else:  # few minutes
+            delta = datetime.timedelta(minutes=arrive_minute)
+            arrive_time = time + delta
+            if check_if_proper_hour(min_hour, max_hour, arrive_time, time):
+                new_item = item
+            else:
                 continue
-            arrive_time = datetime.datetime.strftime(arrive_time, '%H:%M')
-            new_item = item
-            new_item['arrive_minute'] = arrive_time
-        else:
-            new_item = item
         new_menetrend.append(new_item)
     return new_menetrend
 
@@ -319,11 +341,11 @@ def get_menetrend(jarat=None, station=None, result=None):
     now = datetime.datetime.now()
     if station:
         if result:
-            result = precheck_menetrend2(result)
-            result = update_menetrend_with_arrive_minutes(result)
-            result = extend_get_next_menetrends(result)
-            result = sorted(result, key=order_of_arrive)
-            result = update_late_arrive_time_to_clock(result)
+            result = precheck_menetrend2(result)  # Check if they travel
+            result = update_menetrend_with_arrive_minutes(result)  # Add next arrive minute
+            result = extend_get_next_menetrends(result)  # Add x new arrives
+            result = sorted(result, key=order_of_arrive)  # Sort
+            result = update_late_arrive_time_to_clock(result)  # Check max_hour and beautify remained minutes (print clock)
             html_result += '<table>'
             html_result += '<tr><td>Megálló</td><td>Járat</td><td>Érkezik</td></tr>\n'
             for item in result:
