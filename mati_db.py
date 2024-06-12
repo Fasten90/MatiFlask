@@ -132,6 +132,7 @@ def get_next_arrive(menetrend):
     jaratsuruseg = get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege'])
     arrive_minute = menetrend['start_minute']
     if min_hour < max_hour:  # Normal line
+        # Check until if has not started
         while actual_hour < min_hour:
             arrive_minute += 60  # hour = 60minutes
             actual_hour += 1  # Check next "actual (fake)" hour
@@ -289,9 +290,13 @@ def check_if_proper_hour(min_hour, max_hour, arrive_time, time):
     if min_hour < max_hour and arrive_time.day != time.day:
         # daytime line, tomorrow day
         return False
-    if min_hour <= arrive_time.hour < max_hour:  # The normal
-        # E.g. min hour: 6, actual hour: 14, max hour: 19
-        return True
+    if min_hour < max_hour:
+        if min_hour <= arrive_time.hour < max_hour:  # The normal
+            # E.g. min hour: 6, actual hour: 14, max hour: 19
+            return True
+        else:
+            return False
+    # else: daytime 
     if min_hour > max_hour:  # Night travel
         if min_hour <= arrive_time.hour and arrive_time.day == time.day:  # Same day
             return True
