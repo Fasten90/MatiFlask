@@ -334,6 +334,7 @@ def update_late_arrive_time_to_clock(menetrend):
             else:
                 continue
         elif arrive_minute == 0:
+            new_item = item
             new_item['arrive_minute'] = TIME_ARRIVE_NOW_TEXT
         else:  # few minutes
             delta = datetime.timedelta(minutes=arrive_minute)
