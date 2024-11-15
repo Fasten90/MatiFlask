@@ -8,6 +8,8 @@ import mysql.connector
 
 
 CITY_DONTCARE_TEXT = 'Minden város'
+TIME_ARRIVE_NOW_TEXT = 'MOST'
+
 DEBUG = False
 
 
@@ -151,8 +153,8 @@ def get_next_arrive(menetrend):
             if arrive_hour > max_hour:
                 # It is after the job, exit!
                 return None
-            if arrive_hour > actual_hour or arrive_minute > actual_minute:
-                # Arrive in the next hours or in this hour, but late minute
+            if actual_hour <= arrive_hour or actual_minute <= arrive_minute:
+                # Arrive in the next hours or in this hour, but later minute
                 # It is good!
                 is_ok = True
                 if arrive_hour == actual_hour:
@@ -259,8 +261,9 @@ def update_menetrend_with_arrive_minutes(result):
     for item in result:
         new_item = item
         new_item['arrive_minute'] = get_next_arrive(item)  # Add a calculated field
-        if new_item['arrive_minute'] :
-            new_result.append(new_item)
+        if new_item['arrive_minute'] == 0:
+            new_item['arrive_minute'] = TIME_ARRIVE_NOW_TEXT
+        new_result.append(new_item)
     return new_result
 
 
@@ -395,6 +398,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             html_result += '</tr>\n'
         html_result += '</table>\n'
 
+    html_result += '<br>\n'
     html_result += f'{now.hour:02}:{now.minute:02}'
 
     return html_result
