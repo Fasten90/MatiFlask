@@ -261,8 +261,6 @@ def update_menetrend_with_arrive_minutes(result):
     for item in result:
         new_item = item
         new_item['arrive_minute'] = get_next_arrive(item)  # Add a calculated field
-        if new_item['arrive_minute'] == 0:
-            new_item['arrive_minute'] = TIME_ARRIVE_NOW_TEXT
         new_result.append(new_item)
     return new_result
 
@@ -335,6 +333,8 @@ def update_late_arrive_time_to_clock(menetrend):
                 new_item['arrive_minute'] = arrive_time
             else:
                 continue
+        elif arrive_minute == 0:
+            new_item['arrive_minute'] = TIME_ARRIVE_NOW_TEXT
         else:  # few minutes
             delta = datetime.timedelta(minutes=arrive_minute)
             arrive_time = time + delta
