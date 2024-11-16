@@ -176,6 +176,27 @@ def mati_adatbazis():
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers)
 
 
+tereles_info = ''
+@app.route('/tereles', methods=['GET', 'POST'])
+def tereles():
+    try:
+        if request.method == 'POST':
+            print(request)
+            global tereles_info
+            tereles_info  = request.content
+            return tereles_info
+        elif request.method == 'GET':
+            new_text = request.args.get('new', type=str)
+            global tereles_info
+            tereles_info = new_text
+            return tereles_info
+        else:
+            return tereles_info
+    except Exception as ex:
+        print('Exception: {}'.format(ex))
+        return '[ERROR] ' + str(ex)
+
+
 # For debug: Start debug mode this file
 if __name__ == '__main__':
     app.run()
