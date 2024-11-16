@@ -148,7 +148,9 @@ def mati_adatbazis():
 
     if request.method == 'POST':
         try:
-            if form.validate():
+            #if form.validate_on_submit():
+            # TODO: Resolve
+            if True:
                 line_infos = {}
                 line_infos['line'] = request.form['jarat']
                 line_infos['min_hour'] = request.form['min_hour']
