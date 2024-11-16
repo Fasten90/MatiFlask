@@ -179,15 +179,14 @@ def mati_adatbazis():
 tereles_info = ''
 @app.route('/tereles', methods=['GET', 'POST'])
 def tereles():
+    global tereles_info
     try:
         if request.method == 'POST':
             print(request)
-            global tereles_info
             tereles_info  = request.content
             return tereles_info
         elif request.method == 'GET':
             new_text = request.args.get('new', type=str)
-            global tereles_info
             tereles_info = new_text
             return tereles_info
         else:
