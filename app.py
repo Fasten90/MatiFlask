@@ -5,6 +5,7 @@ from flask import Flask, render_template, flash, request, redirect, session, sen
 from flask_wtf import csrf
 
 import mati_db
+import forms
 
 app = Flask(__name__)
 csrf = csrf.CSRFProtect(app)
@@ -135,6 +136,35 @@ def get_menetrend_bus():
     else:
         result = 'It only works with bus?line=5 or bus?lines'
     return result
+
+
+@app.route('/mati_adatbazis', methods=['GET', 'POST'])
+def mati_adatbazis():
+
+    form = forms.MatiAdatbazisFeltoltes()
+
+    if request.method == 'POST':
+        if form.validate():
+            line_infos = {}
+            line_infos['line'] = request.form['jarat']
+            line_infos['min_hour'] = request.form['min_hour']
+            line_infos['max_hour'] = request.form['max_hour']
+            line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
+            line_infos['start_minute'] = request.form['start_minute']
+            line_infos['station'] = request.form['station']
+            line_infos['line_type'] = request.form['jarat_tipus']
+            line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
+            line_infos['city'] = None  # By default we ignore it
+            print('Received content: ' + line_infos)
+            result = mati_db.process_and_upload_line(line_infos)
+            flash('Result: ' + result)
+        else:
+            print('CSRF ERROR')
+    else:
+        # First call, put default data
+        form.content.data = 'default'
+
+    return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form)
 
 
 # For debug: Start debug mode this file

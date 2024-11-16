@@ -82,9 +82,10 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         result = mycursor.fetchall()
         column_headers = mycursor.column_names
     except Exception as ex:  # pylint: disable=broad-except
+        mydb.close()
         raise Exception(ex)
     else:
-        # Move content into directory
+        # Move content into dictionary
         results_with_dict = []
         for item in result:
             new_item = {}
@@ -709,6 +710,44 @@ def get_all_available_cities():  # For MatiGO
     return new_result
 
 
+def process_and_upload_line(line_infos):
+    result = None
+
+    #line_infos['line']
+    #line_infos['min_hour']
+    #line_infos['max_hour']
+    #line_infos['jaratsuruseg_minute']
+    #line_infos['jaratsuruseg_hetvege']
+    #line_infos['start_minute']
+    #line_infos['station']
+    #line_infos['line_type']
+    #line_infos['city']
+
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    print('Connected to MySQL')
+
+    sql = ' INSERT INTO `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    val = list(line_infos.values())
+    print('Execute SQL command: ' + sql)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as ex:
+        mydb.close()
+        raise (ex)
+
+    mydb.close()
+
+    if DEBUG:
+        print(result)
+
+    return result
+
+
 if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
@@ -759,3 +798,4 @@ if __name__ == '__main__':
         print(res)
 
     check_actual_day_type()
+
