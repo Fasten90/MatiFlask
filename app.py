@@ -185,8 +185,11 @@ def tereles():
             tereles_info  = request.content
             return tereles_info
         elif request.method == 'GET':
-            new_text = request.args.get('new', type=str)
-            tereles_info = new_text
+            try:
+                new_text = request.args.get('new', type=str)
+                tereles_info = new_text
+            except Exception as ex:
+                print('There is no "new" arg.')
             return tereles_info
         else:
             return tereles_info
