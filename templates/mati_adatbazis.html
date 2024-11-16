@@ -7,6 +7,12 @@
 <h1>Mati adatbázis</h1>
 
 
+{% if result %}
+<p>Eredmény:</p>
+{{ result }}
+{% endif %}
+
+
 <form action="" method="post">
 {{ form.csrf_token() }}
 

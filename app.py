@@ -143,7 +143,8 @@ def mati_adatbazis():
 
     form = forms.MatiAdatbazisFeltoltes()
 
-    lines_all, lines_all_headers = None, None
+    lines_all, lines_all_headers = mati_db.get_db_all()
+    result = ''
 
     if request.method == 'POST':
         try:
@@ -161,8 +162,6 @@ def mati_adatbazis():
                 print('Received content: ' + str(line_infos))
                 result = mati_db.process_and_upload_line(line_infos)
                 flash('Result: ' + result)
-
-                lines_all, lines_all_headers = mati_db.get_db_all()
             else:
                 print('CSRF ERROR')
         except Exception as ex:
@@ -170,10 +169,9 @@ def mati_adatbazis():
             print(str(ex))
     else:
         # First call, put default data
-        #form.content.data = 'default'
-        lines_all, lines_all_headers = mati_db.get_db_all()
+        pass
 
-    return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers)
+    return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers, result=result)
 
 
 tereles_info = ''
