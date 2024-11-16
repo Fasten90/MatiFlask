@@ -162,7 +162,8 @@ def mati_adatbazis():
             print('CSRF ERROR')
     else:
         # First call, put default data
-        form.content.data = 'default'
+        #form.content.data = 'default'
+        pass
 
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form)
 
