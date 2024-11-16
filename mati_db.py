@@ -101,6 +101,35 @@ def get_db(jarat=None, station=None, city=None, limit=100):
     return result
 
 
+def get_db_all():
+    """ Get all things """
+
+    result = []
+
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    print('Connected to MySQL')
+
+    sql = """
+    SELECT *
+    FROM mati_menetrend
+    """
+
+    try:
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+        column_headers = mycursor.column_names
+    except Exception as ex:  # pylint: disable=broad-except
+        mydb.close()
+        raise Exception(ex)
+
+    mydb.close()
+
+    return result, column_headers
+
+
 def get_db_cities():
     """ Get all available cities from db """
 
@@ -299,7 +328,7 @@ def check_if_proper_hour(min_hour, max_hour, arrive_time, time):
             return True
         else:
             return False
-    # else: daytime 
+    # else: daytime
     if min_hour > max_hour:  # Night travel
         if min_hour <= arrive_time.hour and arrive_time.day == time.day:  # Same day
             return True
@@ -739,7 +768,7 @@ def process_and_upload_line(line_infos):
         mydb.commit()
     except Exception as ex:
         mydb.close()
-        raise (ex)
+        raise ex
 
     mydb.close()
 
@@ -799,4 +828,3 @@ if __name__ == '__main__':
         print(res)
 
     check_actual_day_type()
-

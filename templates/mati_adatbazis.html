@@ -63,5 +63,26 @@
 </form>
 
 
+{% if lines_all %}
+
+<br />
+<br />
+
+<table class="lines_all">
+    <tr>
+        {% for item in lines_all_headers %}
+        <th>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% for row in lines_all %}
+    <tr>
+        {% for item in row.items() %}
+        <td>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
 {% endblock content %}
 
