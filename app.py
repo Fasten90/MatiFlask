@@ -180,9 +180,10 @@ tereles_info = ''
 @app.route('/tereles', methods=['GET', 'POST'])
 def tereles():
     try:
+        global tereles_info
         if request.method == 'POST':
             print(request)
-            tereles_info  = request.content
+            tereles_info = request.content
             return tereles_info
         elif request.method == 'GET':
             try:
