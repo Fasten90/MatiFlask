@@ -188,7 +188,9 @@ def tereles():
         elif request.method == 'GET':
             try:
                 new_text = request.args.get('new', type=str)
-                tereles_info = new_text
+                if new_text:
+                    tereles_info = str(new_text)
+                return tereles_info
             except Exception as ex:
                 print('There is no "new" arg.')
             return tereles_info
