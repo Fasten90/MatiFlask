@@ -18,3 +18,13 @@ https://mati.e5tv.hu/all_lines
 
 https://mati.e5tv.hu/nyomtatas?megallo=lármákl utca
 https://mati.e5tv.hu/get_all_nyomtatas
+
+
+# Testing on server
+1) Side:
+export DB_PASSWORD=123...
+./start_local_server.sh
+
+2) Side:
+curl 127.0.0.1:5000/mati_adatbazis
+
