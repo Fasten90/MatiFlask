@@ -712,7 +712,7 @@ def get_all_available_cities():  # For MatiGO
 
 
 def process_and_upload_line(line_infos):
-    result = None
+    result = ''
 
     #line_infos['line']
     #line_infos['min_hour']
@@ -730,8 +730,8 @@ def process_and_upload_line(line_infos):
 
     print('Connected to MySQL')
 
-    sql = ' INSERT INTO `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    sql = 'INSERT INTO `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`) \
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = list(line_infos.values())
     print('Execute SQL command: ' + sql)
     try:
