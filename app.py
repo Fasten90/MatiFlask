@@ -163,8 +163,10 @@ def mati_adatbazis():
                 result = mati_db.process_and_upload_line(line_infos)
                 flash('Result: ' + result)
             else:
+                result = 'CSRF ERROR'
                 print('CSRF ERROR')
         except Exception as ex:
+            result = str(ex)
             flash('Result: ' + str(ex))
             print(str(ex))
     else:
