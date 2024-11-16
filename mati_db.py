@@ -118,6 +118,7 @@ def get_db_cities():
         mycursor.execute(sql)
         result = mycursor.fetchall()
     except Exception as ex:  # pylint: disable=broad-except
+        mydb.close()
         raise Exception(ex)
 
     mydb.close()
