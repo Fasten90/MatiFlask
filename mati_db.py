@@ -300,6 +300,12 @@ def extend_get_next_menetrends(result):
     """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
+        if not item['arrive_minute']:  # There is no arrive data for today?
+            # TODO: Improvement: 'Ma már nem közlekedik' arrive minute
+            #modified_item = item.copy()
+            #modified_item['arrive_minute'] = new_arrive_minute  # Add a new item with updated arrive minute
+            #new_result.append(modified_item)
+            continue  # Ignore this line
         jaratsuruseg = get_jaratsuruseg_by_day_type(item['jaratsuruseg_minute'], item['jaratsuruseg_hetvege'])
         if jaratsuruseg:
             new_result.append(item)
