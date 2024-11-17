@@ -1,4 +1,5 @@
 import os
+import traceback
 from datetime import datetime, timedelta, date
 
 from flask import Flask, render_template, flash, request, redirect, session, send_from_directory
@@ -87,6 +88,7 @@ def get_menetrend():
         result = 'FATAL ERROR: Please report it to Apa/Vizi Gábor:<br />\r\n' \
                 'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
                 f'{ex}'
+        result += traceback.format_exc()
     return result
 
 
