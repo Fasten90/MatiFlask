@@ -300,7 +300,7 @@ def extend_get_next_menetrends(result):
     """ Create new menetrends with new arrive values """
     new_result = []
     for item in result:
-        if item['arrive_minute'] < 0:  # There is no arrive data for today?
+        if not isinstance(item['arrive_minute'], int) or item['arrive_minute'] < 0:  # There is no arrive data for today?
             # 0 is needed!
             # TODO: Improvement: 'Ma már nem közlekedik' arrive minute
             #modified_item = item.copy()
