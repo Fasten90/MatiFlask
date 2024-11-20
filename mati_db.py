@@ -3,6 +3,7 @@
 import os
 import datetime
 import math
+import random
 from enum import Enum
 import mysql.connector
 
@@ -320,6 +321,45 @@ def extend_get_next_menetrends(result):
     return new_result
 
 
+def extend_with_low_floor(result):
+    """ Create new menetrends with low floor properties """
+    new_result = []
+    floor_calculation = {}
+    for item in result:
+        modified_item = item.copy()
+        if 'low_floor' not in item:
+            low_floor = False
+        if not low_floor:
+            modified_item['low_floor'] = False
+            new_result.append(modified_item)
+        else:
+            # We shall calculate the low floor
+            try:
+                low_floor1 = int(low_floor.split('_')[0])
+                low_floor2 = int(low_floor.split('_')[1])
+            except:
+                print('Issue with "low_floor", set automatically true')
+                modified_item['low_floor'] = True
+                new_result.append(modified_item)
+                break
+            line = item['jarat']
+            if line not in floor_calculation:
+                floor_calculation[line] = {
+                    'count': random.randint(0, low_floor1+low_floor2),
+                    'low_floor_limit': low_floor1,
+                    'max': low_floor1 + low_floor2,
+                    }
+            if floor_calculation[line]['count'] < floor_calculation[line]['low_floor_limit']:
+                modified_item['low_floor'] = True
+            else:
+                modified_item['low_floor'] = False
+            floor_calculation[line]['count'] += 1
+            if floor_calculation[line]['count'] >= floor_calculation[line]['max']:
+                floor_calculation[line]['count'] = 0
+            new_result.append(modified_item)
+    return new_result
+
+
 def order_of_arrive(menetrend):
     """ ordering with remained arrive minutes """
     return menetrend['arrive_minute']  # Calculated field
@@ -386,7 +426,8 @@ def update_late_arrive_time_to_clock(menetrend):
 
 
 def get_menetrend(jarat=None, station=None, result=None):
-    """ fill the menetrend table by SQL/DB result (rows) """
+    """ fill the menetrend table by SQL/DB result (rows)
+        Application function (not for printing)"""
     html_result = ''
     now = datetime.datetime.now()
     if station:
@@ -394,6 +435,7 @@ def get_menetrend(jarat=None, station=None, result=None):
             result = precheck_menetrend2(result)  # Check if they travel
             result = update_menetrend_with_arrive_minutes(result)  # Add next arrive minute
             result = extend_get_next_menetrends(result)  # Add x new arrives
+            result = extend_with_low_floor(result)  # Fill with low_floor field
             result = sorted(result, key=order_of_arrive)  # Sort
             result = update_late_arrive_time_to_clock(result)  # Check max_hour and beautify remained minutes (print clock)
             html_result += '<table>'
@@ -402,12 +444,15 @@ def get_menetrend(jarat=None, station=None, result=None):
                 jarat_found = item['jarat']
                 station_found = item['station']
                 jarat_type = item['jarat_tipus']
+                low_floor = item['low_floor']
                 arrive_minute_remained = item['arrive_minute']
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
+                low_floor_start = '<ul>' if low_floor else ''
+                low_floor_end = '</ul>' if low_floor else ''
                 html_result += '<tr>'
                 html_result += f'<td>{station_found}</td>' \
                         f'<td bgcolor="{background_color}">' \
-                        f'<font color="{text_color}">{jarat_found}</font>' \
+                        f'<font color="{text_color}">{low_floor_start}{jarat_found}{low_floor_end}</font>' \
                         '</td>' \
                         f'<td>{arrive_minute_remained}</td>'
                 html_result += '</tr>\n'
