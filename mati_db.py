@@ -493,6 +493,48 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     result = get_db(jarat, station, city, limit)
     return get_menetrend(jarat, station, result)
 
+def calculate_line_view(line, station, time):
+    item_list = []
+    result = get_db(jarat=line)
+    item = {}
+    item['station']
+    item['time']
+    item['is_tram_here']
+    return item_list
+
+
+def get_line_view(line, station, time):
+    """ WRAP Function - used in the MatiGO
+    Returns with HTML code
+    Note: This function (generated HTML) used in the menetrend - get_menetrend()"""
+
+    station_list = calculate_line_view(line, station, time)
+
+    html = ''
+    html += '<html>'
+    html += '<body>'
+    html += '<table>'
+    for item in station_list:
+        html += '<tr>'
+        html += '<td>'
+        if item['is_tram_here']:
+            html += '<img src="static/tram-car.png" title="tram">'
+        html += '</td>'
+        html += '<td>'
+        html += item['time']
+        html += '</td>'
+        html += '<td>'
+        html += item['station']
+        html += '</td>'
+        html += '</tr>'
+    html += '</table>'
+    html += '</body>'
+    html += '</html>'
+
+
+
+    return 
+
 
 def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
     """ Auxuliary HTML generate for jaratsuruseg (line department) table

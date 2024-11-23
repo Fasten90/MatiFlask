@@ -85,7 +85,22 @@ def get_menetrend():
         limit = request.args.get('limit', type=int, default=100)
         result = mati_db.get_menetrend_wrap(line, station, city, limit)
     except Exception as ex:
-        result = 'FATAL ERROR: Please report it to Apa/Vizi Gábor:<br />\r\n' \
+        result = 'FATAL ERROR: Kérlek szólj Apa/Vizi Gábor-nak:<br />\r\n' \
+                'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
+                f'{ex}'
+        result += traceback.format_exc()
+    return result
+
+
+@app.route('/jarat_nezet', methods=['GET'])
+def get_jarat_nezet():
+    try:
+        line = request.args.get('jarat', type=int)
+        station = request.args.get('megallo', type=str)
+        time = request.args.get('time', type=str)
+        result = mati_db.get_line_view(line, station, time)
+    except Exception as ex:
+        result = 'FATAL ERROR: Kérlek szólj Apa/Vizi Gábor-nak:<br />\r\n' \
                 'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
                 f'{ex}'
         result += traceback.format_exc()
