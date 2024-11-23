@@ -543,7 +543,7 @@ def calculate_line_view(line, station, time):
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = new_item['start_minute'] - actual_station_start_minute
-        this_station_time = datetime.datetime.strptime(time,"%H:%M") + datetime.timedelta(minute=diff_minutes_time_from_actual_station)
+        this_station_time = datetime.datetime.strptime(time,"%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
 
     return item_list
@@ -965,3 +965,5 @@ if __name__ == '__main__':
         print(res)
 
     check_actual_day_type()
+
+    get_line_view(line='17', station='davvid', time='14:36')
