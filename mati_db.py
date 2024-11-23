@@ -550,8 +550,13 @@ def calculate_line_view(line, station, time):
             is_found = True
         elif this_station_time < now_with_fake_date:
             item['is_tram_here'] = False  # We left this
+        elif this_station_time > now_with_fake_date and was_first is False:
+            # We are before the first station. Do not sign anything!
+            item['is_tram_here'] = False
+            is_found = True
         elif this_station_time > now_with_fake_date and was_first is True and is_found is False:
             # Ohh, the next!
+            # Create a fake item when we are between two stations, EXCEPT that is the first
             fake_element = copy.copy(item)
             fake_element['is_tram_here'] = True
             fake_element['time'] = now_string
@@ -560,10 +565,9 @@ def calculate_line_view(line, station, time):
             item['is_tram_here'] = False
             is_found = True
         else:
-            # Unhandled
+            # Unhandled / Not arrived
             item['is_tram_here'] = False
         was_first = True
-        # TODO: Create a fake item when we are between two stations?
 
     return item_list
 
