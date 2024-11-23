@@ -406,7 +406,7 @@ def update_late_arrive_time_to_clock(menetrend):
             arrive_time = time + delta
             if check_if_proper_hour(min_hour, max_hour, arrive_time, time):
                 # Format for readable
-                arrive_time = datetime.datetime.strftime(arrive_time, '%H:%M')
+                arrive_time = datetime.datetime.strftime(arrive_time, '%HH:%MM')
                 new_item = item
                 new_item['arrive_minute'] = arrive_time
             else:
@@ -451,11 +451,11 @@ def get_menetrend(jarat=None, station=None, result=None):
                     # 6 (minutes remained)
                     time = int(arrive_minute_remained)
                     time = now + datetime.timedelta(minutes=time)
-                    time = datetime.datetime.strftime(time, 'HH:MM')
+                    time = datetime.datetime.strftime(time, '%HH:%MM')
                 except:
                     # 'MOST'
                     if arrive_minute_remained == TIME_ARRIVE_NOW_TEXT:
-                        time = datetime.datetime.strftime(now, 'HH:MM')
+                        time = datetime.datetime.strftime(now, '%HH:%MM')
                     else:
                         # '13:28' format
                         time = arrive_minute_remained
@@ -528,7 +528,7 @@ def calculate_line_view(line, station, time):
     for item in item_list:
         if item['station'] == station:
             item['time'] = time
-            expected_time = datetime.datetime.strptime(time, "HH:MM")
+            expected_time = datetime.datetime.strptime(time, "%HH:MM")
             now = datetime.datetime.now()
             if expected_time == now:
                 new_item['is_tram_here'] = True
@@ -543,8 +543,8 @@ def calculate_line_view(line, station, time):
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = new_item['start_minute'] - actual_station_start_minute
-        this_station_time = datetime.datetime.strptime(time, "HH:MM") + datetime.timedelta(minute=diff_minutes_time_from_actual_station)
-        item['time'] = datetime.datetime.strftime(this_station_time, "HH:MM")
+        this_station_time = datetime.datetime.strptime(time,"%HH:%MM") + datetime.timedelta(minute=diff_minutes_time_from_actual_station)
+        item['time'] = datetime.datetime.strftime(this_station_time, "%HH:%MM")
 
     return item_list
 
