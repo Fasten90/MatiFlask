@@ -528,7 +528,7 @@ def calculate_line_view(line, station, time):
     for item in item_list:
         if item['station'] == station:
             item['time'] = time
-            expected_time = datetime.datetime.strptime(time, "%HH:MM")
+            expected_time = datetime.datetime.strptime(time, "%H:%M")
             now = datetime.datetime.now()
             if expected_time == now:
                 new_item['is_tram_here'] = True
