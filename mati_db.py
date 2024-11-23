@@ -521,30 +521,36 @@ def calculate_line_view(line, station, time):
         new_item['start_minute'] = item['start_minute']
         item_list.append(new_item)
 
-    # Calculate station where we are
     actual_station_start_minute = 0  # start_minute is always in a simple integer (minutes)
+
+    # Calculate station where we are
+    for item in item_list:
+        if item['station'] == station: # We check this station
+            # Save this station times
+            item['time'] = time
+            actual_station_start_minute = item['start_minute']
+
     is_found = False
     was_first = False
-    for item in item_list:
-        if item['station'] == station:
-            item['time'] = time
-            expected_time = datetime.datetime.strptime(time, "%H:%M")
-            now = datetime.datetime.now()
-            if expected_time == now:
-                item['is_tram_here'] = True
-                is_found = True
-            elif expected_time > now and was_first == True and is_found == False:
-                item['is_tram_here'] = True
-                is_found = True
-            actual_station_start_minute = item['start_minute']
-            break
-        was_first = True
-
+    expected_time = datetime.datetime.strptime(time, "%H:%M")
+    now = datetime.datetime.now()
+    now_string = datetime.datetime.strftime(datetime.datetime.now(), "%H:%M")
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
         this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
+
+        if item['time'] == now_string:
+            item['is_tram_here'] = True
+            is_found = True
+        elif this_station_time > now and was_first == True and is_found == False:
+            item['is_tram_here'] = True
+            is_found = True
+        else:
+            item['is_tram_here'] = False
+        was_first = True
+        # TODO: Create a fake item when we are between two stations?
 
     return item_list
 
