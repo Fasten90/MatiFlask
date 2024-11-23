@@ -5,6 +5,7 @@ import datetime
 import math
 import random
 from enum import Enum
+import copy
 import mysql.connector
 
 
@@ -536,7 +537,7 @@ def calculate_line_view(line, station, time):
     now_string = datetime.datetime.strftime(now, "%H:%M")
     now_with_fake_date = datetime.datetime.strptime(now_string, "%H:%M")
     # Calculate time for each field
-    for item in item_list:
+    for index, item in enumerate(item_list):
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
         this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
@@ -551,7 +552,12 @@ def calculate_line_view(line, station, time):
             item['is_tram_here'] = False  # We left this
         elif this_station_time > now_with_fake_date and was_first is True and is_found is False:
             # Ohh, the next!
-            item['is_tram_here'] = True
+            fake_element = copy.copy(item)
+            fake_element['is_tram_here'] = True
+            fake_element['time'] = now_string
+            fake_element['station'] = ''
+            item_list.insert(index, fake_element)
+            item['is_tram_here'] = False
             is_found = True
         else:
             # Unhandled
