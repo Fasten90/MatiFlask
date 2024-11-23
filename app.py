@@ -97,7 +97,7 @@ def get_menetrend():
 @app.route('/jarat_nezet', methods=['GET'])
 def get_jarat_nezet():
     try:
-        line = request.args.get('jarat', type=int)
+        line = request.args.get('jarat', type=str)
         station = request.args.get('megallo', type=str)
         time = request.args.get('time', type=str)
         result = mati_db.get_line_view(line, station, time)
