@@ -517,17 +517,29 @@ def calculate_line_view(line, station, time):
         new_item = {}
         new_item['station'] = item['station']
         new_item['time'] = None
-        new_item['is_tram_here']
+        new_item['is_tram_here'] = None
         new_item['start_minute'] = item['start_minute']
         item_list.append(new_item)
 
     # Calculate station where we are
     actual_station_start_minute = 0
+    is_found = False
+    was_first = False
     for item in item_list:
         if item['station'] == station:
             item['time'] = time
+            expected_time = datetime.datetime.strptime(time, "HH:MM")
+            now = datetime.datetime.now()
+            if expected_time == now:
+                new_item['is_tram_here'] = True
+                is_found = True
+            elif expected_time > now and was_first == True and is_found == False:
+                new_item['is_tram_here'] = True
+                is_found = True
             actual_station_start_minute = item['start_minute']
             break
+        was_first = True
+
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = new_item['start_minute'] - actual_station_start_minute
