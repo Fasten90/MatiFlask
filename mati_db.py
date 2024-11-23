@@ -446,13 +446,28 @@ def get_menetrend(jarat=None, station=None, result=None):
                 jarat_type = item['jarat_tipus']
                 low_floor = item['low_floor']
                 arrive_minute_remained = item['arrive_minute']
+                now = datetime.datetime.now()
+                try:
+                    # 6 (minutes remained)
+                    time = int(arrive_minute_remained)
+                    time = now + datetime.timedelta(minutes=time)
+                    time = datetime.datetime.strftime(time, 'HH:MM')
+                except:
+                    # 'MOST'
+                    if arrive_minute_remained == TIME_ARRIVE_NOW_TEXT:
+                        time = datetime.datetime.strftime(now, 'HH:MM')
+                    else:
+                        # '13:28' format
+                        time = arrive_minute_remained
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
                 low_floor_start = '<ul>' if low_floor else ''
                 low_floor_end = '</ul>' if low_floor else ''
                 html_result += '<tr>'
                 html_result += f'<td>{station_found}</td>' \
                         f'<td bgcolor="{background_color}">' \
+                        f'<a href="jarat_nezet?jarat={jarat_found}&megallo={station_found}&time={time}">' \
                         f'<font color="{text_color}">{low_floor_start}{jarat_found}{low_floor_end}</font>' \
+                        '</a>' \
                         '</td>' \
                         f'<td>{arrive_minute_remained}</td>'
                 html_result += '</tr>\n'
@@ -493,13 +508,32 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     result = get_db(jarat, station, city, limit)
     return get_menetrend(jarat, station, result)
 
+
 def calculate_line_view(line, station, time):
     item_list = []
     result = get_db(jarat=line)
-    item = {}
-    item['station']
-    item['time']
-    item['is_tram_here']
+    for item in result:
+        assert isinstance(item, dict)
+        new_item = {}
+        new_item['station'] = item['station']
+        new_item['time'] = None
+        new_item['is_tram_here']
+        new_item['start_minute'] = item['start_minute']
+        item_list.append(new_item)
+
+    # Calculate station where we are
+    actual_station_start_minute = 0
+    for item in item_list:
+        if item['station'] == station:
+            item['time'] = time
+            actual_station_start_minute = item['start_minute']
+            break
+    # Calculate time for each field
+    for item in item_list:
+        diff_minutes_time_from_actual_station = new_item['start_minute'] - actual_station_start_minute
+        this_station_time = datetime.datetime.strptime(time, "HH:MM") + datetime.timedelta(minute=diff_minutes_time_from_actual_station)
+        item['time'] = datetime.datetime.strftime(this_station_time, "HH:MM")
+
     return item_list
 
 
@@ -531,9 +565,7 @@ def get_line_view(line, station, time):
     html += '</body>'
     html += '</html>'
 
-
-
-    return 
+    return html
 
 
 def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
@@ -555,7 +587,6 @@ def generate_html_rows_by_jaratsuruseg(line, jaratsuruseg_minute, daytype_text):
     else:
         html += '<tr><td>A járat nem közlekedik!</td></tr>\n'
     return html
-
 
 
 def get_html_format_css():
