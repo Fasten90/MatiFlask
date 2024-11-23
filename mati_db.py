@@ -582,6 +582,7 @@ def get_line_view(line, station, time):
     html = ''
     html += '<html>'
     html += '<body>'
+    html += f'<p>Járat: {line}, Megálló ahonnan tervezel: {station}</p>'
     html += '<table>'
     for item in station_list:
         html += '<tr>'
