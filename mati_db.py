@@ -540,6 +540,9 @@ def calculate_line_view(line, station, time):
         this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
 
+        # Prepare datetime for comparing
+        this_station_time.replace(year=now.year, month=now.month, day=now.day)
+
         if item['time'] == now_string:
             item['is_tram_here'] = True
             is_found = True
