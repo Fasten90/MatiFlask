@@ -522,7 +522,7 @@ def calculate_line_view(line, station, time):
         item_list.append(new_item)
 
     # Calculate station where we are
-    actual_station_start_minute = 0
+    actual_station_start_minute = 0  # start_minute is always in a simple integer (minutes)
     is_found = False
     was_first = False
     for item in item_list:
@@ -542,7 +542,7 @@ def calculate_line_view(line, station, time):
 
     # Calculate time for each field
     for item in item_list:
-        diff_minutes_time_from_actual_station = new_item['start_minute'] - actual_station_start_minute
+        diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
         this_station_time = datetime.datetime.strptime(time,"%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
 
