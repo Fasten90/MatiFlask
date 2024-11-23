@@ -534,6 +534,7 @@ def calculate_line_view(line, station, time):
     was_first = False
     now = datetime.datetime.now()
     now_string = datetime.datetime.strftime(now, "%H:%M")
+    now_with_fake_date = datetime.datetime.strptime(now_string, "%H:%M")
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
@@ -546,9 +547,9 @@ def calculate_line_view(line, station, time):
         if item['time'] == now_string:
             item['is_tram_here'] = True
             is_found = True
-        elif this_station_time < now:
+        elif this_station_time < now_with_fake_date:
             item['is_tram_here'] = False  # We left this
-        elif this_station_time > now and was_first is True and is_found is False:
+        elif this_station_time > now_with_fake_date and was_first is True and is_found is False:
             # Ohh, the next!
             item['is_tram_here'] = True
             is_found = True
