@@ -531,10 +531,10 @@ def calculate_line_view(line, station, time):
             expected_time = datetime.datetime.strptime(time, "%H:%M")
             now = datetime.datetime.now()
             if expected_time == now:
-                new_item['is_tram_here'] = True
+                item['is_tram_here'] = True
                 is_found = True
             elif expected_time > now and was_first == True and is_found == False:
-                new_item['is_tram_here'] = True
+                item['is_tram_here'] = True
                 is_found = True
             actual_station_start_minute = item['start_minute']
             break
@@ -543,7 +543,7 @@ def calculate_line_view(line, station, time):
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
-        this_station_time = datetime.datetime.strptime(time,"%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
+        this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
 
     return item_list
@@ -565,6 +565,8 @@ def get_line_view(line, station, time):
         html += '<td>'
         if item['is_tram_here']:
             html += '<img src="static/tram-car.png" title="tram">'
+        else:
+            html += '<img src="static/circle.png" title="tram">'
         html += '</td>'
         html += '<td>'
         html += item['time']

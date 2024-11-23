@@ -33,6 +33,17 @@ def robots_txt():
     return send_from_directory('static', 'robots.txt')
 
 
+# TODO: General solution is needed
+@app.route('/static/tram-car.png')
+def static_tram_img():
+    return send_from_directory('static', 'tram-car.png')
+
+
+@app.route('/static/circle.png')
+def static_circle():
+    return send_from_directory('static', 'circle.png')
+
+
 clock_time = '13:26:41'
 last_set_time = None
 @app.route('/clock', methods=['GET', 'POST'])
