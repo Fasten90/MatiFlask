@@ -138,7 +138,7 @@ def get_db_cities():
 
     mycursor = mydb.cursor()
 
-    sql = f"""
+    sql = """
         SELECT varos
         FROM `mati_menetrend`
         GROUP by varos;
@@ -532,9 +532,8 @@ def calculate_line_view(line, station, time):
 
     is_found = False
     was_first = False
-    expected_time = datetime.datetime.strptime(time, "%H:%M")
     now = datetime.datetime.now()
-    now_string = datetime.datetime.strftime(datetime.datetime.now(), "%H:%M")
+    now_string = datetime.datetime.strftime(now, "%H:%M")
     # Calculate time for each field
     for item in item_list:
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
@@ -544,10 +543,14 @@ def calculate_line_view(line, station, time):
         if item['time'] == now_string:
             item['is_tram_here'] = True
             is_found = True
-        elif this_station_time > now and was_first == True and is_found == False:
+        elif this_station_time < now:
+            item['is_tram_here'] = False  # We left this
+        elif this_station_time > now and was_first is True and is_found is False:
+            # Ohh, the next!
             item['is_tram_here'] = True
             is_found = True
         else:
+            # Unhandled
             item['is_tram_here'] = False
         was_first = True
         # TODO: Create a fake item when we are between two stations?
