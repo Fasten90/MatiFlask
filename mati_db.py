@@ -348,7 +348,8 @@ def extend_with_low_floor(result):
             line = item['jarat']
             if line not in floor_calculation:
                 floor_calculation[line] = {
-                    'count': random.randint(0, low_floor1+low_floor2),
+                    # Random ~ module of hour
+                    'count': datetime.datetime.now().hour % (low_floor1+low_floor2),
                     'low_floor_limit': low_floor1,
                     'max': low_floor1 + low_floor2,
                     }
