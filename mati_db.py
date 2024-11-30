@@ -331,7 +331,7 @@ def extend_with_low_floor(result):
         if 'low_floor' not in item:
             low_floor = False
         else:
-            low_floor = 
+            low_floor = item['low_floor']
         if not low_floor:
             modified_item['low_floor'] = False
             new_result.append(modified_item)
