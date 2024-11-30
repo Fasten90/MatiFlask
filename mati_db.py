@@ -432,6 +432,9 @@ def get_menetrend(jarat=None, station=None, result=None):
     """ fill the menetrend table by SQL/DB result (rows)
         Application function (not for printing)"""
     html_result = ''
+    html_result += '<html>\n'
+    html_result += get_html_format_css()
+    html_result += '<body>\n'
     now = datetime.datetime.now()
     if station:
         if result:
@@ -502,6 +505,8 @@ def get_menetrend(jarat=None, station=None, result=None):
 
     html_result += '<br>\n'
     html_result += f'{now.hour:02}:{now.minute:02}'
+    html_result += '</body>\n'
+    html_result += '</html>\n'
 
     return html_result
 
