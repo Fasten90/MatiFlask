@@ -466,8 +466,8 @@ def get_menetrend(jarat=None, station=None, result=None):
                         # '13:28' format
                         time = arrive_minute_remained
                 text_color, background_color = get_color_by_jarmu_type(jarat_found, jarat_type)
-                low_floor_start = '<ul>' if low_floor else ''
-                low_floor_end = '</ul>' if low_floor else ''
+                low_floor_start = '<u>' if low_floor else ''
+                low_floor_end = '</u>' if low_floor else ''
                 html_result += '<tr>'
                 html_result += f'<td>{station_found}</td>' \
                         f'<td bgcolor="{background_color}">' \
