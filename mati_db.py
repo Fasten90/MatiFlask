@@ -922,6 +922,7 @@ def process_and_upload_line(line_infos):
     #line_infos['station']
     #line_infos['line_type']
     #line_infos['city']
+    #line_infos['low_floor']
 
     mydb = database_connection()
 
@@ -929,8 +930,8 @@ def process_and_upload_line(line_infos):
 
     print('Connected to MySQL')
 
-    sql = 'INSERT INTO `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`) \
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    sql = 'INSERT INTO `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = list(line_infos.values())
     print('Execute SQL command: ' + sql)
     try:

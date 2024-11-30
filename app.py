@@ -180,6 +180,7 @@ def mati_adatbazis():
                 line_infos['line_type'] = request.form['jarat_tipus']
                 line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 line_infos['city'] = None  # By default we ignore it
+                line_infos['low_floor'] = request.form['low_floor']
                 print('Received content: ' + str(line_infos))
                 result = mati_db.process_and_upload_line(line_infos)
                 flash('Result: ' + result)

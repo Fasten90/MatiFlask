@@ -14,3 +14,4 @@ class MatiAdatbazisFeltoltes(FlaskForm):
     jarat_tipus = SelectField('Járat típus', choices=['VCAF', 'VCOM', 'VGANZ', 'VTATRA', 'M', 'H', 'BUSZ', 'BUSZTROLI', 'ÉJSZAKAI', 'VOLÁNBUSZ', 'DHAJO', 'VONAT'])
     jaratsuruseg_hetvege = IntegerField('Járatsűrűség hétvégén', default=0)
     #varos - not used, use de default
+    low_floor = StringField('Alacsonypadlós: (alacsonypadlósok száma/magas padlósok száma arányban kell beírni, pl. "2_1")')
