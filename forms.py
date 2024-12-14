@@ -13,7 +13,7 @@ class MatiAdatbazisFeltoltes(FlaskForm):
     start_minute = IntegerField('Indulási időpont', validators=[DataRequired()])
     station = StringField('Megálló (station)', validators=[DataRequired()])
     jarat_tipus = SelectField('Járat típus', choices=['VCAF', 'VCOM', 'VGANZ', 'VTATRA', 'M', 'H', 'BUSZ', 'BUSZTROLI', 'ÉJSZAKAI', 'VOLÁNBUSZ', 'DHAJO', 'VONAT'])
-    jaratsuruseg_hetvege = IntegerField('Járatsűrűség hétvégén', 0)
+    jaratsuruseg_hetvege = IntegerField('Járatsűrűség hétvégén', default=0)
     #varos - not used, use de default
     low_floor = StringField('Alacsonypadlós: (alacsonypadlósok száma/magas padlósok száma arányban kell beírni, pl. "2_1")')
     is_edit = BooleanField('is_edit', default=False)
