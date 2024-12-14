@@ -1022,7 +1022,7 @@ def delete_record(line_infos):
     try:
         mycursor.execute(sql, val)
         mydb.commit()
-        warnings = mydb.show_warnings()
+        warnings = mycursor.get_warnings()
         print(warnings)
     except Exception as ex:
         mydb.close()
