@@ -195,7 +195,6 @@ def mati_adatbazis():
             edit_line['is_delete'] = request.args.get('is_delete', type=bool)
             if edit_line['is_edit'] == True:
                 # Get - edit - not edited, but started to editing
-                #form = forms.MatiAdatbazisFeltoltes(edit_line) # TODO: Remove
                 form = forms.MatiAdatbazisFeltoltes()
                 form.jarat.default = edit_line['line']
                 form.min_hour.default = edit_line['min_hour']
@@ -213,11 +212,14 @@ def mati_adatbazis():
             elif edit_line['is_delete'] == True:
                 is_modify = True
                 # Get - delete
+                result += 'Delete parameter!'
                 form = forms.MatiAdatbazisFeltoltes()
             else:
+                result += 'No edit, no delete!'
                 form = forms.MatiAdatbazisFeltoltes()
         except:
             # Parameter issues, create a pure form
+            result += 'Parameter issue!'
             form = forms.MatiAdatbazisFeltoltes()
         try:
             if is_modify:
@@ -226,7 +228,7 @@ def mati_adatbazis():
                     result += 'Delete required'
                     mati_db.delete_record(edit_line)
         except Exception as ex:
-            result = str(ex)
+            result += str(ex)
             flash('Result: ' + str(ex))
             print(str(ex))
 
