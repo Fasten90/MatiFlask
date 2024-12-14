@@ -1014,8 +1014,8 @@ def delete_record(line_infos):
 
     print('Connected to MySQL')
 
-    sql = 'DELETE FROM `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
-           WHERE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    sql = 'DELETE FROM `mati_menetrend` \
+           WHERE `jarat` = %s, `min_hour` = %s,  `max_hour` = %s, `jaratsuruseg_minute` = %s,  `start_minute` = %s, `station` = %s, `jarat_tipus` = %s, `jaratsuruseg_hetvege` = %s,  `varos` = %s, `low_floor` = %s'
     val = list(line_infos.values())
     print('Execute SQL command: ' + sql)
     try:
