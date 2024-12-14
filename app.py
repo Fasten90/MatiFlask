@@ -164,13 +164,13 @@ def mati_adatbazis():
 
     # Empty line
     empty_line = {}
-    empty_line['line'] = ''
+    empty_line['line'] = ''  # TODO: DB dolumn
     empty_line['min_hour'] = None
     empty_line['max_hour'] = None
     empty_line['jaratsuruseg_minute'] = None
     empty_line['start_minute'] = None
     empty_line['station'] = ''
-    empty_line['line_type'] = ''
+    empty_line['line_type'] = '' # TODO: DB dolumn
     empty_line['jaratsuruseg_hetvege'] = None
     empty_line['city'] = None  # By default we ignore it
     empty_line['low_floor'] = ''
@@ -179,13 +179,13 @@ def mati_adatbazis():
     if request.method == 'GET':
         try:
             edit_line = copy.copy(empty_line)
-            edit_line['line'] = request.args.get('jarat', type=str)  #TODO:
+            edit_line['line'] = request.args.get('jarat', type=str)  #TODO: DB dolumn
             edit_line['min_hour'] = request.args.get('min_hour', type=int)
             edit_line['max_hour'] = request.args.get('max_hour', type=int)
             edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=str)
             edit_line['start_minute'] = request.args.get('start_minute', type=int)
             edit_line['station'] = request.args.get('station', type=str)
-            edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO:
+            edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO: DB dolumn
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
             edit_line['is_edit'] = request.args.get('is_edit', type=bool)
@@ -196,11 +196,11 @@ def mati_adatbazis():
             elif edit_line['is_delete'] == True:
                 # Get - delete
                 mati_db.delete_record(edit_line)
-                form = forms.MatiAdatbazisFeltoltes(empty_line)
+                form = forms.MatiAdatbazisFeltoltes()
             else:
-                form = forms.MatiAdatbazisFeltoltes(empty_line)
+                form = forms.MatiAdatbazisFeltoltes()
         except:
-            form = forms.MatiAdatbazisFeltoltes(empty_line)
+            form = forms.MatiAdatbazisFeltoltes()
 
     if request.method == 'POST':
         try:
