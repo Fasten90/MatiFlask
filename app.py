@@ -289,6 +289,7 @@ def mati_adatbazis():
             flash('Result: ' + str(ex))
             print(str(ex))
             error_log(result)
+        form = forms.MatiAdatbazisFeltoltes()
     else:
         # First call, put default data
         pass
