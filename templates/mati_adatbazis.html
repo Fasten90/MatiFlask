@@ -89,7 +89,11 @@
     {% for row in lines_all %}
     <tr>
         {% for item in row %}
+        {% if 'a href' in item %}
+        <td>{{ item|safe }}</td>
+        {% else %}
         <td>{{ item }}</td>
+        {% endif %}
         {% endfor %}
     </tr>
     {% endfor %}
