@@ -208,7 +208,7 @@ def mati_adatbazis():
                 #form.varos.default = edit_line['city']  # We ignore it
                 form.low_floor.default = edit_line['low_floor']
                 form.is_edit.default = edit_line['is_edit']
-                #form.is_delete  # Non existing field
+                #form.is_delete  # Non existing field in the form
                 form.process()
             elif edit_line['is_delete'] == True:
                 is_modify = True
@@ -217,10 +217,13 @@ def mati_adatbazis():
             else:
                 form = forms.MatiAdatbazisFeltoltes()
         except:
+            # Parameter issues, create a pure form
             form = forms.MatiAdatbazisFeltoltes()
         try:
             if is_modify:
+                result += 'Modification required'
                 if edit_line['is_delete'] == True:
+                    result += 'Delete required'
                     mati_db.delete_record(edit_line)
         except Exception as ex:
             result = str(ex)
