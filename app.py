@@ -208,25 +208,25 @@ def mati_adatbazis():
             #if form.validate_on_submit():
             # TODO: Resolve
             if True:
-                line_infos = {}
-                line_infos['line'] = request.form['jarat']
-                line_infos['min_hour'] = request.form['min_hour']
-                line_infos['max_hour'] = request.form['max_hour']
-                line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
-                line_infos['start_minute'] = request.form['start_minute']
-                line_infos['station'] = request.form['station']
-                line_infos['line_type'] = request.form['jarat_tipus']
-                line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
-                line_infos['city'] = None  # By default we ignore it
-                line_infos['low_floor'] = request.form['low_floor']
+                new_line_infos = {}
+                new_line_infos['line'] = request.form['jarat']
+                new_line_infos['min_hour'] = request.form['min_hour']
+                new_line_infos['max_hour'] = request.form['max_hour']
+                new_line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
+                new_line_infos['start_minute'] = request.form['start_minute']
+                new_line_infos['station'] = request.form['station']
+                new_line_infos['line_type'] = request.form['jarat_tipus']
+                new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
+                new_line_infos['city'] = None  # By default we ignore it
+                new_line_infos['low_floor'] = request.form['low_floor']
                 is_edit = request.form['is_edit']
-                print('Received content: ' + str(line_infos))
+                print('Received content: ' + str(new_line_infos))
                 if is_edit:
                     # Edited upload
-                    result = mati_db.process_and_edit_line(line_infos)
+                    mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
                     # Pure upload
-                    result = mati_db.process_and_upload_line(line_infos)
+                    result = mati_db.process_and_upload_line(new_line_infos)
                 flash('Result: ' + result)
             else:
                 result = 'CSRF ERROR'

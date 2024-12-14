@@ -7,6 +7,8 @@ class MatiAdatbazisFeltoltes(FlaskForm):
     # Result not needed to here
 
     def __init__(self, default_values):
+        super().__init__()
+
         self.jarat = StringField('Járat (szám)', default_values['line'], validators=[DataRequired()])
         self.min_hour = IntegerField('min_hour', default_values['min_hour'], validators=[DataRequired()])
         self.max_hour = IntegerField('max_hour',  default_values['max_hour'], validators=[DataRequired()])
@@ -18,4 +20,3 @@ class MatiAdatbazisFeltoltes(FlaskForm):
         #varos - not used, use de default
         self.low_floor = StringField('Alacsonypadlós: (alacsonypadlósok száma/magas padlósok száma arányban kell beírni, pl. "2_1")',  default_values['low_floor'])
         self.is_edit = default_values['is_edit']
-

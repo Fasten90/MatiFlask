@@ -912,8 +912,6 @@ def get_all_available_cities():  # For MatiGO
 
 
 def process_and_upload_line(line_infos):
-    result = ''
-
     #line_infos['line']
     #line_infos['min_hour']
     #line_infos['max_hour']
@@ -944,10 +942,7 @@ def process_and_upload_line(line_infos):
 
     mydb.close()
 
-    if DEBUG:
-        print(result)
-
-    return result
+    return
 
 
 def process_and_edit_line(old_line_infos, new_line_infos):
