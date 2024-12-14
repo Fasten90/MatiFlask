@@ -164,10 +164,7 @@ def get_menetrend_bus():
     return result
 
 
-@app.route('/mati_adatbazis', methods=['GET', 'POST'])
-def mati_adatbazis():
-    result = ''
-
+def get_params():
     # Empty line
     empty_line = {}
     empty_line['line'] = ''  # TODO: DB dolumn
@@ -181,25 +178,37 @@ def mati_adatbazis():
     empty_line['city'] = None  # By default we ignore it
     empty_line['low_floor'] = ''
     empty_line['is_edit'] = False
-    #
+
+    try:
+        edit_line = copy.copy(empty_line)
+        edit_line['line'] = request.args.get('jarat', type=str)  #TODO: DB dolumn
+        edit_line['min_hour'] = request.args.get('min_hour', type=int)
+        edit_line['max_hour'] = request.args.get('max_hour', type=int)
+        edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=int)
+        edit_line['start_minute'] = request.args.get('start_minute', type=int)
+        edit_line['station'] = request.args.get('station', type=str)
+        edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO: DB dolumn
+        edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
+        #edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
+        edit_line['city'] = None
+        edit_line['low_floor'] = request.args.get('low_floor', type=str)
+        edit_line['is_edit'] = request.args.get('is_edit', type=str)
+        edit_line['is_delete'] = request.args.get('is_delete', type=str)
+    except:
+        return empty_line
+    return edit_line
+
+
+@app.route('/mati_adatbazis', methods=['GET', 'POST'])
+def mati_adatbazis():
+    result = ''
+
     if request.method == 'GET':
         is_modify = False
         try:
             # TODO: MERGE THEM
-            edit_line = copy.copy(empty_line)
-            edit_line['line'] = request.args.get('jarat', type=str)  #TODO: DB dolumn
-            edit_line['min_hour'] = request.args.get('min_hour', type=int)
-            edit_line['max_hour'] = request.args.get('max_hour', type=int)
-            edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=int)
-            edit_line['start_minute'] = request.args.get('start_minute', type=int)
-            edit_line['station'] = request.args.get('station', type=str)
-            edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO: DB dolumn
-            edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
-            #edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
-            edit_line['city'] = None
-            edit_line['low_floor'] = request.args.get('low_floor', type=str)
-            edit_line['is_edit'] = request.args.get('is_edit', type=str)
-            edit_line['is_delete'] = request.args.get('is_delete', type=str)
+            edit_line = get_params()
+            assert isinstance(edit_line, dict)
             if edit_line['is_edit'] == 'True':
                 # Get - edit - not edited, but started to editing
                 form = forms.MatiAdatbazisFeltoltes()
@@ -263,6 +272,7 @@ def mati_adatbazis():
                 print('Received content: ' + str(new_line_infos))
                 if is_edit:
                     # Edited upload
+                    edit_line = get_params()
                     del new_line_infos['city']  # Ignored
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
