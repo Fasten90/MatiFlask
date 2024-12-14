@@ -201,8 +201,6 @@ def mati_adatbazis():
         except:
             form = forms.MatiAdatbazisFeltoltes(empty_line)
 
-    result = ''
-
     if request.method == 'POST':
         try:
             #if form.validate_on_submit():
