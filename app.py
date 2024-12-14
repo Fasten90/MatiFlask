@@ -273,6 +273,8 @@ def mati_adatbazis():
                 if is_edit:
                     # Edited upload
                     edit_line = get_params()
+                    del edit_line['is_edit']
+                    del edit_line['is_delete']
                     del new_line_infos['city']  # Ignored
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
