@@ -187,12 +187,20 @@ def mati_adatbazis():
             edit_line['line_type'] = request.args.get('line_type', type=str)
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
-            edit_line['is_edit'] = True
-            form = forms.MatiAdatbazisFeltoltes(edit_line)
+            edit_line['is_edit'] = request.args.get('is_edit', type=bool)
+            edit_line['is_delete'] = request.args.get('is_delete', type=bool)
+            if edit_line['is_edit'] == True:
+                # Get - edit - not edited, but started to editing
+                form = forms.MatiAdatbazisFeltoltes(edit_line)
+            elif edit_line['is_delete'] == True:
+                # Get - delete
+                mati_db.delete_record(edit_line)
+                form = forms.MatiAdatbazisFeltoltes(empty_line)
+            else:
+                form = forms.MatiAdatbazisFeltoltes(empty_line)
         except:
             form = forms.MatiAdatbazisFeltoltes(empty_line)
 
-    lines_all, lines_all_headers = mati_db.get_db_all()
     result = ''
 
     if request.method == 'POST':
@@ -231,7 +239,10 @@ def mati_adatbazis():
         # First call, put default data
         pass
 
-    # TODO: Extend table with 'Edit' and 'delete' mode
+    lines_all, lines_all_headers = mati_db.get_db_all()
+    # Extend table with 'Edit' and 'delete' mode
+    lines_all, lines_all_headers = mati_db.extend_db_with_edit_and_delete(lines_all, lines_all_headers)
+
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers, result=result)
 
 

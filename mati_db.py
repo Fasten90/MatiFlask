@@ -951,8 +951,6 @@ def process_and_upload_line(line_infos):
 
 
 def process_and_edit_line(old_line_infos, new_line_infos):
-    result = ''
-
     #line_infos['line']
     #line_infos['min_hour']
     #line_infos['max_hour']
@@ -972,7 +970,7 @@ def process_and_edit_line(old_line_infos, new_line_infos):
 
     sql = 'UPDATE `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
            SET (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-           WHERE  '
+           WHERE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) '
     val = list(new_line_infos.values() + old_line_infos.values())
     print('Execute SQL command: ' + sql)
     try:
@@ -984,10 +982,55 @@ def process_and_edit_line(old_line_infos, new_line_infos):
 
     mydb.close()
 
-    if DEBUG:
-        print(result)
+    return
 
-    return result
+
+def extend_db_with_edit_and_delete(lines_all, lines_all_headers):
+    """ Return with new fields with HTML codes """
+    new_lines_all = []
+    new_lines_all_headers = []
+    for line in lines_all:
+        # Add edit
+        link_get = '<a href="'
+        for index, param in enumerate(new_lines_all_headers):
+            link_get += '&'
+            link_get += param
+            link_get += '='
+            link_get += line[index]  # Value of the line item
+        new_item = copy.copy(line)
+        new_item['edit'] = link_get + '&is_edit=True' + '">Szerkesztés</a>'
+        # Add delete
+        new_item['delete'] = link_get + '&is_edit=False&is_delete=True' + '">Törlés</a>'
+        new_lines_all.append(new_item)
+
+    new_lines_all_headers = copy.copy(lines_all_headers)
+    new_lines_all_headers.append('edit')
+    new_lines_all_headers.append('delete')
+
+    return new_lines_all, new_lines_all_headers
+
+
+def delete_record(line_infos):
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    print('Connected to MySQL')
+
+    sql = 'DELETE FROM `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
+           WHERE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    val = list(line_infos.values())
+    print('Execute SQL command: ' + sql)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as ex:
+        mydb.close()
+        raise ex
+
+    mydb.close()
+
+    return
 
 
 if __name__ == '__main__':
