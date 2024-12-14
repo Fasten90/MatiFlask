@@ -1014,8 +1014,9 @@ def delete_record(line_infos):
 
     print('Connected to MySQL')
 
+    # Varos / CITY is hardcoded to null 'IS NULL'
     sql = 'DELETE FROM `mati_menetrend` \
-           WHERE `jarat` = %s AND  `min_hour` = %s AND `max_hour` = %s AND  `jaratsuruseg_minute` = %s AND   `start_minute` = %s AND  `station` = %s AND  `jarat_tipus` = %s AND  `jaratsuruseg_hetvege` = %s AND   `varos` = %s AND  `low_floor` = %s \
+           WHERE `jarat` = %s AND  `min_hour` = %s AND `max_hour` = %s AND  `jaratsuruseg_minute` = %s AND   `start_minute` = %s AND  `station` = %s AND  `jarat_tipus` = %s AND  `jaratsuruseg_hetvege` = %s AND   `varos` IS %s AND  `low_floor` = %s \
            LIMIT 1; '
     val = list(line_infos.values())
     print('Execute SQL command: ' + sql)
