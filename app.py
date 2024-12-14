@@ -191,9 +191,9 @@ def mati_adatbazis():
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
             edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
-            edit_line['is_edit'] = request.args.get('is_edit', type=bool)
-            edit_line['is_delete'] = request.args.get('is_delete', type=bool)
-            if edit_line['is_edit'] == True:
+            edit_line['is_edit'] = request.args.get('is_edit', type=str)
+            edit_line['is_delete'] = request.args.get('is_delete', type=str)
+            if edit_line['is_edit'] == 'True':
                 # Get - edit - not edited, but started to editing
                 form = forms.MatiAdatbazisFeltoltes()
                 form.jarat.default = edit_line['line']
@@ -209,7 +209,8 @@ def mati_adatbazis():
                 form.is_edit.default = edit_line['is_edit']
                 #form.is_delete  # Non existing field in the form
                 form.process()
-            elif edit_line['is_delete'] == True:
+                result += 'Form processed'
+            elif edit_line['is_delete'] == 'True':
                 is_modify = True
                 # Get - delete
                 result += 'Delete parameter!'
@@ -224,7 +225,7 @@ def mati_adatbazis():
         try:
             if is_modify:
                 result += 'Modification required'
-                if edit_line['is_delete'] == True:
+                if edit_line['is_delete'] == 'True':
                     result += 'Delete required'
                     mati_db.delete_record(edit_line)
         except Exception as ex:
