@@ -36,6 +36,12 @@ def robots_txt():
 
 # /static/ available
 
+def error_log(line):
+    dirpath = os.path.dirname(os.path.abspath(__file__))
+    with open(dirpath + '/error.log', 'a') as file
+        file.write(line)
+
+
 clock_time = '13:26:41'
 last_set_time = None
 @app.route('/clock', methods=['GET', 'POST'])
@@ -235,6 +241,7 @@ def mati_adatbazis():
             result += str(ex)
             flash('Result: ' + str(ex))
             print(str(ex))
+            error_log(result)
 
     if request.method == 'POST':
         try:
@@ -269,6 +276,7 @@ def mati_adatbazis():
             result += str(ex)
             flash('Result: ' + str(ex))
             print(str(ex))
+            error_log(result)
     else:
         # First call, put default data
         pass
