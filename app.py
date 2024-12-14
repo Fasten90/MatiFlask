@@ -177,7 +177,9 @@ def mati_adatbazis():
     empty_line['is_edit'] = False
     #
     if request.method == 'GET':
+        is_modify = False
         try:
+            # TODO: MERGE THEM
             edit_line = copy.copy(empty_line)
             edit_line['line'] = request.args.get('jarat', type=str)  #TODO: DB dolumn
             edit_line['min_hour'] = request.args.get('min_hour', type=int)
@@ -209,13 +211,21 @@ def mati_adatbazis():
                 #form.is_delete  # Non existing field
                 form.process()
             elif edit_line['is_delete'] == True:
+                is_modify = True
                 # Get - delete
-                mati_db.delete_record(edit_line)
                 form = forms.MatiAdatbazisFeltoltes()
             else:
                 form = forms.MatiAdatbazisFeltoltes()
         except:
             form = forms.MatiAdatbazisFeltoltes()
+        try:
+            if is_modify:
+                if edit_line['is_delete'] == True:
+                    mati_db.delete_record(edit_line)
+        except Exception as ex:
+            result = str(ex)
+            flash('Result: ' + str(ex))
+            print(str(ex))
 
     if request.method == 'POST':
         try:
@@ -223,13 +233,13 @@ def mati_adatbazis():
             # TODO: Resolve
             if True:
                 new_line_infos = {}
-                new_line_infos['line'] = request.form['jarat']
+                new_line_infos['line'] = request.form['jarat']  #TODO: DB dolumn
                 new_line_infos['min_hour'] = request.form['min_hour']
                 new_line_infos['max_hour'] = request.form['max_hour']
                 new_line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
                 new_line_infos['start_minute'] = request.form['start_minute']
                 new_line_infos['station'] = request.form['station']
-                new_line_infos['line_type'] = request.form['jarat_tipus']
+                new_line_infos['line_type'] = request.form['jarat_tipus']  #TODO: DB dolumn
                 new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 new_line_infos['city'] = None  # By default we ignore it
                 new_line_infos['low_floor'] = request.form['low_floor']
