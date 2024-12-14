@@ -160,6 +160,7 @@ def get_menetrend_bus():
 
 @app.route('/mati_adatbazis', methods=['GET', 'POST'])
 def mati_adatbazis():
+    result = ''
 
     # Empty line
     empty_line = {}
