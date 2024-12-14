@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField, BooleanField, IntegerField, SelectField
+from wtforms import StringField, BooleanField, IntegerField, SelectField
+# TextAreaField, SubmitField, PasswordField,
 from wtforms.validators import DataRequired
 
 
@@ -19,4 +20,5 @@ class MatiAdatbazisFeltoltes(FlaskForm):
         self.jaratsuruseg_hetvege = IntegerField('Járatsűrűség hétvégén',  default_values['jaratsuruseg_hetvege'])
         #varos - not used, use de default
         self.low_floor = StringField('Alacsonypadlós: (alacsonypadlósok száma/magas padlósok száma arányban kell beírni, pl. "2_1")',  default_values['low_floor'])
-        self.is_edit = default_values['is_edit']
+        self.is_edit = BooleanField('is_edit', default=default_values['is_edit'])
+

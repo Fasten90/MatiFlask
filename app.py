@@ -226,8 +226,8 @@ def mati_adatbazis():
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
                     # Pure upload
-                    result = mati_db.process_and_upload_line(new_line_infos)
-                flash('Result: ' + result)
+                    mati_db.process_and_upload_line(new_line_infos)
+                # TODO: flash('Result: ' + result)
             else:
                 result = 'CSRF ERROR'
                 print('CSRF ERROR')

@@ -3,7 +3,6 @@
 import os
 import datetime
 import math
-import random
 from enum import Enum
 import copy
 import mysql.connector
@@ -942,8 +941,6 @@ def process_and_upload_line(line_infos):
 
     mydb.close()
 
-    return
-
 
 def process_and_edit_line(old_line_infos, new_line_infos):
     #line_infos['line']
@@ -977,8 +974,6 @@ def process_and_edit_line(old_line_infos, new_line_infos):
 
     mydb.close()
 
-    return
-
 
 def extend_db_with_edit_and_delete(lines_all, lines_all_headers):
     """ Return with new fields with HTML codes """
@@ -993,14 +988,14 @@ def extend_db_with_edit_and_delete(lines_all, lines_all_headers):
             link_get += '='
             link_get += line[index]  # Value of the line item
         new_item = copy.copy(line)
-        new_item['edit'] = link_get + '&is_edit=True' + '">Szerkesztés</a>'
+        assert isinstance(new_item, tuple)
+        new_item = new_item + (link_get + '&is_edit=True' + '">Szerkesztés</a>', )
         # Add delete
-        new_item['delete'] = link_get + '&is_edit=False&is_delete=True' + '">Törlés</a>'
+        new_item = new_item + (link_get + '&is_edit=False&is_delete=True' + '">Törlés</a>', )
         new_lines_all.append(new_item)
 
     new_lines_all_headers = copy.copy(lines_all_headers)
-    new_lines_all_headers.append('edit')
-    new_lines_all_headers.append('delete')
+    new_lines_all_headers = new_lines_all_headers + ('edit', 'delete')
 
     return new_lines_all, new_lines_all_headers
 
