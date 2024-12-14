@@ -1002,7 +1002,7 @@ def extend_db_with_edit_and_delete(lines_all, lines_all_headers):
                 link_get += str(value_of_item)
         new_item = copy.copy(line)
         assert isinstance(new_item, tuple)
-        new_item = new_item + (link_get + '&is_edit=True' + '">Szerkesztés</a>', )
+        new_item = new_item + (link_get + '&is_edit=True&is_delete=False' + '">Szerkesztés</a>', )
         # Add delete
         new_item = new_item + (link_get + '&is_edit=False&is_delete=True' + '">Törlés</a>', )
         new_lines_all.append(new_item)
