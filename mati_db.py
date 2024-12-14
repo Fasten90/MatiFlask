@@ -950,6 +950,46 @@ def process_and_upload_line(line_infos):
     return result
 
 
+def process_and_edit_line(old_line_infos, new_line_infos):
+    result = ''
+
+    #line_infos['line']
+    #line_infos['min_hour']
+    #line_infos['max_hour']
+    #line_infos['jaratsuruseg_minute']
+    #line_infos['jaratsuruseg_hetvege']
+    #line_infos['start_minute']
+    #line_infos['station']
+    #line_infos['line_type']
+    #line_infos['city']
+    #line_infos['low_floor']
+
+    mydb = database_connection()
+
+    mycursor = mydb.cursor()
+
+    print('Connected to MySQL')
+
+    sql = 'UPDATE `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
+           SET (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+           WHERE  '
+    val = list(new_line_infos.values() + old_line_infos.values())
+    print('Execute SQL command: ' + sql)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as ex:
+        mydb.close()
+        raise ex
+
+    mydb.close()
+
+    if DEBUG:
+        print(result)
+
+    return result
+
+
 if __name__ == '__main__':
     # Manual test
     #get_menetrend_wrap()
