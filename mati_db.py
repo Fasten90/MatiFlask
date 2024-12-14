@@ -981,9 +981,12 @@ def extend_db_with_edit_and_delete(lines_all, lines_all_headers):
     new_lines_all_headers = []
     for line in lines_all:
         # Add edit
-        link_get = '<a href="'
+        link_get = '<a href="mati_adatbazis'
         for index, param in enumerate(new_lines_all_headers):
-            link_get += '&'
+            if index == 0:
+                link_get += '?'
+            else:
+                link_get += '&'
             link_get += param
             link_get += '='
             link_get += line[index]  # Value of the line item
