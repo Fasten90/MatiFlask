@@ -179,13 +179,13 @@ def mati_adatbazis():
     if request.method == 'GET':
         try:
             edit_line = copy.copy(empty_line)
-            edit_line['line'] = request.args.get('line', type=str)
+            edit_line['line'] = request.args.get('jarat', type=str)  #TODO:
             edit_line['min_hour'] = request.args.get('min_hour', type=int)
             edit_line['max_hour'] = request.args.get('max_hour', type=int)
             edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=str)
             edit_line['start_minute'] = request.args.get('start_minute', type=int)
             edit_line['station'] = request.args.get('station', type=str)
-            edit_line['line_type'] = request.args.get('line_type', type=str)
+            edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO:
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
             edit_line['is_edit'] = request.args.get('is_edit', type=bool)
