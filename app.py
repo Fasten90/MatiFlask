@@ -182,17 +182,32 @@ def mati_adatbazis():
             edit_line['line'] = request.args.get('jarat', type=str)  #TODO: DB dolumn
             edit_line['min_hour'] = request.args.get('min_hour', type=int)
             edit_line['max_hour'] = request.args.get('max_hour', type=int)
-            edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=str)
+            edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=int)
             edit_line['start_minute'] = request.args.get('start_minute', type=int)
             edit_line['station'] = request.args.get('station', type=str)
             edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO: DB dolumn
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
+            edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
             edit_line['is_edit'] = request.args.get('is_edit', type=bool)
             edit_line['is_delete'] = request.args.get('is_delete', type=bool)
             if edit_line['is_edit'] == True:
                 # Get - edit - not edited, but started to editing
-                form = forms.MatiAdatbazisFeltoltes(edit_line)
+                #form = forms.MatiAdatbazisFeltoltes(edit_line) # TODO: Remove
+                form = forms.MatiAdatbazisFeltoltes()
+                form.jarat.default = edit_line['line']
+                form.min_hour.default = edit_line['min_hour']
+                form.max_hour.default = edit_line['max_hour']
+                form.jaratsuruseg_minute.default = edit_line['jaratsuruseg_minute']
+                form.start_minute.default = edit_line['start_minute']
+                form.station.default = edit_line['station']
+                form.jarat_tipus.default = edit_line['line_type']  #TODO: DB dolumn
+                form.jaratsuruseg_hetvege.default = edit_line['jaratsuruseg_hetvege']
+                #form.varos.default = edit_line['city']  # We ignore it
+                form.low_floor.default = edit_line['low_floor']
+                form.is_edit.default = edit_line['is_edit']
+                #form.is_delete  # Non existing field
+                form.process()
             elif edit_line['is_delete'] == True:
                 # Get - delete
                 mati_db.delete_record(edit_line)
