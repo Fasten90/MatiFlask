@@ -258,10 +258,10 @@ def mati_adatbazis():
                     mati_db.process_and_upload_line(new_line_infos)
                 # TODO: flash('Result: ' + result)
             else:
-                result = 'CSRF ERROR'
+                result += 'CSRF ERROR'
                 print('CSRF ERROR')
         except Exception as ex:
-            result = str(ex)
+            result += str(ex)
             flash('Result: ' + str(ex))
             print(str(ex))
     else:
@@ -272,6 +272,7 @@ def mati_adatbazis():
     # Extend table with 'Edit' and 'delete' mode
     lines_all, lines_all_headers = mati_db.extend_db_with_edit_and_delete(lines_all, lines_all_headers)
 
+    print(f'Result: "{result}"')
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers, result=result)
 
 
