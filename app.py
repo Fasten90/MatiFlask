@@ -209,24 +209,26 @@ def mati_adatbazis():
                 form.is_edit.default = edit_line['is_edit']
                 #form.is_delete  # Non existing field in the form
                 form.process()
-                result += 'Form processed'
+                result += 'Form processed\n'
             elif edit_line['is_delete'] == 'True':
                 is_modify = True
                 # Get - delete
-                result += 'Delete parameter!'
+                result += 'Delete parameter!\n'
                 form = forms.MatiAdatbazisFeltoltes()
             else:
-                result += 'No edit, no delete!'
+                result += 'No edit, no delete!\n'
                 form = forms.MatiAdatbazisFeltoltes()
         except:
             # Parameter issues, create a pure form
-            result += 'Parameter issue!'
+            result += 'Parameter issue!\n'
             form = forms.MatiAdatbazisFeltoltes()
         try:
             if is_modify:
-                result += 'Modification required'
+                result += 'Modification required\n'
                 if edit_line['is_delete'] == 'True':
                     result += 'Delete required'
+                    del edit_line['is_edit']
+                    del edit_line['is_delete']
                     mati_db.delete_record(edit_line)
         except Exception as ex:
             result += str(ex)
