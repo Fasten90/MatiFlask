@@ -38,7 +38,7 @@ def robots_txt():
 
 def error_log(line):
     dirpath = os.path.dirname(os.path.abspath(__file__))
-    with open(dirpath + '/error.log', 'a') as file
+    with open(dirpath + '/error.log', 'a') as file:
         file.write(line)
 
 
