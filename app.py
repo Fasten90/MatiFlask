@@ -256,6 +256,7 @@ def mati_adatbazis():
                 print('Received content: ' + str(new_line_infos))
                 if is_edit:
                     # Edited upload
+                    del new_line_infos['city']  # Ignored
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
                     # Pure upload

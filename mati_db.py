@@ -960,14 +960,19 @@ def process_and_edit_line(old_line_infos, new_line_infos):
 
     print('Connected to MySQL')
 
-    sql = 'UPDATE `mati_menetrend` (`jarat`, `min_hour`, `max_hour`, `jaratsuruseg_minute`, `start_minute`, `station`, `jarat_tipus`, `jaratsuruseg_hetvege`, `varos`, `low_floor`) \
-           SET (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-           WHERE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) '
+    # TODO: Note: Varos/City is hardcoded to NULL (IS NULL)
+    sql = 'UPDATE `mati_menetrend` \
+           SET `jarat` = %s, `min_hour` = %s, `max_hour` = %s,  `jaratsuruseg_minute` = %s,   `start_minute` = %s,  `station` = %s,  `jarat_tipus` = %s,  `jaratsuruseg_hetvege` = %s,  `low_floor` = %s \
+           WHERE `jarat` = %s AND  `min_hour` = %s AND `max_hour` = %s AND  `jaratsuruseg_minute` = %s AND   `start_minute` = %s AND  `station` = %s AND  `jarat_tipus` = %s AND  `jaratsuruseg_hetvege` = %s AND   `varos` IS %s AND  `low_floor` = %s '
     val = list(new_line_infos.values() + old_line_infos.values())
     print('Execute SQL command: ' + sql)
     try:
         mycursor.execute(sql, val)
         mydb.commit()
+        try:
+            print(mycursor.statement)
+        except:
+            print(mycursor._executed)
     except Exception as ex:
         mydb.close()
         raise ex
