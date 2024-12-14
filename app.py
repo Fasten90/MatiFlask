@@ -189,7 +189,8 @@ def mati_adatbazis():
             edit_line['station'] = request.args.get('station', type=str)
             edit_line['line_type'] = request.args.get('jarat_tipus', type=str)  #TODO: DB dolumn
             edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
-            edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
+            #edit_line['city'] = request.args.get('varos', type=str)  # By default we ignore it
+            edit_line['city'] = None
             edit_line['low_floor'] = request.args.get('low_floor', type=str)
             edit_line['is_edit'] = request.args.get('is_edit', type=str)
             edit_line['is_delete'] = request.args.get('is_delete', type=str)
