@@ -1,6 +1,7 @@
 import os
 import traceback
 from datetime import datetime, timedelta, date
+import copy
 
 from flask import Flask, render_template, flash, request, redirect, session, send_from_directory
 from flask_wtf import csrf
@@ -88,7 +89,7 @@ def get_menetrend():
         result = mati_db.get_menetrend_wrap(line, station, city, limit)
     except Exception as ex:
         result = 'FATAL ERROR: Kérlek szólj Apa/Vizi Gábor-nak:<br />\r\n' \
-                'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
+                '<a href="https://github.com/Fasten90/MatiFlask">https://github.com/Fasten90/MatiFlask</a><br />\r\n'  \
                 f'{ex}'
         result += traceback.format_exc()
     return result
@@ -103,7 +104,7 @@ def get_jarat_nezet():
         result = mati_db.get_line_view(line, station, time)
     except Exception as ex:
         result = 'FATAL ERROR: Kérlek szólj Apa/Vizi Gábor-nak:<br />\r\n' \
-                'https://github.com/Fasten90/MatiFlask<br />\r\n'  \
+                '<a href="https://github.com/Fasten90/MatiFlask">https://github.com/Fasten90/MatiFlask</a><br />\r\n'  \
                 f'{ex}'
         result += traceback.format_exc()
     return result
@@ -160,7 +161,36 @@ def get_menetrend_bus():
 @app.route('/mati_adatbazis', methods=['GET', 'POST'])
 def mati_adatbazis():
 
-    form = forms.MatiAdatbazisFeltoltes()
+    # Empty line
+    empty_line = {}
+    empty_line['line'] = ''
+    empty_line['min_hour'] = None
+    empty_line['max_hour'] = None
+    empty_line['jaratsuruseg_minute'] = None
+    empty_line['start_minute'] = None
+    empty_line['station'] = ''
+    empty_line['line_type'] = ''
+    empty_line['jaratsuruseg_hetvege'] = None
+    empty_line['city'] = None  # By default we ignore it
+    empty_line['low_floor'] = ''
+    empty_line['is_edit'] = False
+    #
+    if request.method == 'GET':
+        try:
+            edit_line = copy.copy(empty_line)
+            edit_line['line'] = request.args.get('line', type=str)
+            edit_line['min_hour'] = request.args.get('min_hour', type=int)
+            edit_line['max_hour'] = request.args.get('max_hour', type=int)
+            edit_line['jaratsuruseg_minute'] = request.args.get('jaratsuruseg_minute', type=str)
+            edit_line['start_minute'] = request.args.get('start_minute', type=int)
+            edit_line['station'] = request.args.get('station', type=str)
+            edit_line['line_type'] = request.args.get('line_type', type=str)
+            edit_line['jaratsuruseg_hetvege'] = request.args.get('jaratsuruseg_hetvege', type=int)
+            edit_line['low_floor'] = request.args.get('low_floor', type=str)
+            edit_line['is_edit'] = True
+            form = forms.MatiAdatbazisFeltoltes(edit_line)
+        except:
+            form = forms.MatiAdatbazisFeltoltes(empty_line)
 
     lines_all, lines_all_headers = mati_db.get_db_all()
     result = ''
@@ -181,8 +211,14 @@ def mati_adatbazis():
                 line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 line_infos['city'] = None  # By default we ignore it
                 line_infos['low_floor'] = request.form['low_floor']
+                is_edit = request.form['is_edit']
                 print('Received content: ' + str(line_infos))
-                result = mati_db.process_and_upload_line(line_infos)
+                if is_edit:
+                    # Edited upload
+                    result = mati_db.process_and_edit_line(line_infos)
+                else:
+                    # Pure upload
+                    result = mati_db.process_and_upload_line(line_infos)
                 flash('Result: ' + result)
             else:
                 result = 'CSRF ERROR'
@@ -195,6 +231,7 @@ def mati_adatbazis():
         # First call, put default data
         pass
 
+    # TODO: Extend table with 'Edit' and 'delete' mode
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers, result=result)
 
 
