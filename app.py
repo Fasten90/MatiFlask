@@ -1,13 +1,16 @@
+""" MatiFlask - Flask start point for web server """
 import os
 import traceback
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 import copy
 
-from flask import Flask, render_template, flash, request, redirect, session, send_from_directory
+from flask import Flask, render_template, flash, request, send_from_directory
 from flask_wtf import csrf
 
 import mati_db
 import forms
+
+# pylint: disable=locally-disabled, multiple-statements, fixme, line-too-long, missing-function-docstring, broad-except
 
 app = Flask(__name__)
 csrf = csrf.CSRFProtect(app)
@@ -43,45 +46,45 @@ def error_log(line):
         file.write(str(now) + ' ' + line + '\n')
 
 
-clock_time = '13:26:41'
-last_set_time = None
+CLOCK_TIME = '13:26:41'
+LAST_SET_TIME = None
 @app.route('/clock', methods=['GET', 'POST'])
-def clock():
-    global clock_time
-    global last_set_time
+def clock():  # pylint: disable=too-many-return-statements
+    global CLOCK_TIME  # pylint: disable=global-statement
+    global LAST_SET_TIME  # pylint: disable=global-statement
     try:
-        if request.method == 'POST':
+        if request.method == 'POST':  # pylint: disable=no-else-return
             print(request)
-            return clock_time
-        elif request.method == 'GET':
+            return CLOCK_TIME
+        elif request.method == 'GET':  # pylint: disable=no-else-return
             try:
                 hour = request.args.get('hour', type=int)
                 minute = request.args.get('minute', type=int)
                 second = request.args.get('second', type=int)
                 if not hour or not minute or not second:
                     print('missed value, skip it')
-                    if not last_set_time:
+                    if not LAST_SET_TIME:  # pylint: disable=no-else-return
                         # Never was set, send the set time
-                        return clock_time
+                        return CLOCK_TIME
                     else:
                         # It was set once
                         now_time = datetime.now()
-                        delta_time = now_time - last_set_time
-                        clock_time_object = datetime.strptime(clock_time, '%H:%M:%S')
+                        delta_time = now_time - LAST_SET_TIME
+                        clock_time_object = datetime.strptime(CLOCK_TIME, '%H:%M:%S')
                         clock_time_object = datetime.combine(date.today(), clock_time_object.time())
                         sending_time = clock_time_object + delta_time
                         return sending_time.strftime("%H:%M:%S")
                 else:
-                    clock_time = "{}:{}:{}".format(hour, minute, second)
-                    last_set_time = datetime.now()
-                    print('Set clock to: {}'.format(clock_time))
+                    CLOCK_TIME = "{}:{}:{}".format(hour, minute, second)
+                    LAST_SET_TIME = datetime.now()
+                    print('Set clock to: {}'.format(CLOCK_TIME))
                     return 'Successfully set'
             except Exception as ex:
                 print('Exception: {}'.format(ex))
                 return "[ERROR] "+ str(ex)
         else:
             print('[ERROR] Not acceptable request')
-            return clock_time
+            return CLOCK_TIME
     except Exception as ex:
         return '[ERROR] ' + str(ex)
 
@@ -195,13 +198,14 @@ def get_params():
         edit_line['low_floor'] = request.args.get('low_floor', type=str)
         edit_line['is_edit'] = request.args.get('is_edit', type=str)
         edit_line['is_delete'] = request.args.get('is_delete', type=str)
-    except:
+    except Exception as ex:
+        print(f'Some get parameters are missed: {ex}')
         return empty_line
     return edit_line
 
 
 @app.route('/mati_adatbazis', methods=['GET', 'POST'])
-def mati_adatbazis():
+def mati_adatbazis():  # pylint: disable=too-many-return-statements  disable=too-many-statements  disable=too-many-branches
     result = ''
 
     if request.method == 'GET':
@@ -235,9 +239,9 @@ def mati_adatbazis():
             else:
                 result += 'No edit, no delete!\n'
                 form = forms.MatiAdatbazisFeltoltes()
-        except:
+        except Exception as ex:
             # Parameter issues, create a pure form
-            result += 'Parameter issue!\n'
+            result += f'Parameter issue! {ex}\n'
             form = forms.MatiAdatbazisFeltoltes()
         try:
             if is_modify:
@@ -257,35 +261,35 @@ def mati_adatbazis():
         try:
             #if form.validate_on_submit():
             # TODO: Resolve
-            if True:
-                new_line_infos = {}
-                new_line_infos['line'] = request.form['jarat']  #TODO: DB dolumn
-                new_line_infos['min_hour'] = request.form['min_hour']
-                new_line_infos['max_hour'] = request.form['max_hour']
-                new_line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
-                new_line_infos['start_minute'] = request.form['start_minute']
-                new_line_infos['station'] = request.form['station']
-                new_line_infos['line_type'] = request.form['jarat_tipus']  #TODO: DB dolumn
-                new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
-                new_line_infos['city'] = None  # By default we ignore it
-                new_line_infos['low_floor'] = request.form['low_floor']
-                #is_edit = request.form['is_edit']  # Not a good check  # Somewhy it cannot be checked, however, it is added to the forms.... Check it!
-                print('Received content: ' + str(new_line_infos))
-                #if is_edit:  # Not a good heck
-                    # Edited upload
-                edit_line = get_params()
-                if 'is_edit' in edit_line and edit_line['is_edit'] == 'True':
-                    del edit_line['is_edit']
-                    del edit_line['is_delete']
-                    del new_line_infos['city']  # Ignored
-                    mati_db.process_and_edit_line(edit_line, new_line_infos)
-                else:
-                    # Pure upload
-                    mati_db.process_and_upload_line(new_line_infos)
-                # TODO: flash('Result: ' + result)
+            #if True:
+            new_line_infos = {}
+            new_line_infos['line'] = request.form['jarat']  #TODO: DB dolumn
+            new_line_infos['min_hour'] = request.form['min_hour']
+            new_line_infos['max_hour'] = request.form['max_hour']
+            new_line_infos['jaratsuruseg_minute'] = request.form['jaratsuruseg_minute']
+            new_line_infos['start_minute'] = request.form['start_minute']
+            new_line_infos['station'] = request.form['station']
+            new_line_infos['line_type'] = request.form['jarat_tipus']  #TODO: DB dolumn
+            new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
+            new_line_infos['city'] = None  # By default we ignore it
+            new_line_infos['low_floor'] = request.form['low_floor']
+            #is_edit = request.form['is_edit']  # Not a good check  # Somewhy it cannot be checked, however, it is added to the forms.... Check it!
+            print('Received content: ' + str(new_line_infos))
+            #if is_edit:  # Not a good heck
+                # Edited upload
+            edit_line = get_params()
+            if 'is_edit' in edit_line and edit_line['is_edit'] == 'True':
+                del edit_line['is_edit']
+                del edit_line['is_delete']
+                del new_line_infos['city']  # Ignored
+                mati_db.process_and_edit_line(edit_line, new_line_infos)
             else:
-                result += 'CSRF ERROR'
-                print('CSRF ERROR')
+                # Pure upload
+                mati_db.process_and_upload_line(new_line_infos)
+            # TODO: flash('Result: ' + result)
+            #else:
+            #    result += 'CSRF ERROR'
+            #    print('CSRF ERROR')
         except Exception as ex:
             result += str(ex)
             flash('Result: ' + str(ex))
@@ -296,7 +300,6 @@ def mati_adatbazis():
     else:
         # First call, put default data
         form = forms.MatiAdatbazisFeltoltes()
-        pass
 
     lines_all, lines_all_headers = mati_db.get_db_all()
     # Extend table with 'Edit' and 'delete' mode
@@ -306,26 +309,26 @@ def mati_adatbazis():
     return render_template('mati_adatbazis.html', title='Mati Adatbázis', form=form, lines_all=lines_all, lines_all_headers=lines_all_headers, result=result)
 
 
-tereles_info = ''
+TERELES_INFO = ''
 @app.route('/tereles', methods=['GET', 'POST'])
 def tereles():
     try:
-        global tereles_info
-        if request.method == 'POST':
+        global TERELES_INFO  # pylint: disable=global-statement
+        if request.method == 'POST':  # pylint: disable=no-else-return
             print(request)
-            tereles_info = request.content
-            return tereles_info
-        elif request.method == 'GET':
+            TERELES_INFO = request.content
+            return TERELES_INFO
+        elif request.method == 'GET':  # pylint: disable=no-else-return
             try:
                 new_text = request.args.get('new', type=str)
                 if new_text:
-                    tereles_info = str(new_text)
-                return tereles_info
+                    TERELES_INFO = str(new_text)
+                return TERELES_INFO
             except Exception as ex:
                 print('There is no "new" arg.')
-            return tereles_info
+            return TERELES_INFO
         else:
-            return tereles_info
+            return TERELES_INFO
     except Exception as ex:
         print('Exception: {}'.format(ex))
         return '[ERROR] ' + str(ex)

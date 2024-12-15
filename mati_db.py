@@ -8,6 +8,9 @@ import copy
 import mysql.connector
 
 
+# pylint: disable=locally-disabled, multiple-statements, fixme, line-too-long, missing-function-docstring, broad-except, redefined-outer-name, too-many-lines
+
+
 CITY_DONTCARE_TEXT = 'Minden város'
 TIME_ARRIVE_NOW_TEXT = 'MOST'
 
@@ -91,7 +94,7 @@ def get_db(jarat=None, station=None, city=None, limit=100):
         column_headers = mycursor.column_names
     except Exception as ex:  # pylint: disable=broad-except
         mydb.close()
-        raise Exception(ex)
+        raise ex
     else:
         # Move content into dictionary
         results_with_dict = []
@@ -131,7 +134,7 @@ def get_db_all():
         column_headers = mycursor.column_names
     except Exception as ex:  # pylint: disable=broad-except
         mydb.close()
-        raise Exception(ex)
+        raise ex
 
     mydb.close()
 
@@ -156,7 +159,7 @@ def get_db_cities():
         result = mycursor.fetchall()
     except Exception as ex:  # pylint: disable=broad-except
         mydb.close()
-        raise Exception(ex)
+        raise ex
 
     mydb.close()
     return result
@@ -192,7 +195,7 @@ def get_next_arrive(menetrend):
             if arrive_hour > max_hour:
                 # It is after the job, exit!
                 return None
-            if actual_hour <= arrive_hour or actual_minute <= arrive_minute:
+            if actual_hour <= arrive_hour or actual_minute <= arrive_minute:  # pylint: disable=no-else-break
                 # Arrive in the next hours or in this hour, but later minute
                 # It is good!
                 is_ok = True
@@ -233,7 +236,7 @@ def precheck_menetrend(menetrend, get_all=False):
     return new_menetrend
 
 
-def precheck_menetrend2(menetrend, get_all=False):
+def precheck_menetrend2(menetrend):
     """ Precheck line(s) if they are going or not (e.g. workday or not) """
     new_menetrend = []
     for item in menetrend:
@@ -346,8 +349,8 @@ def extend_with_low_floor(result):
             try:
                 low_floor1 = int(low_floor.split('_')[0])
                 low_floor2 = int(low_floor.split('_')[1])
-            except:
-                print('Issue with "low_floor", set automatically true')
+            except Exception as ex:
+                print(f'Issue with "low_floor", set automatically true: {ex}')
                 modified_item['low_floor'] = True
                 new_result.append(modified_item)
                 break
@@ -375,19 +378,19 @@ def order_of_arrive(menetrend):
     return menetrend['arrive_minute']  # Calculated field
 
 
-def check_if_proper_hour(min_hour, max_hour, arrive_time, time):
+def check_if_proper_hour(min_hour, max_hour, arrive_time, time):  # pylint: disable=too-many-return-statements
     if min_hour < max_hour and arrive_time.day != time.day:
         # daytime line, tomorrow day
         return False
     if min_hour < max_hour:
-        if min_hour <= arrive_time.hour < max_hour:  # The normal
+        if min_hour <= arrive_time.hour < max_hour:  # The normal  # pylint: disable=simplifiable-if-statement  disable=no-else-return
             # E.g. min hour: 6, actual hour: 14, max hour: 19
             return True
         else:
             return False
     # else: daytime
     if min_hour > max_hour:  # Night travel
-        if min_hour <= arrive_time.hour and arrive_time.day == time.day:  # Same day
+        if min_hour <= arrive_time.hour and arrive_time.day == time.day:  # Same day  # pylint: disable=no-else-return
             return True
         elif arrive_time.hour < max_hour and arrive_time.day == (time.day + 1):  # Next day
             return True
@@ -435,7 +438,7 @@ def update_late_arrive_time_to_clock(menetrend):
     return new_menetrend
 
 
-def get_menetrend(jarat=None, station=None, result=None):
+def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too-many-locals  disable=too-many-statements
     """ fill the menetrend table by SQL/DB result (rows)
         Application function (not for printing)"""
     html_result = ''
@@ -465,8 +468,9 @@ def get_menetrend(jarat=None, station=None, result=None):
                     time = int(arrive_minute_remained)
                     time = now + datetime.timedelta(minutes=time)
                     time = datetime.datetime.strftime(time, '%H:%M')
-                except:
+                except Exception as ex:
                     # 'MOST'
+                    print(f'Handle: {ex}')
                     if arrive_minute_remained == TIME_ARRIVE_NOW_TEXT:
                         time = datetime.datetime.strftime(now, '%H:%M')
                     else:
@@ -524,7 +528,7 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
-def calculate_line_view(line, station, time):
+def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
     item_list = []
     result = get_db(jarat=line)
     for item in result:
@@ -890,7 +894,7 @@ def check_actual_day_type():
 def get_jaratsuruseg_by_day_type(jaratsuruseg_workday, jaratsuruseg_nonworkday):
     """ Get jaratsuruseg (proper) by actual date (daytype) """
     workday_type = check_actual_day_type()
-    if workday_type == DayType.WORKDAY:
+    if workday_type == DayType.WORKDAY:  # pylint: disable=no-else-return
         return jaratsuruseg_workday
     elif workday_type == DayType.NOTWORKDAY:
         return jaratsuruseg_nonworkday
@@ -899,7 +903,7 @@ def get_jaratsuruseg_by_day_type(jaratsuruseg_workday, jaratsuruseg_nonworkday):
 
 def check_if_it_is_going(menetrend):
     """ Check if the line is going today. Maybe it does not go on non-workday """
-    if get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege']):  # pylint: disable=simplifiable-if-statement
+    if get_jaratsuruseg_by_day_type(menetrend['jaratsuruseg_minute'], menetrend['jaratsuruseg_hetvege']):  # pylint: disable=simplifiable-if-statement  disable=no-else-return
         return True
     else:  # Example: None jaratsuruseg
         return False
@@ -942,10 +946,7 @@ def process_and_upload_line(line_infos):
     try:
         mycursor.execute(sql, val)
         mydb.commit()
-        try:
-            print(mycursor.statement)
-        except:
-            print(mycursor._executed)
+        print(mycursor.statement)
     except Exception as ex:
         mydb.close()
         error_log(str(ex))
@@ -982,10 +983,7 @@ def process_and_edit_line(old_line_infos, new_line_infos):
     try:
         mycursor.execute(sql, val)
         mydb.commit()
-        try:
-            print(mycursor.statement)
-        except:
-            print(mycursor._executed)
+        print(mycursor.statement)
     except Exception as ex:
         mydb.close()
         error_log(str(ex))
@@ -1043,12 +1041,7 @@ def delete_record(line_infos):
     try:
         mycursor.execute(sql, val)
         mydb.commit()
-        try:
-            print(mycursor.statement)
-        except:
-            print(mycursor._executed)
-        #warnings = mycursor.get_warnings()  # TODO
-        #print(warnings)
+        print(mycursor.statement)
     except Exception as ex:
         mydb.close()
         error_log(str(ex))
