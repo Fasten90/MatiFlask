@@ -207,6 +207,7 @@ def get_params():
 @app.route('/mati_adatbazis', methods=['GET', 'POST'])
 def mati_adatbazis():  # pylint: disable=too-many-return-statements  disable=too-many-statements  disable=too-many-branches
     result = ''
+    form = None
 
     if request.method == 'GET':
         is_modify = False
@@ -230,7 +231,7 @@ def mati_adatbazis():  # pylint: disable=too-many-return-statements  disable=too
                 form.is_edit.default = edit_line['is_edit']
                 #form.is_delete  # Non existing field in the form
                 form.process()
-                result += 'Form processed\n'
+                result += 'Form edit processed\n'
             elif edit_line['is_delete'] == 'True':
                 is_modify = True
                 # Get - delete
@@ -299,7 +300,9 @@ def mati_adatbazis():  # pylint: disable=too-many-return-statements  disable=too
         form = forms.MatiAdatbazisFeltoltes()
     else:
         # First call, put default data
-        form = forms.MatiAdatbazisFeltoltes()
+        # Init only if needed
+        if not form:
+            form = forms.MatiAdatbazisFeltoltes()
 
     lines_all, lines_all_headers = mati_db.get_db_all()
     # Extend table with 'Edit' and 'delete' mode
