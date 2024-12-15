@@ -270,7 +270,9 @@ def mati_adatbazis():
                 new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 new_line_infos['city'] = None  # By default we ignore it
                 new_line_infos['low_floor'] = request.form['low_floor']
+                error_log('4.5')
                 is_edit = request.form['is_edit']  # Not a good check
+                error_log('4.6')
                 print('Received content: ' + str(new_line_infos))
                 error_log('2')
                 #if is_edit:  # Not a good heck
