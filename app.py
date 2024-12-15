@@ -258,6 +258,7 @@ def mati_adatbazis():
             #if form.validate_on_submit():
             # TODO: Resolve
             if True:
+                error_log('1')
                 new_line_infos = {}
                 new_line_infos['line'] = request.form['jarat']  #TODO: DB dolumn
                 new_line_infos['min_hour'] = request.form['min_hour']
@@ -269,17 +270,21 @@ def mati_adatbazis():
                 new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 new_line_infos['city'] = None  # By default we ignore it
                 new_line_infos['low_floor'] = request.form['low_floor']
-                is_edit = request.form['is_edit']
+                is_edit = request.form['is_edit']  # Not a good check
                 print('Received content: ' + str(new_line_infos))
-                if is_edit:
+                error_log('2')
+                #if is_edit:  # Not a good heck
                     # Edited upload
-                    edit_line = get_params()
+                edit_line = get_params()
+                if 'is_edit' in edit_line and edit_line['is_edit'] == 'True':
                     del edit_line['is_edit']
                     del edit_line['is_delete']
                     del new_line_infos['city']  # Ignored
+                    error_log('3')
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
                     # Pure upload
+                    error_log('4')
                     mati_db.process_and_upload_line(new_line_infos)
                 # TODO: flash('Result: ' + result)
             else:
