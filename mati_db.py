@@ -1056,8 +1056,6 @@ def delete_record(line_infos):
 
     mydb.close()
 
-    return
-
 
 if __name__ == '__main__':
     # Manual test

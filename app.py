@@ -82,8 +82,8 @@ def clock():
         else:
             print('[ERROR] Not acceptable request')
             return clock_time
-    except Exception as e:
-        return '[ERROR] ' + str(e)
+    except Exception as ex:
+        return '[ERROR] ' + str(ex)
 
 
 @app.route('/menetrend', methods=['GET'])
@@ -258,7 +258,6 @@ def mati_adatbazis():
             #if form.validate_on_submit():
             # TODO: Resolve
             if True:
-                error_log('1')
                 new_line_infos = {}
                 new_line_infos['line'] = request.form['jarat']  #TODO: DB dolumn
                 new_line_infos['min_hour'] = request.form['min_hour']
@@ -270,11 +269,8 @@ def mati_adatbazis():
                 new_line_infos['jaratsuruseg_hetvege'] = request.form['jaratsuruseg_hetvege']
                 new_line_infos['city'] = None  # By default we ignore it
                 new_line_infos['low_floor'] = request.form['low_floor']
-                error_log('4.5')
-                #is_edit = request.form['is_edit']  # Not a good check  # Somewhy it cannot be checked
-                error_log('4.6')
+                #is_edit = request.form['is_edit']  # Not a good check  # Somewhy it cannot be checked, however, it is added to the forms.... Check it!
                 print('Received content: ' + str(new_line_infos))
-                error_log('2')
                 #if is_edit:  # Not a good heck
                     # Edited upload
                 edit_line = get_params()
@@ -282,11 +278,9 @@ def mati_adatbazis():
                     del edit_line['is_edit']
                     del edit_line['is_delete']
                     del new_line_infos['city']  # Ignored
-                    error_log('3')
                     mati_db.process_and_edit_line(edit_line, new_line_infos)
                 else:
                     # Pure upload
-                    error_log('4')
                     mati_db.process_and_upload_line(new_line_infos)
                 # TODO: flash('Result: ' + result)
             else:
