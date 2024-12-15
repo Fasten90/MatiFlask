@@ -16,7 +16,7 @@ DEBUG = False
 
 def error_log(line):
     dirpath = os.path.dirname(os.path.abspath(__file__))
-    now = datetime.now()
+    now = datetime.datetime.now()
     with open(dirpath + '/mati_db_error.log', 'a') as file:
         file.write(str(now) + ' ' + line + '\n')
 
