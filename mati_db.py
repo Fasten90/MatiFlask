@@ -14,6 +14,13 @@ TIME_ARRIVE_NOW_TEXT = 'MOST'
 DEBUG = False
 
 
+def error_log(line):
+    dirpath = os.path.dirname(os.path.abspath(__file__))
+    now = datetime.now()
+    with open(dirpath + '/mati_db_error.log', 'a') as file:
+        file.write(str(now) + ' ' + line + '\n')
+
+
 def database_connection():
     """ Connect to the Database """
     mydb = mysql.connector.connect(
@@ -935,8 +942,13 @@ def process_and_upload_line(line_infos):
     try:
         mycursor.execute(sql, val)
         mydb.commit()
+        try:
+            print(mycursor.statement)
+        except:
+            print(mycursor._executed)
     except Exception as ex:
         mydb.close()
+        error_log(str(ex))
         raise ex
 
     mydb.close()
@@ -976,6 +988,7 @@ def process_and_edit_line(old_line_infos, new_line_infos):
             print(mycursor._executed)
     except Exception as ex:
         mydb.close()
+        error_log(str(ex))
         raise ex
 
     mydb.close()
@@ -1038,6 +1051,7 @@ def delete_record(line_infos):
         #print(warnings)
     except Exception as ex:
         mydb.close()
+        error_log(str(ex))
         raise ex
 
     mydb.close()

@@ -38,8 +38,9 @@ def robots_txt():
 
 def error_log(line):
     dirpath = os.path.dirname(os.path.abspath(__file__))
-    with open(dirpath + '/error.log', 'a') as file:
-        file.write(line)
+    now = datetime.now()
+    with open(dirpath + '/app_error.log', 'a') as file:
+        file.write(str(now) + ' ' + line + '\n')
 
 
 clock_time = '13:26:41'
@@ -289,9 +290,11 @@ def mati_adatbazis():
             flash('Result: ' + str(ex))
             print(str(ex))
             error_log(result)
+        # Pure form
         form = forms.MatiAdatbazisFeltoltes()
     else:
         # First call, put default data
+        form = forms.MatiAdatbazisFeltoltes()
         pass
 
     lines_all, lines_all_headers = mati_db.get_db_all()
