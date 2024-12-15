@@ -1,0 +1,387 @@
+jarat;min_hour;max_hour;jaratsuruseg_minute;start_minute;station;jarat_tipus;jaratsuruseg_hetvege;varos
+16;7;18;10;"0";klb-csomópont;BUSZ;20;Kiss Jancsi
+16;7;18;10;1;Bolya utca;BUSZ;20;Kiss Jancsi
+16;7;18;10;2;Namma u.../ Porc... út;BUSZ;20;Kiss Jancsi
+16;7;18;10;3;Déli pályaudvar M+H;BUSZ;20;Kiss Jancsi
+16;7;18;10;4;WC utca;BUSZ;20;Kiss Jancsi
+16;7;18;10;5;Fürdi utca;BUSZ;20;Kiss Jancsi
+9;10;24;16;"0";klb-csomópont;BUSZ;30;Kiss Jancsi
+9;10;24;16;1;Bolya utca;BUSZ;30;Kiss Jancsi
+9;10;24;16;2;Namma u.../ Porc... út;BUSZ;30;Kiss Jancsi
+9;10;24;16;3;Déli pályaudvar M+H;BUSZ;30;Kiss Jancsi
+9;10;24;16;4;WC utca;BUSZ;30;Kiss Jancsi
+9;10;24;16;5;Fürdi utca;BUSZ;30;Kiss Jancsi
+9;10;24;16;6;Lármákl utca;BUSZ;30;Kiss Jancsi
+"0";5;23;10;10;Mindszenty J... Bíb... tér;BUSZ;20;Kertváros
+"0";5;23;10;11;hó utca;BUSZ;20;Kertváros
+"0";5;23;10;12;hajnalka utca;BUSZ;20;Kertváros
+"0";5;23;10;13;orvosi rendelő;BUSZ;20;Kertváros
+"0";5;23;10;14;márton áron tér;BUSZ;20;Kertváros
+"0";5;23;10;15;zajzon utca;BUSZ;20;Kertváros
+"0";5;23;10;16;kert;BUSZ;20;Kertváros
+16A;18;21;10;"0";klb-csomópont;BUSZ;;Kiss Jancsi
+16A;18;21;10;1;Bolya utca;BUSZ;;Kiss Jancsi
+16A;18;21;10;2;Namma u.../ Porc... út;BUSZ;;Kiss Jancsi
+16A;18;21;10;3;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+16B;4;7;10;"0";klb-csomópont;BUSZ;;Kiss Jancsi
+16B;4;7;10;1;Bolya utca;BUSZ;;Kiss Jancsi
+16B;4;7;10;2;Namma u.../ Porc... út;BUSZ;;Kiss Jancsi
+16B;4;7;10;3;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+16B;4;7;10;4;WC utca;BUSZ;;Kiss Jancsi
+16B;4;7;10;5;Fürdi utca;BUSZ;;Kiss Jancsi
+16B;4;7;10;6;Lármákl utca;BUSZ;;Kiss Jancsi
+16B;4;7;10;7;Konyha utca;BUSZ;;Kiss Jancsi
+977;19;24;20;1;Puff tér;ÉJSZAKAI;;Kiss Jancsi
+977;19;24;20;2;keleti autóbuszgarázs;ÉJSZAKAI;;Kiss Jancsi
+977;19;24;20;3;porcica út/úsztómet.3;ÉJSZAKAI;;Kiss Jancsi
+977;19;24;20;4;Ágyacska utca;ÉJSZAKAI;;Kiss Jancsi
+977;19;24;20;5;Hétalvó utca;ÉJSZAKAI;;Kiss Jancsi
+4;7;21;9;"0";Lávalámpa utca;BUSZ;;Márkváros
+4;7;21;9;1;Hubárien tér;BUSZ;;Márkváros
+4;7;21;9;2;Végállomás utca;BUSZ;;Márkváros
+4;7;21;9;3;Ajtó kitámasztó utca;BUSZ;;Márkváros
+4;7;21;9;4;Küszöb utca;BUSZ;;Márkváros
+4;7;21;9;5;Zizi út;BUSZ;;Márkváros
+4;7;21;9;6;Lift utca;BUSZ;;Márkváros
+2;7;21;9;4;Hubárien tér;BUSZ;;Márkváros
+2;7;21;9;5;Végállomás utca;BUSZ;;Márkváros
+2;7;21;9;6;Ajtó kitámasztó utca;BUSZ;;Márkváros
+2;7;21;9;7;Küszöb utca;BUSZ;;Márkváros
+2;7;21;9;8;Papucs út;BUSZ;;Márkváros
+2;7;21;9;9;Szekrény utca;BUSZ;;Márkváros
+5;6;21;11;24;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+5;6;21;11;25;WC utca;BUSZ;;Kiss Jancsi
+5;6;21;11;26;Fürdi utca;BUSZ;;Kiss Jancsi
+5;6;21;11;27;Lármákl utca;BUSZ;;Kiss Jancsi
+5;6;21;11;28;Konyha utca;BUSZ;;Kiss Jancsi
+5;6;21;11;30;étkező asztal utca;BUSZ;;Kiss Jancsi
+5;6;21;11;31;kamra utca;BUSZ;;Kiss Jancsi
+H5;9;19;30;9;klb-csomópont;H;;Kiss Jancsi
+H5;9;19;30;10;Bolya utca;H;;Kiss Jancsi
+H5;9;19;30;11;Hhervatt m... utca;H;;Kiss Jancsi
+H5;9;19;30;12;Autó út;H;;Kiss Jancsi
+H5;9;19;30;13;Út utca;H;;Kiss Jancsi
+H5;9;19;30;14;Út tér;H;;Kiss Jancsi
+H6;10;20;20;2;Déli pályaudvar M+H;H;;Kiss Jancsi
+H6;10;20;20;3;WC utca;H;;Kiss Jancsi
+H6;10;20;20;4;Fürdi utca;H;;Kiss Jancsi
+H6;10;20;20;5;Lármákl utca;H;;Kiss Jancsi
+H6;10;20;20;6;Konyha utca;H;;Kiss Jancsi
+132;8;20;13;7;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+132;8;20;13;8;WC utca;BUSZ;;Kiss Jancsi
+132;8;20;13;9;Fürdi utca;BUSZ;;Kiss Jancsi
+132;8;20;13;10;Lármákl utca;BUSZ;;Kiss Jancsi
+132;8;20;13;11;Konyha utca;BUSZ;;Kiss Jancsi
+132;20;22;27;7;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+132;20;22;27;8;WC utca;BUSZ;;Kiss Jancsi
+132;20;22;27;9;Fürdi utca;BUSZ;;Kiss Jancsi
+132;20;22;27;10;Lármákl utca;BUSZ;;Kiss Jancsi
+132;20;22;27;11;Konyha utca;BUSZ;;Kiss Jancsi
+901;19;23;20;2;Hábárien;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;2;Teknős utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;3;Stadban utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;4;Virág utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;5;Virág tér;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;6;Virág rét;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;7;Huha utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;8;Hétalvó utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;9;Ágyacska utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;10;Bolya utca;ÉJSZAKAI;;Kiss Jancsi
+901;19;23;20;11;Klb-csomópont;ÉJSZAKAI;;Kiss Jancsi
+364;8;21;15;1;Klb-csomópont;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;2;Bolya utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;3;Hhervatt m... utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;4;Autó út;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;5;Út utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;6;Zápor utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;7;Namma u.../ Porc... út;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;8;Déli pályaudvar M+H;VOLÁNBUSZ;;Kiss Jancsi
+903;19;23;20;3;Konyha utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;2;Lármákl utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;3;Fürdi utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;5;WC utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;6;Déli pályaudvar M+H;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;7;Namma u.../ Porc... út;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;8;Zápor utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;9;Út utca;ÉJSZAKAI;;Kiss Jancsi
+364;8;21;15;9;WC utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;10;Fürdi utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;11;Lármákl utca;VOLÁNBUSZ;;Kiss Jancsi
+364;8;21;15;12;Konyha utca;VOLÁNBUSZ;;Kiss Jancsi
+18;8;20;16;4;Autó út;VGANZ;;Kiss Jancsi
+18;8;20;16;5;Hhervatt m... utca;VGANZ;;Kiss Jancsi
+18;8;20;16;6;Bolya utca;VGANZ;;Kiss Jancsi
+18;8;20;16;7;Namma u.../ Porc... út;VGANZ;;Kiss Jancsi
+18;8;20;16;8;Déli pályaudvar M+H;VGANZ;;Kiss Jancsi
+18;8;20;16;9;WC utca;VGANZ;;Kiss Jancsi
+18;8;20;16;10;Fürdi utca;VGANZ;;Kiss Jancsi
+18;8;20;16;11;Lármákl utca;VGANZ;;Kiss Jancsi
+18;8;20;16;12;Konyha utca;VGANZ;;Kiss Jancsi
+903;19;23;20;10;Autó út;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;11;Hhervatt m... utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;12;Bolya utca;ÉJSZAKAI;;Kiss Jancsi
+903;19;23;20;13;Klb-csomópont;ÉJSZAKAI;;Kiss Jancsi
+200;7;21;9;5;Lármákl utca;BUSZ;;Kiss Jancsi
+200;7;21;9;6;Konyha utca;BUSZ;;Kiss Jancsi
+200;7;21;9;7;klb-csomópont;BUSZ;;Kiss Jancsi
+200;7;21;9;8;Bolya utca;BUSZ;;Kiss Jancsi
+200;7;21;9;9;Hhervatt m... utca;BUSZ;;Kiss Jancsi
+200;7;21;9;10;Autó út;BUSZ;;Kiss Jancsi
+200;7;21;9;11;Út utca;BUSZ;;Kiss Jancsi
+130;7;21;5;2;Puff út;BUSZ;;Kiss Jancsi
+130;7;21;5;3;Keleti budár;BUSZ;;Kiss Jancsi
+130;7;21;5;4;Első ház;BUSZ;;Kiss Jancsi
+130;7;21;5;5;Puff tér;BUSZ;;Kiss Jancsi
+129;7;21;7;3;Csúcs;BUSZ;;Kiss Jancsi
+129;7;21;7;4;Níma;BUSZ;;Kiss Jancsi
+129;7;21;7;5;Első ház;BUSZ;;Kiss Jancsi
+129;7;21;7;6;Keleti budár;BUSZ;;Kiss Jancsi
+128;7;21;7;5;Puff tér;BUSZ;;Kiss Jancsi
+127;7;21;3;4;Zivatar;BUSZ;;Kiss Jancsi
+128;7;21;7;6;Níma;BUSZ;;Kiss Jancsi
+128;7;21;7;7;Csúcs;BUSZ;;Kiss Jancsi
+127;7;21;3;5;Keleti budár;BUSZ;;Kiss Jancsi
+127;7;21;3;6;Első ház;BUSZ;;Kiss Jancsi
+900;19;24;25;"0";Puff út;ÉJSZAKAI;;Kiss Jancsi
+900;19;24;25;1;Keleti budár;ÉJSZAKAI;;Kiss Jancsi
+900;19;24;25;2;Első ház;ÉJSZAKAI;;Kiss Jancsi
+900;19;24;25;3;Níma;ÉJSZAKAI;;Kiss Jancsi
+900;19;24;25;4;Csúcs;ÉJSZAKAI;;Kiss Jancsi
+264E;7;21;7;3;Konyha utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;4;Fürdi utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;5;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+264E;7;21;7;6;Bolya utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;7;Autó út;BUSZ;;Kiss Jancsi
+264E;7;21;7;8;Konyha utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;9;Fürdi utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;10;Déli pályaudvar M+H;BUSZ;;Kiss Jancsi
+264E;7;21;7;11;Bolya utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;12;Autó út;BUSZ;;Kiss Jancsi
+264E;7;21;7;13;Zápor utca;BUSZ;;Kiss Jancsi
+264E;7;21;7;14;Klb-csomópont;BUSZ;;Kiss Jancsi
+363;7;21;15;4;Autó út;VOLÁNBUSZ;;Kiss Jancsi
+363;7;21;15;5;Hhervatt m... utca;VOLÁNBUSZ;;Kiss Jancsi
+363;7;21;15;6;Bolya utca;VOLÁNBUSZ;;Kiss Jancsi
+363;7;21;15;7;Ágyacska utca;VOLÁNBUSZ;;Kiss Jancsi
+363;7;21;15;8;Hétalvó utca;VOLÁNBUSZ;;Kiss Jancsi
+363;7;21;15;9;Máté mkk-volánbusz telephely;VOLÁNBUSZ;;Kiss Jancsi
+362;7;21;15;2;Máté mkk-volánbusz telephely;VOLÁNBUSZ;;Kiss Jancsi
+362;7;21;15;3;Hétalvó utca;VOLÁNBUSZ;;Kiss Jancsi
+362;7;21;15;4;Ágyacska utca;VOLÁNBUSZ;;Kiss Jancsi
+362;7;21;15;5;Első ház;VOLÁNBUSZ;;Kiss Jancsi
+362;7;21;15;6;Keleti budár;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;9;Máté mkk-volánbusz telephely;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;10;Huha utca;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;11;Tini tér;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;12;Márog villamos utca;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;13;Teknős utca;VOLÁNBUSZ;;Kiss Jancsi
+440;7;21;15;14;Stadban utca;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;5;Máté mkk-volánbusz telephely;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;6;Huha utca;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;7;Tini tér;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;8;Márog villamos utca;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;9;Stadban utca;VOLÁNBUSZ;;Kiss Jancsi
+440B;7;21;15;10;Bek-uszoda;VOLÁNBUSZ;;Kiss Jancsi
+505;5;21;240;"0";Máté mkk-volánbusz telephely;VOLÁNBUSZ;;Kiss Jancsi
+505;5;21;240;1;Huha utca;VOLÁNBUSZ;;Kiss Jancsi
+505;5;21;240;2;Bek-uszoda;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;5;Étkező asztal utca;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;6;Konyha utca;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;7;Klb-csomópont;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;8;Bolya utca;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;9;Hhervatt m... utca;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;10;Autó út;VOLÁNBUSZ;;Kiss Jancsi
+1057;7;21;15;11;Út utca;VOLÁNBUSZ;;Kiss Jancsi
+Matibizony;1;23;20;"0";Teszt0;BUSZ;;Apaváros
+Matibizony;1;23;20;1;Teszt1;BUSZ;;Apaváros
+Matibizony;1;23;20;2;Teszt2;BUSZ;;Apaváros
+Matibizony;1;23;20;3;Teszt3;BUSZ;;Apaváros
+Matibizony;1;23;20;4;Teszt4;BUSZ;;Apaváros
+Matibizony;1;23;20;5;Teszt5;BUSZ;;Apaváros
+Matibizony;1;23;20;6;Teszt6;BUSZ;;Apaváros
+MatiNem;8;21;20;3;Teszt0;BUSZ;;Apaváros
+MatiNem;8;21;20;4;Teszt1;BUSZ;;Apaváros
+MatiNem;8;21;20;5;Teszt2;BUSZ;;Apaváros
+MatiNem;8;21;20;6;Körforgalom;BUSZ;;Apaváros
+MatiNem;8;21;20;7;Tábla utca;BUSZ;;Apaváros
+MatiNem;8;21;20;8;Ablak utca;BUSZ;;Apaváros
+MatiVaj;8;22;19;5;Körforgalom;BUSZ;;Apaváros
+MatiVaj;8;22;19;6;Párna;BUSZ;;Apaváros
+MatiVaj;8;22;19;7;Fal;BUSZ;;Apaváros
+MatiVaj;8;22;19;8;Ház;BUSZ;;Apaváros
+MatiVaj;8;22;19;9;Mati kaja sarok;BUSZ;;Apaváros
+éjszaka;19;24;15;4;Teszt0;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;5;Teszt1;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;6;Teszt2;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;7;Teszt3;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;8;Teszt4;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;9;Teszt5;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;10;Teszt6;ÉJSZAKAI;;Apaváros
+éjszaka;19;24;15;11;Teszt7;ÉJSZAKAI;;Apaváros
+MatiEgy;8;22;10;6;Ablak utca;BUSZ;;Apaváros
+MatiEgy;8;22;10;7;Körforgalom;BUSZ;;Apaváros
+MatiEgy;8;22;10;8;Teszt2;BUSZ;;Apaváros
+MatiEgy;8;22;10;9;Teszt1;BUSZ;;Apaváros
+920;19;24;15;7;tábla utca;ÉJSZAKAI;;Apaváros
+920;19;24;15;8;Ablak utca;ÉJSZAKAI;;Apaváros
+920;19;24;15;9;Körforgalom;ÉJSZAKAI;;Apaváros
+920;19;24;15;10;Teszt2;ÉJSZAKAI;;Apaváros
+920;19;24;15;11;Teszt1;ÉJSZAKAI;;Apaváros
+KÜLÖNJÁRAT;10;12;59;"0";Puff tér;BUSZ;;Kiss Jancsi
+KÜLÖNJÁRAT;10;12;59;1;Konyha utca;BUSZ;;Kiss Jancsi
+4A;7;21;15;3;Lávalámpa utca;BUSZ;;Márkváros
+4A;7;21;15;4;Hubárien tér;BUSZ;;Márkváros
+4A;7;21;15;5;Végállomás utca;BUSZ;;Márkváros
+4A;7;21;15;6;Ajtó kitámasztó utca;BUSZ;;Márkváros
+4A;7;21;15;7;Küszöb utca;BUSZ;;Márkváros
+2A;7;21;15;5;Hubárien tér;BUSZ;;Márkváros
+2A;7;21;15;6;Végállomás utca;BUSZ;;Márkváros
+2A;7;21;15;7;Küszöb utca;BUSZ;;Márkváros
+2A;7;21;15;8;Papucs út;BUSZ;;Márkváros
+6B;7;21;10;2;Zivatar;BUSZ;;Kiss Jancsi
+6B;7;21;10;3;Földszint;BUSZ;;Kiss Jancsi
+6B;7;21;10;4;1.emelet;BUSZ;;Kiss Jancsi
+6B;7;21;10;5;2.emelet;BUSZ;;Kiss Jancsi
+6B;7;21;10;6;3.emelet;BUSZ;;Kiss Jancsi
+6B;7;21;10;7;4.emelet;BUSZ;;Kiss Jancsi
+11;7;21;15;3;Qqhecmahvin;BUSZ;;Márkváros
+11;7;21;15;4;Lift utca;BUSZ;;Márkváros
+11;7;21;15;5;Zizi út;BUSZ;;Márkváros
+11;7;21;15;6;Papucs út;BUSZ;;Márkváros
+11;7;21;15;7;Szekrény utca;BUSZ;;Márkváros
+111;7;21;15;5;Qqhecmahvin;BUSZ;;Márkváros
+111;7;21;15;6;Lift utca;BUSZ;;Márkváros
+111;7;21;15;7;Zizi út;BUSZ;;Márkváros
+111;7;21;15;8;Papucs út;BUSZ;;Márkváros
+111;7;21;15;9;Szekrény utca;BUSZ;;Márkváros
+72;7;21;10;5;Lármákl utca;BUSZTROLI;;Kiss Jancsi
+70;7;21;15;3;Hétalvó utca;BUSZTROLI;;Kiss Jancsi
+70;7;21;15;4;Ágyacska utca;BUSZTROLI;;Kiss Jancsi
+70;7;21;15;5;Namma u.../ Porc... út;BUSZTROLI;;Kiss Jancsi
+70;7;21;15;6;Déli pályaudvar M+H;BUSZTROLI;;Kiss Jancsi
+72;7;21;10;6;"Morzsika utca, troliállomás";BUSZTROLI;;Kiss Jancsi
+72;7;21;10;7;Puff tér;BUSZTROLI;;Kiss Jancsi
+72;7;21;10;8;Namma u.../ Porc... út;BUSZTROLI;;Kiss Jancsi
+72;7;21;10;9;Déli pályaudvar M+H;BUSZTROLI;;Kiss Jancsi
+72;7;21;10;10;WC utca;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;3;Lármákl utca;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;4;Klb-csomópont;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;5;Bolya utca;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;6;Hhervatt m... utca;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;7;Autó út;BUSZTROLI;;Kiss Jancsi
+74;7;21;10;8;Út utca;BUSZTROLI;;Kiss Jancsi
+6;6;21;10;"0";Földszint;BUSZ;;Kiss Jancsi
+6;6;21;10;2;1.emelet;BUSZ;;Kiss Jancsi
+6;6;21;10;3;2.emelet;BUSZ;;Kiss Jancsi
+6;6;21;10;4;3.emelet;BUSZ;;Kiss Jancsi
+6;6;21;10;5;4.emelet;BUSZ;;Kiss Jancsi
+72;7;21;10;11;Fürdi utca;BUSZTROLI;;Kiss Jancsi
+V1;7;21;15;6;Zingensur;BUSZ;;Kiss Jancsi
+V1;7;21;15;7;Huha;BUSZ;;Kiss Jancsi
+V2;7;21;15;7;Huha;BUSZ;;Kiss Jancsi
+V2;7;21;15;8;Zigensur;BUSZ;;Kiss Jancsi
+V2;7;21;15;9;Másik állomási pályaudvar M;BUSZ;;Kiss Jancsi
+V2;7;21;15;10;Zigen út;BUSZ;;Kiss Jancsi
+V3;7;21;15;7;Huha;BUSZ;;Kiss Jancsi
+V3;7;21;15;8;Másik állomási pályaudvar M;BUSZ;;Kiss Jancsi
+V3;7;21;15;9;Zigen út;BUSZ;;Kiss Jancsi
+V4;7;21;15;7;Huha;BUSZ;;Kiss Jancsi
+V4;7;21;15;8;Másik állomási pályaudvar M;BUSZ;;Kiss Jancsi
+M2;7;21;10;5;Másik állomási pályaudvar M;M;;Kiss Jancsi
+M2;7;21;10;6;Mognes M;M;;Kiss Jancsi
+M2;7;21;10;7;"Morzsika utca, troliállomás";M;;Kiss Jancsi
+M2;7;21;10;8;5.emelet;M;;Kiss Jancsi
+M1;7;21;10;5;Út utca;M;;Kiss Jancsi
+M1;7;21;10;6;Zápor utca;M;;Kiss Jancsi
+M1;7;21;10;10;WC utca;M;;Kiss Jancsi
+M4;7;21;10;5;Klb-csomópont;M;;Kiss Jancsi
+M4;7;21;10;6;Bolya utca;M;;Kiss Jancsi
+M4;7;21;10;7;Namma u.../ Porc... út;M;;Kiss Jancsi
+M4;7;21;10;8;Déli pályaudvar M+H;M;;Kiss Jancsi
+1;5;23;15;"0";b.út tér;BUSZ;;Kiss Jancsi
+1;5;23;15;1;b.út utca;BUSZ;;Kiss Jancsi
+1;5;23;15;2;b.autó út;BUSZ;;Kiss Jancsi
+1;5;23;15;3;b.hervatt marming utca;BUSZ;;Kiss Jancsi
+1;5;23;15;4;b.bolya utca;BUSZ;;Kiss Jancsi
+1;5;23;15;5;b.klb-csomópont;BUSZ;;Kiss Jancsi
+"0E";5;23;10;11;Mindszenty J... Bíb... tér;BUSZ;;Kertváros
+"0E";5;23;10;12;hajnalka utca;BUSZ;;Kertváros
+"0E";5;23;10;13;márton áron tér;BUSZ;;Kertváros
+"0E";5;23;10;14;kert;BUSZ;;Kertváros
+114;8;21;20;1;klb-csomópont;BUSZ;40;Kiss Jancsi
+114;8;21;20;2;Bolya utca;BUSZ;40;Kiss Jancsi
+114;8;21;20;4;Déli pályaudvar M+H;BUSZ;40;Kiss Jancsi
+114;8;21;20;6;Fürdi utca;BUSZ;40;Kiss Jancsi
+114;8;21;20;8;Konyha utca;BUSZ;40;Kiss Jancsi
+114;8;21;20;3;Namma u.../ Porc... út;BUSZ;40;Kiss Jancsi
+114;8;21;20;5;WC utca;BUSZ;40;Kiss Jancsi
+114;8;21;20;7;Lármákl utca;BUSZ;40;Kiss Jancsi
+113;8;21;20;11;klb-csomópont;BUSZ;40;Kiss Jancsi
+113;8;21;20;12;Bolya utca;BUSZ;40;Kiss Jancsi
+113;8;21;20;14;Déli pályaudvar M+H;BUSZ;40;Kiss Jancsi
+113;8;21;20;16;Fürdi utca;BUSZ;40;Kiss Jancsi
+113;8;21;20;18;Konyha utca;BUSZ;40;Kiss Jancsi
+113;8;21;20;13;Namma u.../ Porc... út;BUSZ;40;Kiss Jancsi
+113;8;21;20;15;WC utca;BUSZ;40;Kiss Jancsi
+113;8;21;20;17;Lármákl utca;BUSZ;40;Kiss Jancsi
+236;7;22;15;1;gondolat utca;BUSZ;30;Gondolatváros
+236;7;22;15;2;elmélkedő tér;BUSZ;30;Gondolatváros
+236;7;22;15;3;kérdés út;BUSZ;30;Gondolatváros
+237;7;22;15;1;gondolat utca;BUSZ;30;Gondolatváros
+237;7;22;15;2;elmélkedő tér;BUSZ;30;Gondolatváros
+237;7;22;15;3;elfelejtés utca;BUSZ;30;Gondolatváros
+238;7;22;15;1;elmélkedő tér;BUSZTROLI;30;Gondolatváros
+238;7;22;15;2;kérdés út;BUSZTROLI;30;Gondolatváros
+238;7;22;15;3;elfelejtés utca;BUSZTROLI;30;Gondolatváros
+237E;7;21;25;15;gondolat utca;BUSZ;;Gondolatváros
+237E;7;21;25;16;elfelejtés utca;BUSZ;;Gondolatváros
+239;7;21;6;1;gondolat utca;BUSZ;10;Gondolatváros
+239;7;21;6;2;elmélkedő tér;BUSZ;10;Gondolatváros
+239;7;21;6;3;elfelejtés utca;BUSZ;10;Gondolatváros
+237A;7;21;25;15;gondolat utca;BUSZ;;Gondolatváros
+237A;7;21;25;16;elmélkedő tér;BUSZ;;Gondolatváros
+940A;21;24;10;1;gondolat utca;ÉJSZAKAI;25;Gondolatváros
+940A;21;24;10;2;elmélkedő tér;ÉJSZAKAI;25;Gondolatváros
+940A;21;24;10;3;elfelejtés utca;ÉJSZAKAI;25;Gondolatváros
+940;21;24;10;1;gondolat utca;ÉJSZAKAI;25;Gondolatváros
+940;21;24;10;2;elmélkedő tér;ÉJSZAKAI;25;Gondolatváros
+940;21;24;10;3;elfelejtés utca;ÉJSZAKAI;25;Gondolatváros
+940;21;24;10;4;kérdés út;ÉJSZAKAI;25;Gondolatváros
+49;7;21;8;1;Ágyacska utca;VTATRA;8;Kiss Jancsi
+49;7;21;8;2;Porcica út/úszómet.3;VTATRA;8;Kiss Jancsi
+49;7;21;8;3;Porcica út/úszómet.2;VTATRA;8;Kiss Jancsi
+49;7;21;8;4;Zápor utca;VTATRA;8;Kiss Jancsi
+D14;8;19;120;"0";Bek-uszoda;DHAJO;180;Lego város
+D14;8;19;120;1;huha utca;DHAJO;180;Lego város
+68;7;20;3;"0";Hámoráradí;VTATRA;3;Apaváros
+68;7;20;3;1;Virágos rét;VTATRA;3;Apaváros
+68;7;20;3;2;Dada utca / Porcica út;VTATRA;3;Apaváros
+68;7;20;3;3;Nincs neve út;VTATRA;3;Apaváros
+2;7;20;15;1;Körforgalom;VGANZ;15;Apaváros
+2;7;20;15;2;Hámoráradí;VGANZ;15;Apaváros
+2;7;20;15;3;Virágos rét;VGANZ;15;Apaváros
+2;7;20;15;4;Dada utca / Porcica út;VGANZ;15;Apaváros
+M4;7;21;10;9;WC utca;M;;Kiss Jancsi
+M4;7;21;10;10;Fürdi utca;M;;Kiss Jancsi
+49A;18;21;10;1;Zápor utca;VTATRA;10;Kiss Jancsi
+49A;18;21;10;2;Porcica út/úszómet.2;VTATRA;10;Kiss Jancsi
+20036;9;22;10;5;Ó út;VCAF;;Kiss Jancsi
+20036;9;22;10;6;Ú út;VCAF;;Kiss Jancsi
+20036;9;22;10;7;B út;VCAF;;Kiss Jancsi
+20036;9;22;10;8;V út;VCAF;;Kiss Jancsi
+156;4;23;1;1;Namma u.../ Porc... út;BUSZ;2;Kiss Jancsi
+156;4;23;1;2;Áprilishegy utca;BUSZ;2;Kiss Jancsi
+156;4;23;1;3;Másik állomási pályaudvar M;BUSZ;2;Kiss Jancsi
+156;4;23;1;4;Keleti budár;BUSZ;2;Kiss Jancsi
+156;4;23;1;5;Zivatar;BUSZ;2;Kiss Jancsi
+H7;4;24;5;"0";Dávid nappali;H;30;Dávidváros
+H7;4;24;5;1;Dávid hálószoba;H;30;Dávidváros
+H7;4;24;5;2;Dávid WC;H;30;Dávidváros
+H7;4;24;5;3;Dávid Fürdi;H;30;Dávidváros
+H8;4;24;50;"0";Dávid nappali;H;50;Dávidváros
+H8;4;24;50;1;Dávid hálószoba;H;50;Dávidváros
+H8;4;24;50;2;Dávid WC;H;50;Dávidváros
+H8;4;24;50;3;Dávid Fürdi;H;50;Dávidváros
+H8;4;24;50;4;Dávid Konyha;H;50;Dávidváros
+155;7;20;10;1;TODO;BUSZ;;Kiss Jancsi
+test1;"0";6;5;1;Teszt1;VCAF;;

@@ -1,0 +1,104 @@
+
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h1>Mati adatbázis</h1>
+
+
+{% if result %}
+<p>Eredmény:</p>
+{{ result }}
+{% endif %}
+
+
+<form action="" method="post">
+{{ form.csrf_token() }}
+
+
+<div class="input text">
+
+<table>
+
+<tr>
+<td>Járat</td>
+<td>{{ form.jarat }}</td>
+</tr>
+
+<tr>
+    <td>min hour</td>
+    <td>{{ form.min_hour }}</td>
+</tr>
+
+<tr>
+    <td>max hour</td>
+    <td>{{ form.max_hour }}</td>
+</tr>
+
+<tr>
+    <td>Járatsűrűség</td>
+    <td>{{ form.jaratsuruseg_minute }}</td>
+</tr>
+
+<tr>
+    <td>Járatsűrűség hétvégén</td>
+    <td>{{ form.jaratsuruseg_hetvege }}</td>
+</tr>
+
+<tr>
+    <td>Start minute</td>
+    <td>{{ form.start_minute }}</td>
+</tr>
+
+<tr>
+    <td>Megálló</td>
+    <td>{{ form.station }}</td>
+</tr>
+
+<tr>
+    <td>Járat típus</td>
+    <td>{{ form.jarat_tipus }}</td>
+</tr>
+
+<tr>
+    <td>Alacsony_padlós/Magas_padlós<br>pl. 2_1</td>
+    <td>{{ form.low_floor }}</td>
+</tr>
+
+</table>
+
+<p hidden>{{ form.is_edit }}</p>
+
+</div>
+<div class="input submit"><input type="submit" value="Feltöltés"></div>
+</form>
+
+
+{% if lines_all %}
+
+<br />
+<br />
+
+<table class="lines_all">
+    <tr>
+        {% for item in lines_all_headers %}
+        <th>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% for row in lines_all %}
+    <tr>
+        {% for item in row %}
+        {% if item is string and 'a href' in item %}
+        <td>{{ item|safe }}</td>
+        {% else %}
+        <td>{{ item }}</td>
+        {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endblock content %}
+

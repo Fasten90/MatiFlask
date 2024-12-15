@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+
+<body>
+
+
+<div id="page_content">
+
+{% block systemmessage %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<h1>System message</h1>
+    {% if messages is iterable and messages is not string %}
+        {% if messages[0][1] != "" %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message[1] }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            There is no system message
+        {% endif %}
+    {% else %}
+        {{ messages }}
+    {% endif %}
+<hr>
+{% endif %}
+{% endwith %}
+
+{% endblock systemmessage %}
+
+
+{% block content %}
+
+
+This is empty main page.
+This will be overridden at child pages
+
+{% endblock content %}
+
+</div>
+
+</body>
+</html>
