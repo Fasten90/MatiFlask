@@ -528,9 +528,21 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
-def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
-    item_list = []
+def is_tram(line_type):
+    if line_type[0] == 'V':
+        if line_type != 'VONAT' and line_type != 'VOLÁNBUSZ':
+            return True  # Villamos / Tram
+    return False
+
+
+def calculate_line_view(line, station, time):
+    line_station_list = []
+    line_infos = {}
     result = get_db(jarat=line)
+    if not result:
+        raise Exception('Nincs ilyen járat')
+    line_infos['jarat_tipus'] = result[0]['jarat_tipus']  # DB type
+
     for item in result:
         assert isinstance(item, dict)
         new_item = {}
@@ -538,12 +550,12 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
         new_item['time'] = None
         new_item['is_tram_here'] = None
         new_item['start_minute'] = item['start_minute']
-        item_list.append(new_item)
+        line_station_list.append(new_item)
 
     actual_station_start_minute = 0  # start_minute is always in a simple integer (minutes)
 
     # Calculate station where we are
-    for item in item_list:
+    for item in line_station_list:
         if item['station'] == station: # We check this station
             # Save this station times
             item['time'] = time
@@ -555,7 +567,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
     now_string = datetime.datetime.strftime(now, "%H:%M")
     now_with_fake_date = datetime.datetime.strptime(now_string, "%H:%M")
     # Calculate time for each field
-    for index, item in enumerate(item_list):
+    for index, item in enumerate(line_station_list):
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
         this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
@@ -579,7 +591,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
             fake_element['is_tram_here'] = True
             fake_element['time'] = now_string
             fake_element['station'] = ''
-            item_list.insert(index, fake_element)
+            line_station_list.insert(index, fake_element)
             item['is_tram_here'] = False
             is_found = True
         else:
@@ -587,7 +599,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
             item['is_tram_here'] = False
         was_first = True
 
-    return item_list
+    return line_station_list, line_infos
 
 
 def get_line_view(line, station, time):
@@ -595,9 +607,14 @@ def get_line_view(line, station, time):
     Returns with HTML code
     Note: This function (generated HTML) used in the menetrend - get_menetrend()"""
 
-    station_list = calculate_line_view(line, station, time)
-
-    html = ''
+    station_list, line_infos = calculate_line_view(line, station, time)
+    if is_tram(line_infos['jarat_tipus']):
+        vehicle_icon = 'tram-car.png'  # Static files in the file system/repository
+        circle_icon = 'circle_yellow.png'
+    else:
+        vehicle_icon = 'bus.png'
+        circle_icon = 'circle_blue.png'
+    html = '' 
     html += '<html>'
     html += '<body>'
     html += f'<p>Járat: {line}, Megálló ahonnan tervezel: {station}</p>'
@@ -606,9 +623,9 @@ def get_line_view(line, station, time):
         html += '<tr>'
         html += '<td>'
         if item['is_tram_here']:
-            html += '<img src="static/tram-car.png" title="tram">'
+            html += f'<img src="static/{vehicle_icon}" title="tram">'
         else:
-            html += '<img src="static/circle.png" title="tram">'
+            html += f'<img src="static/{circle_icon}" title="tram">'
         html += '</td>'
         html += '<td>'
         html += item['time']
