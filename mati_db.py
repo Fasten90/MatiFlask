@@ -291,6 +291,12 @@ def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-bran
     elif jarat_type == 'DHAJO':  # Hajó / ship
         text_color = 'black'
         background_color = 'pink'
+    elif jarat_type == 'PESTJY':
+        text_color = 'black'
+        background_color = 'redorange'
+    elif jarat_type == 'SIKLOVONAT':
+        text_color = 'black'
+        background_color = 'darkpink'
     else:
         text_color = 'black'
         background_color = 'white'
