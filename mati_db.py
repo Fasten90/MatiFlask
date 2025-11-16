@@ -210,10 +210,34 @@ def get_next_arrive(menetrend):
                 # less minute then the actual, calculate the next arrive!
                 pass
     else:
-        # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
-        while arrive_minute < actual_minute:  # If it went, calculate the next
-            arrive_minute += jaratsuruseg
-        remained_minute = arrive_minute - actual_minute
+        # So, jaratsuruseg < 60
+        if False:  # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
+            while arrive_minute < actual_minute:  # If it went, calculate the next
+                arrive_minute += jaratsuruseg
+            remained_minute = arrive_minute - actual_minute
+        # arrive_minute corrected with hours, let us reset
+        arrive_minute = 0
+        # first start: min_hour : start_minute
+        # actual: actual_hour : actual_minute
+        if actual_hour < min_hour:
+            # Calculates the all minutes before the minute_hour and start_minute
+            # E.g. 12:20 actual time, and start time: 13:40
+            #                  hour diff              # Until the end of this hour    # Remained minutes in the latest (arriving) hour
+            remained_minute = (min_hour - actual_hour) * 60 + (60 - actual_minute) +  menetrend['start_minute']
+        else:
+            # First arrive time: min_hour:start_minute
+            # Add all arrives
+            calculate_arrive_hour = min_hour
+            calculate_arrive_minute = menetrend['start_minute']
+            while actual_hour < calculate_arrive_hour and actual_minute < calculate_arrive_minute:
+                # Step until the 'latest'
+                calculate_arrive_minute += jaratsuruseg
+                while calculate_arrive_minute >= 60:
+                    calculate_arrive_hour += 1
+                    calculate_arrive_minute -= 60
+            # Here we have the calculated first next arrive
+            #                  hour diff                                 # Until the end of this hour    # Remained minutes in the latest (arriving) hour
+            remained_minute = (calculate_arrive_hour - actual_hour) * 60 + (60 - actual_minute) + calculate_arrive_minute
     return remained_minute
 
 
