@@ -180,7 +180,9 @@ def get_next_arrive(menetrend):
         while actual_hour < min_hour:
             arrive_minute += 60  # hour = 60minutes
             actual_hour += 1  # Check next "actual (fake)" hour
+            # TODO: Infinite loop issue possible
     if jaratsuruseg >= 60:
+        # Hopefully it is calculated properly
         #    arrive_minute
         delta_hour = math.floor(jaratsuruseg / 60)
         remained_minute = jaratsuruseg - (delta_hour * 60)
@@ -304,7 +306,9 @@ def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-bran
 
 
 def update_menetrend_with_arrive_minutes(result):
-    """ Add new column with arrive minute """
+    """ Add new column with arrive minute 
+        Input: list of
+    """
     new_result = []
     for item in result:
         new_item = item
@@ -454,7 +458,7 @@ def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too
     now = datetime.datetime.now()
     if station:
         if result:
-            result = precheck_menetrend2(result)  # Check if they travel
+            result = precheck_menetrend2(result)  # Check if they travel (day filter!)
             result = update_menetrend_with_arrive_minutes(result)  # Add next arrive minute
             result = extend_get_next_menetrends(result)  # Add x new arrives
             result = extend_with_low_floor(result)  # Fill with low_floor field

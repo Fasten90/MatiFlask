@@ -46,6 +46,8 @@ def error_log(line):
         file.write(str(now) + ' ' + line + '\n')
 
 
+# NOT MatiGo function!!
+
 CLOCK_TIME = '13:26:41'
 LAST_SET_TIME = None
 @app.route('/clock', methods=['GET', 'POST'])
@@ -89,8 +91,12 @@ def clock():  # pylint: disable=too-many-return-statements
         return '[ERROR] ' + str(ex)
 
 
+# MatiGO functions
+
+
 @app.route('/menetrend', methods=['GET'])
 def get_menetrend():
+    """ Menetrend nézet - megállóra vagy járatra rákeresés. Ekkor a megállóban levő összes induló járatot kiírja. """
     try:
         line = request.args.get('jarat', type=int)
         station = request.args.get('megallo', type=str)
@@ -107,6 +113,7 @@ def get_menetrend():
 
 @app.route('/jarat_nezet', methods=['GET'])
 def get_jarat_nezet():
+    """ Egy adott fix járat megjelenítése, amiből egy adott pillanatban csak egy lehet."""
     try:
         line = request.args.get('jarat', type=str)
         station = request.args.get('megallo', type=str)
