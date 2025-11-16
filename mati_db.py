@@ -165,7 +165,7 @@ def get_db_cities():
     return result
 
 
-def get_next_arrive(menetrend):
+def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
     """ Calculate the arrive minutes, and check the next,
         and return with how many minutes are remained """
     now = datetime.datetime.now()
@@ -211,7 +211,7 @@ def get_next_arrive(menetrend):
                 pass
     else:
         # So, jaratsuruseg < 60
-        if False:  # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
+        if False:  # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.  # pylint: disable=using-constant-test
             while arrive_minute < actual_minute:  # If it went, calculate the next
                 arrive_minute += jaratsuruseg
             remained_minute = arrive_minute - actual_minute
@@ -271,7 +271,7 @@ def precheck_menetrend2(menetrend):
     return new_menetrend
 
 
-def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-branches
+def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-branches, too-many-statements
     """ Get color (text and background) by járat type """
     if jarat_type == 'BUSZ':
         text_color = 'white'
@@ -330,7 +330,7 @@ def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-bran
 
 
 def update_menetrend_with_arrive_minutes(result):
-    """ Add new column with arrive minute 
+    """ Add new column with arrive minute
         Input: list of
     """
     new_result = []
@@ -564,12 +564,12 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
 
 def is_tram(line_type):
     if line_type[0] == 'V':
-        if line_type != 'VONAT' and line_type != 'VOLÁNBUSZ':
+        if line_type not in ('VONAT', 'VOLÁNBUSZ'):
             return True  # Villamos / Tram
     return False
 
 
-def calculate_line_view(line, station, time):
+def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
     line_station_list = []
     line_infos = {}
     result = get_db(jarat=line)
@@ -648,7 +648,7 @@ def get_line_view(line, station, time):
     else:
         vehicle_icon = 'bus.png'
         circle_icon = 'circle_blue.png'
-    html = '' 
+    html = ''
     html += '<html>'
     html += '<body>'
     html += f'<p>Járat: {line}, Megálló ahonnan tervezel: {station}</p>'
