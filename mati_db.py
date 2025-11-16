@@ -165,7 +165,7 @@ def get_db_cities():
     return result
 
 
-def get_next_arrive(menetrend):
+def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
     """ Calculate the arrive minutes, and check the next,
         and return with how many minutes are remained """
     now = datetime.datetime.now()
@@ -180,7 +180,9 @@ def get_next_arrive(menetrend):
         while actual_hour < min_hour:
             arrive_minute += 60  # hour = 60minutes
             actual_hour += 1  # Check next "actual (fake)" hour
+            # TODO: Infinite loop issue possible
     if jaratsuruseg >= 60:
+        # Hopefully it is calculated properly
         #    arrive_minute
         delta_hour = math.floor(jaratsuruseg / 60)
         remained_minute = jaratsuruseg - (delta_hour * 60)
@@ -208,10 +210,34 @@ def get_next_arrive(menetrend):
                 # less minute then the actual, calculate the next arrive!
                 pass
     else:
-        # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.
-        while arrive_minute < actual_minute:  # If it went, calculate the next
-            arrive_minute += jaratsuruseg
-        remained_minute = arrive_minute - actual_minute
+        # So, jaratsuruseg < 60
+        if False:  # Simple handling, calculate from actual hour! It is wrong sometimes, but no problem.  # pylint: disable=using-constant-test
+            while arrive_minute < actual_minute:  # If it went, calculate the next
+                arrive_minute += jaratsuruseg
+            remained_minute = arrive_minute - actual_minute
+        # arrive_minute corrected with hours, let us reset
+        arrive_minute = 0
+        # first start: min_hour : start_minute
+        # actual: actual_hour : actual_minute
+        if actual_hour < min_hour:
+            # Calculates the all minutes before the minute_hour and start_minute
+            # E.g. 12:20 actual time, and start time: 13:40
+            #                  hour diff              # Until the end of this hour    # Remained minutes in the latest (arriving) hour
+            remained_minute = (min_hour - actual_hour) * 60 + (60 - actual_minute) +  menetrend['start_minute']
+        else:
+            # First arrive time: min_hour:start_minute
+            # Add all arrives
+            calculate_arrive_hour = min_hour
+            calculate_arrive_minute = menetrend['start_minute']
+            while actual_hour < calculate_arrive_hour and actual_minute < calculate_arrive_minute:
+                # Step until the 'latest'
+                calculate_arrive_minute += jaratsuruseg
+                while calculate_arrive_minute >= 60:
+                    calculate_arrive_hour += 1
+                    calculate_arrive_minute -= 60
+            # Here we have the calculated first next arrive
+            #                  hour diff                                 # Until the end of this hour    # Remained minutes in the latest (arriving) hour
+            remained_minute = (calculate_arrive_hour - actual_hour) * 60 + (60 - actual_minute) + calculate_arrive_minute
     return remained_minute
 
 
@@ -245,7 +271,7 @@ def precheck_menetrend2(menetrend):
     return new_menetrend
 
 
-def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-branches
+def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-branches, too-many-statements
     """ Get color (text and background) by járat type """
     if jarat_type == 'BUSZ':
         text_color = 'white'
@@ -291,6 +317,12 @@ def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-bran
     elif jarat_type == 'DHAJO':  # Hajó / ship
         text_color = 'black'
         background_color = 'pink'
+    elif jarat_type == 'PESTJY':
+        text_color = 'black'
+        background_color = 'redorange'
+    elif jarat_type == 'SIKLOVONAT':
+        text_color = 'black'
+        background_color = 'darkpink'
     else:
         text_color = 'black'
         background_color = 'white'
@@ -298,7 +330,9 @@ def get_color_by_jarmu_type(jarat, jarat_type):  # pylint: disable=too-many-bran
 
 
 def update_menetrend_with_arrive_minutes(result):
-    """ Add new column with arrive minute """
+    """ Add new column with arrive minute
+        Input: list of
+    """
     new_result = []
     for item in result:
         new_item = item
@@ -448,7 +482,7 @@ def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too
     now = datetime.datetime.now()
     if station:
         if result:
-            result = precheck_menetrend2(result)  # Check if they travel
+            result = precheck_menetrend2(result)  # Check if they travel (day filter!)
             result = update_menetrend_with_arrive_minutes(result)  # Add next arrive minute
             result = extend_get_next_menetrends(result)  # Add x new arrives
             result = extend_with_low_floor(result)  # Fill with low_floor field
@@ -528,9 +562,21 @@ def get_menetrend_wrap(jarat=None, station=None, city=None, limit=100):
     return get_menetrend(jarat, station, result)
 
 
+def is_tram(line_type):
+    if line_type[0] == 'V':
+        if line_type not in ('VONAT', 'VOLÁNBUSZ'):
+            return True  # Villamos / Tram
+    return False
+
+
 def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
-    item_list = []
+    line_station_list = []
+    line_infos = {}
     result = get_db(jarat=line)
+    if not result:
+        raise Exception('Nincs ilyen járat')
+    line_infos['jarat_tipus'] = result[0]['jarat_tipus']  # DB type
+
     for item in result:
         assert isinstance(item, dict)
         new_item = {}
@@ -538,12 +584,12 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
         new_item['time'] = None
         new_item['is_tram_here'] = None
         new_item['start_minute'] = item['start_minute']
-        item_list.append(new_item)
+        line_station_list.append(new_item)
 
     actual_station_start_minute = 0  # start_minute is always in a simple integer (minutes)
 
     # Calculate station where we are
-    for item in item_list:
+    for item in line_station_list:
         if item['station'] == station: # We check this station
             # Save this station times
             item['time'] = time
@@ -555,7 +601,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
     now_string = datetime.datetime.strftime(now, "%H:%M")
     now_with_fake_date = datetime.datetime.strptime(now_string, "%H:%M")
     # Calculate time for each field
-    for index, item in enumerate(item_list):
+    for index, item in enumerate(line_station_list):
         diff_minutes_time_from_actual_station = item['start_minute'] - actual_station_start_minute
         this_station_time = datetime.datetime.strptime(time, "%H:%M") + datetime.timedelta(minutes=diff_minutes_time_from_actual_station)
         item['time'] = datetime.datetime.strftime(this_station_time, "%H:%M")
@@ -579,7 +625,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
             fake_element['is_tram_here'] = True
             fake_element['time'] = now_string
             fake_element['station'] = ''
-            item_list.insert(index, fake_element)
+            line_station_list.insert(index, fake_element)
             item['is_tram_here'] = False
             is_found = True
         else:
@@ -587,7 +633,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
             item['is_tram_here'] = False
         was_first = True
 
-    return item_list
+    return line_station_list, line_infos
 
 
 def get_line_view(line, station, time):
@@ -595,8 +641,13 @@ def get_line_view(line, station, time):
     Returns with HTML code
     Note: This function (generated HTML) used in the menetrend - get_menetrend()"""
 
-    station_list = calculate_line_view(line, station, time)
-
+    station_list, line_infos = calculate_line_view(line, station, time)
+    if is_tram(line_infos['jarat_tipus']):
+        vehicle_icon = 'tram-car.png'  # Static files in the file system/repository
+        circle_icon = 'circle_yellow.png'
+    else:
+        vehicle_icon = 'bus.png'
+        circle_icon = 'circle_blue.png'
     html = ''
     html += '<html>'
     html += '<body>'
@@ -606,9 +657,9 @@ def get_line_view(line, station, time):
         html += '<tr>'
         html += '<td>'
         if item['is_tram_here']:
-            html += '<img src="static/tram-car.png" title="tram">'
+            html += f'<img src="static/{vehicle_icon}" title="tram">'
         else:
-            html += '<img src="static/circle.png" title="tram">'
+            html += f'<img src="static/{circle_icon}" title="tram">'
         html += '</td>'
         html += '<td>'
         html += item['time']
