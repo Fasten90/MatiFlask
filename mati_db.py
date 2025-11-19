@@ -219,17 +219,22 @@ def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
         arrive_minute = 0
         # first start: min_hour : start_minute
         # actual: actual_hour : actual_minute
+        #### TEST OVERRIDE
+        #actual_hour = 14
         if actual_hour < min_hour:
             # Calculates the all minutes before the minute_hour and start_minute
             # E.g. 12:20 actual time, and start time: 13:40
             #                  hour diff              # Until the end of this hour    # Remained minutes in the latest (arriving) hour
             remained_minute = (min_hour - actual_hour) * 60 + (60 - actual_minute) +  menetrend['start_minute']
+        elif actual_hour > max_hour:
+            # No more arrives
+            remained_minute = None
         else:
             # First arrive time: min_hour:start_minute
             # Add all arrives
-            calculate_arrive_hour = min_hour
+            calculate_arrive_hour = actual_hour  # It should be arrive in this hour or later
             calculate_arrive_minute = menetrend['start_minute']
-            while actual_hour < calculate_arrive_hour and actual_minute < calculate_arrive_minute:
+            while calculate_arrive_hour <= max_hour and actual_minute < calculate_arrive_minute:
                 # Step until the 'latest'
                 calculate_arrive_minute += jaratsuruseg
                 while calculate_arrive_minute >= 60:
@@ -238,6 +243,7 @@ def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
             # Here we have the calculated first next arrive
             #                  hour diff                                 # Until the end of this hour    # Remained minutes in the latest (arriving) hour
             remained_minute = (calculate_arrive_hour - actual_hour) * 60 + (60 - actual_minute) + calculate_arrive_minute
+    # None remained_minute is like a not going transport vehicle
     return remained_minute
 
 
@@ -527,6 +533,7 @@ def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too
             html_result = 'Nincs találat :(<br />\n'
     #elif jarat:
     else:
+        # Jarat or nothing (all)
         get_all = True
         if jarat:
             get_all = False
@@ -1152,4 +1159,5 @@ if __name__ == '__main__':
 
     check_actual_day_type()
 
-    get_line_view(line='17', station='davvid', time='14:36')
+    # Db required test
+    #get_line_view(line='17', station='davvid', time='14:36')
