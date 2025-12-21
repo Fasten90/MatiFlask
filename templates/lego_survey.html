@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>LEGO kérdőív</title>
+</head>
+<body>
+
+<h1>LEGO kérdőív</h1>
+
+<form method="POST">
+
+    <p>
+        <b>Milyen lego szettet értékelsz? Csak nem a 20251224-et?</b><br>
+        <input type="text" name="set_name">
+    </p>
+
+    <p>
+        <b>Kitől kaptad?</b><br>
+        <input type="checkbox" name="from[]" value="Anya"> Anya<br>
+        <input type="checkbox" name="from[]" value="Apa"> Apa<br>
+        <input type="checkbox" name="from[]" value="Egyéb családtag"> Egyéb családtag<br>
+        <input type="checkbox" name="from[]" value="Barátok"> Barátok<br>
+        <input type="checkbox" name="from[]" value="Ismeretlen"> Ismeretlen<br>
+        <input type="checkbox" name="from[]" value="Vadidegen"> Vadidegen
+    </p>
+
+    <p>
+        <b>Mit tetszett benne?</b><br>
+        <textarea name="liked" rows="4" cols="50"></textarea>
+    </p>
+
+    <p>
+        <b>Hányasra értékeled? (1-10)</b><br>
+        {% for i in range(1, 11) %}
+            <input type="checkbox" name="rating[]" value="{{ i }}"> {{ i }}
+        {% endfor %}
+    </p>
+
+    <p>
+        <b>Mit csinálnál máshogy benne? Mik a hibái?</b><br>
+        <textarea name="improve" rows="4" cols="50"></textarea>
+    </p>
+
+    <p>
+        <b>Szeretnéd-e hogy Vizi Gábor APA legközelebb is készüljön LEGO szettel?</b><br>
+        <input type="checkbox" name="future" value="Igen"> Igen<br>
+        <input type="checkbox" name="future" value="Nem"> Nem<br>
+        <input type="checkbox" name="future" value="Talán"> Talán
+    </p>
+
+    <p>
+        <b>Utolsó gondolataid a kérdőívhez</b><br>
+        <textarea name="final_thoughts" rows="4" cols="50"></textarea>
+    </p>
+
+    <button type="submit">Küldés</button>
+
+</form>
+
+<hr>
+
+<p>
+<b>Köszönetünk jeléül a következő kuponkóddal szolgálunk:</b><br>
+<b>APA_FIA_2026</b><br><br>
+
+A kupon a teljes 2026-os évben felhasználható, bármilyen LEGO szettre!<br>
+Más kuponnal nem vonható össze, pénzre nem váltható, tilos atombombát csinálni belőle  
+és nem javasolt nimfa papagájokkal megosztani.
+</p>
+
+</body>
+</html>
