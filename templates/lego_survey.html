@@ -9,7 +9,7 @@
 <h1>LEGO kérdőív</h1>
 
 <form method="POST">
-
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <p>
         <b>Milyen lego szettet értékelsz? Csak nem a 20251224-et?</b><br>
         <input type="text" name="set_name">
