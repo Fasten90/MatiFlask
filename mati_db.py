@@ -27,7 +27,8 @@ def error_log(line):
 def database_connection():
     """ Connect to the Database """
     mydb = mysql.connector.connect(
-        host='localhost',
+        #host='localhost',
+        host='localhost' if not os.getenv('DB_REMOTE', False) else os.getenv('DB_REMOTE'),
         user='fasten',
         password=os.getenv('DB_PASSWORD'),
         database='fasten_mati'
