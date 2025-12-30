@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 /open_ssh_shell.bat
+
+surveys/
