@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MatiGo 2.0</title>
+</head>
+<body>
+
+<h2>Menetrend</h2>
+
+<input type="date" id="datum">
+<button onclick="load()">Betöltés</button>
+
+<br><br>
+
+<input type="text" id="search" placeholder="Megálló keresés">
+<button onclick="search()">Keresés</button>
+
+<br><br>
+
+<button onclick="ujJarat()">+ Új járat</button>
+<button onclick="ujMegallo()">+ Új megálló</button>
+<button onclick="torles()">Törlés</button>
+
+<br><br>
+
+<table border="1" id="tabla">
+</table>
+
+<script>
+let selected = new Set()
+
+function load() {
+    let datum = document.getElementById("datum").value
+
+    fetch(`/matigo2.0_menetrend?datum=${datum}`)
+    .then(r => r.json())
+    .then(data => render(data))
+}
+
+function render(data) {
+    let table = document.getElementById("tabla")
+    table.innerHTML = ""
+
+    data.forEach(row => {
+        let tr = document.createElement("tr")
+
+        let checkbox = document.createElement("input")
+        checkbox.type = "checkbox"
+        checkbox.onchange = () => {
+            if (checkbox.checked) selected.add(row.id)
+            else selected.delete(row.id)
+        }
+
+        let tdCheck = document.createElement("td")
+        tdCheck.appendChild(checkbox)
+        tr.appendChild(tdCheck)
+
+        Object.keys(row).forEach(k => {
+            if (k === "id") return
+
+            let td = document.createElement("td")
+            td.contentEditable = true
+            td.innerText = row[k]
+
+            td.onblur = () => update(row.id, k, td.innerText)
+
+            tr.appendChild(td)
+        })
+
+        table.appendChild(tr)
+    })
+}
+
+function update(id, field, value) {
+    let row = {}
+
+    document.querySelectorAll("#tabla tr").forEach(tr => {
+        let cells = tr.children
+        if (!cells[1]) return
+
+        if (tr.querySelector("input")?.checked) {
+            row.id = id
+        }
+    })
+
+    // quick hack: reload instead of full row state
+    load()
+}
+
+function ujJarat() {
+    fetch("/uj-jarat", {method: "POST"})
+    .then(() => load())
+}
+
+function ujMegallo() {
+    fetch("/uj-megallo", {method: "POST"})
+    .then(() => load())
+}
+
+function torles() {
+    fetch("/delete", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ids: Array.from(selected)})
+    }).then(() => {
+        selected.clear()
+        load()
+    })
+}
+
+function search() {
+    let val = document.getElementById("search").value
+
+    fetch(`/search-megallo?megallo=${val}`)
+    .then(r => r.json())
+    .then(data => render(data))
+}
+</script>
+
+</body>
+</html>
+
+

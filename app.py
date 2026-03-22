@@ -379,6 +379,235 @@ def lego_survey():
 
 
 
+########################
+# MatiGO 2.0
+
+from flask import Flask, request, jsonify
+import mysql.connector
+import os
+from datetime import datetime, timedelta
+
+
+def database_connection():
+    mydb = mysql.connector.connect(
+        host='localhost' if not os.getenv('DB_REMOTE', False) else os.getenv('DB_REMOTE'),
+        user='fasten',
+        password=os.getenv('DB_PASSWORD'),
+        database='fasten_mati'
+    )
+    return mydb
+
+TABLE = "mati_go_2.0_menetrend"
+
+@app.route('/matigo2.0')
+def root_matigo20_html():
+    return send_from_directory('static', 'matigo2.0.html')
+
+# ----------------------------
+# GET menetrend (egy nap)
+# ----------------------------
+@app.route("/matigo2.0_menetrend", methods=["GET"])
+def get_matigo20_menetrend():
+    datum = request.args.get("datum")
+
+    db = database_connection()
+    cursor = db.cursor(dictionary=True)
+
+    query = f"""
+        SELECT id, datum, idopont, jarat, irany, megallo
+        FROM {TABLE}
+        WHERE datum = %s
+        ORDER BY idopont
+    """
+    cursor.execute(query, (datum,))
+    result = cursor.fetchall()
+
+    return jsonify(result)
+
+
+# ----------------------------
+# Új járat
+# ----------------------------
+@app.route("/uj-jarat", methods=["POST"])
+def create_new_jarat():
+    db = database_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(f"SELECT * FROM {TABLE} ORDER BY id DESC LIMIT 1")
+    last = cursor.fetchone()
+
+    now = datetime.now()
+    next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+
+    datum = last["datum"] if last else now.date()
+
+    query = f"""
+        INSERT INTO {TABLE} (datum, idopont, jarat, irany, megallo)
+        VALUES (%s, %s, '', '', '')
+    """
+    cursor.execute(query, (datum, next_hour.time()))
+    db.commit()
+
+    return jsonify({"message": "ok"})
+
+
+# ----------------------------
+# Új megálló
+# ----------------------------
+@app.route("/uj-megallo", methods=["POST"])
+def create_new_megallo():
+    db = database_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(f"SELECT * FROM {TABLE} ORDER BY id DESC LIMIT 1")
+    last = cursor.fetchone()
+
+    if not last:
+        return jsonify({"error": "nincs adat"}), 400
+
+    query = f"""
+        INSERT INTO {TABLE} (datum, idopont, jarat, irany, megallo)
+        VALUES (%s, %s, %s, %s, '')
+    """
+    cursor.execute(query, (
+        last["datum"],
+        last["idopont"],
+        last["jarat"],
+        last["irany"]
+    ))
+    db.commit()
+
+    return jsonify({"message": "ok"})
+
+
+# ----------------------------
+# Nap másolása
+# ----------------------------
+@app.route("/copy-day", methods=["POST"])
+def copy_day():
+    data = request.json
+    from_date = data.get("from_date")
+    to_date = data.get("to_date")
+
+    db = database_connection()
+    cursor = db.cursor()
+
+    query = f"""
+        INSERT INTO {TABLE} (datum, idopont, jarat, irany, megallo)
+        SELECT %s, idopont, jarat, irany, megallo
+        FROM {TABLE}
+        WHERE datum = %s
+    """
+    cursor.execute(query, (to_date, from_date))
+    db.commit()
+
+    return jsonify({"message": "ok"})
+
+
+# ----------------------------
+# Megálló keresés (LIKE)
+# ----------------------------
+@app.route("/search-megallo", methods=["GET"])
+def search_megallo():
+    megallo = request.args.get("megallo")
+
+    db = database_connection()
+    cursor = db.cursor(dictionary=True)
+
+    query = f"""
+        SELECT datum, idopont, jarat, irany, megallo
+        FROM {TABLE}
+        WHERE megallo LIKE %s
+        ORDER BY datum, idopont
+    """
+    cursor.execute(query, (f"%{megallo}%",))
+    result = cursor.fetchall()
+
+    return jsonify(result)
+
+
+# ----------------------------
+# UPDATE (edit mode)
+# ----------------------------
+@app.route("/update", methods=["POST"])
+def update_record():
+    data = request.json
+
+    db = database_connection()
+    cursor = db.cursor()
+
+    query = f"""
+        UPDATE {TABLE}
+        SET datum=%s, idopont=%s, jarat=%s, irany=%s, megallo=%s
+        WHERE id=%s
+    """
+    cursor.execute(query, (
+        data["datum"],
+        data["idopont"],
+        data["jarat"],
+        data["irany"],
+        data["megallo"],
+        data["id"]
+    ))
+    db.commit()
+
+    return jsonify({"message": "ok"})
+
+
+# ----------------------------
+# DELETE (több ID is)
+# ----------------------------
+@app.route("/delete", methods=["POST"])
+def delete_records():
+    ids = request.json.get("ids", [])
+
+    db = database_connection()
+    cursor = db.cursor()
+
+    format_strings = ','.join(['%s'] * len(ids))
+
+    query = f"DELETE FROM {TABLE} WHERE id IN ({format_strings})"
+    cursor.execute(query, tuple(ids))
+    db.commit()
+
+    return jsonify({"message": "deleted"})
+
+
+# ----------------------------
+# Upcoming (hátralévő idő)
+# ----------------------------
+@app.route("/upcoming", methods=["GET"])
+def upcoming():
+    datum = request.args.get("datum")
+
+    now = datetime.now()
+
+    db = database_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(f"""
+        SELECT datum, idopont, jarat, irany, megallo
+        FROM {TABLE}
+        WHERE datum = %s
+    """, (datum,))
+
+    rows = cursor.fetchall()
+
+    result = []
+    for row in rows:
+        dt = datetime.combine(row["datum"], row["idopont"])
+        diff = int((dt - now).total_seconds() / 60)
+
+        if diff >= 0:
+            row["minutes_left"] = diff
+            result.append(row)
+
+    return jsonify(result)
+
+
+#######################
+
+
 # For debug: Start debug mode this file
 if __name__ == '__main__':
     app.run()
