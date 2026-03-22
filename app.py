@@ -436,6 +436,9 @@ def root_matigo20_html():
 def get_matigo20_menetrend():
     datum = request.args.get("datum")
 
+    if not datum:
+        datum = datetime.now().date()
+
     db = database_connection()
     cursor = db.cursor(dictionary=True)
 

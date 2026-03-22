@@ -3,30 +3,31 @@
 <head>
     <title>MatiGo 2.0</title>
     <style>
+        body { font-family: Arial; }
         .edit { background: #fff3cd; }
+        .toolbar { margin-bottom: 10px; }
+        table td { padding: 5px; min-width: 80px; }
     </style>
 </head>
 <body>
 
 <h2>MatiGo 2.0</h2>
 
-<button onclick="setMode('user')">User mode</button>
-<button onclick="setMode('edit')">Edit mode</button>
+<div class="toolbar">
+    <button onclick="setMode('user')">User mode</button>
+    <button onclick="setMode('edit')">Edit mode</button>
+</div>
 
-<br><br>
+<div class="toolbar">
+    <input type="date" id="datum">
+    <button onclick="load()">Betöltés</button>
+</div>
 
-<input type="date" id="datum">
-<button onclick="load()">Betöltés</button>
-
-<br><br>
-
-<div id="editControls" style="display:none;">
+<div id="editControls" class="toolbar" style="display:none;">
     <button onclick="ujJarat()">+ Új járat</button>
     <button onclick="ujMegallo()">+ Új megálló</button>
     <button onclick="saveAll()">💾 Mentés</button>
 </div>
-
-<br>
 
 <table border="1" id="tabla"></table>
 
@@ -34,27 +35,59 @@
 let mode = "user"
 let data = []
 
+// ----------------------------
+// INIT
+// ----------------------------
+window.onload = () => {
+    let today = new Date().toISOString().split("T")[0]
+    document.getElementById("datum").value = today
+    load()
+}
+
+// ----------------------------
+// MODE SWITCH
+// ----------------------------
 function setMode(m) {
     mode = m
     document.getElementById("editControls").style.display =
         (mode === "edit") ? "block" : "none"
+
     render()
 }
 
+// ----------------------------
+// LOAD
+// ----------------------------
 function load() {
     let datum = document.getElementById("datum").value
+
+    console.log("LOAD datum:", datum)
+
+    if (!datum) {
+        alert("Nincs dátum kiválasztva")
+        return
+    }
 
     fetch(`/matigo2.0_menetrend?datum=${datum}`)
     .then(r => r.json())
     .then(res => {
+        console.log("API result:", res)
         data = res
         render()
     })
 }
 
+// ----------------------------
+// RENDER
+// ----------------------------
 function render() {
     let table = document.getElementById("tabla")
     table.innerHTML = ""
+
+    if (data.length === 0) {
+        table.innerHTML = "<tr><td>Nincs adat</td></tr>"
+        return
+    }
 
     data.forEach((row, index) => {
         let tr = document.createElement("tr")
@@ -67,6 +100,7 @@ function render() {
 
             if (mode === "edit") {
                 td.contentEditable = true
+
                 td.oninput = () => {
                     row[field] = td.innerText
                 }
@@ -79,12 +113,17 @@ function render() {
     })
 }
 
+// ----------------------------
+// ÚJ JÁRAT
+// ----------------------------
 function ujJarat() {
+    let datum = document.getElementById("datum").value
+
+    if (!datum) return
+
     let now = new Date()
     now.setHours(now.getHours() + 1)
     now.setMinutes(0)
-
-    let datum = document.getElementById("datum").value
 
     data.push({
         datum: datum,
@@ -97,6 +136,9 @@ function ujJarat() {
     render()
 }
 
+// ----------------------------
+// ÚJ MEGÁLLÓ
+// ----------------------------
 function ujMegallo() {
     if (data.length === 0) return
 
@@ -113,15 +155,25 @@ function ujMegallo() {
     render()
 }
 
+// ----------------------------
+// SAVE
+// ----------------------------
 function saveAll() {
+    console.log("SAVE data:", data)
+
     fetch("/save-all", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     })
-    .then(() => load())
+    .then(r => r.json())
+    .then(res => {
+        console.log("SAVE response:", res)
+        load()
+    })
 }
 </script>
 
 </body>
 </html>
+
