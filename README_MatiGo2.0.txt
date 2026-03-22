@@ -1,4 +1,4 @@
-CREATE TABLE `mati_go_2.0_menetrend` (
+CREATE TABLE `mati_go_2_menetrend` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `used_id` smallint NULL,
   `datum` date NOT NULL,
@@ -10,3 +10,5 @@ CREATE TABLE `mati_go_2.0_menetrend` (
 
 
 
+
+The server docker image is created by  docker-compose

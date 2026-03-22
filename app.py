@@ -397,7 +397,7 @@ def database_connection():
     )
     return mydb
 
-TABLE = "mati_go_2.0_menetrend"
+TABLE = "mati_go_2_menetrend"
 
 @app.route('/matigo2.0')
 def root_matigo20_html():
