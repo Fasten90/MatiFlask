@@ -4,39 +4,48 @@
     <title>MatiGo 2.0</title>
     <style>
         body { font-family: Arial; }
+        table { border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 5px; }
         .edit { background: #fff3cd; }
-        .toolbar { margin-bottom: 10px; }
-        table td { padding: 5px; min-width: 80px; }
     </style>
 </head>
 <body>
 
 <h2>MatiGo 2.0</h2>
 
-<div class="toolbar">
-    <button onclick="setMode('user')">User mode</button>
-    <button onclick="setMode('edit')">Edit mode</button>
-</div>
+<input type="date" id="datum">
+<button onclick="load()">Betöltés</button>
 
-<div class="toolbar">
-    <input type="date" id="datum">
-    <button onclick="load()">Betöltés</button>
-</div>
+<br><br>
 
-<div id="editControls" class="toolbar" style="display:none;">
+<button onclick="setMode('user')">User mode</button>
+<button onclick="setMode('edit')">Edit mode</button>
+
+<div id="editControls" style="display:none;">
     <button onclick="ujJarat()">+ Új járat</button>
     <button onclick="ujMegallo()">+ Új megálló</button>
     <button onclick="saveAll()">💾 Mentés</button>
 </div>
 
-<table border="1" id="tabla"></table>
+<br><br>
+
+<table id="tabla">
+    <thead>
+        <tr>
+            <th>Dátum</th>
+            <th>Idő</th>
+            <th>Járat</th>
+            <th>Irány</th>
+            <th>Megálló</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
 
 <script>
-let mode = "user"
 let data = []
+let mode = "user"
 
-// ----------------------------
-// INIT
 // ----------------------------
 window.onload = () => {
     let today = new Date().toISOString().split("T")[0]
@@ -45,81 +54,68 @@ window.onload = () => {
 }
 
 // ----------------------------
-// MODE SWITCH
-// ----------------------------
 function setMode(m) {
     mode = m
     document.getElementById("editControls").style.display =
         (mode === "edit") ? "block" : "none"
-
     render()
 }
 
 // ----------------------------
-// LOAD
-// ----------------------------
 function load() {
     let datum = document.getElementById("datum").value
 
-    console.log("LOAD datum:", datum)
-
-    if (!datum) {
-        alert("Nincs dátum kiválasztva")
-        return
-    }
+    console.log("LOAD:", datum)
 
     fetch(`/matigo2.0_menetrend?datum=${datum}`)
     .then(r => r.json())
     .then(res => {
-        console.log("API result:", res)
+        console.log("API:", res)
         data = res
         render()
     })
 }
 
 // ----------------------------
-// RENDER
-// ----------------------------
 function render() {
-    let table = document.getElementById("tabla")
-    table.innerHTML = ""
+    let tbody = document.querySelector("#tabla tbody")
+    tbody.innerHTML = ""
 
-    if (data.length === 0) {
-        table.innerHTML = "<tr><td>Nincs adat</td></tr>"
-        return
-    }
+    console.log("RENDER DATA:", data)
 
-    data.forEach((row, index) => {
+    data.forEach((row, i) => {
         let tr = document.createElement("tr")
 
         if (!row.id) tr.classList.add("edit")
 
-        ["datum", "idopont", "jarat", "irany", "megallo"].forEach(field => {
-            let td = document.createElement("td")
-            td.innerText = row[field] || ""
+        addCell(tr, row, "datum")
+        addCell(tr, row, "idopont")
+        addCell(tr, row, "jarat")
+        addCell(tr, row, "irany")
+        addCell(tr, row, "megallo")
 
-            if (mode === "edit") {
-                td.contentEditable = true
-
-                td.oninput = () => {
-                    row[field] = td.innerText
-                }
-            }
-
-            tr.appendChild(td)
-        })
-
-        table.appendChild(tr)
+        tbody.appendChild(tr)
     })
 }
 
 // ----------------------------
-// ÚJ JÁRAT
+function addCell(tr, row, field) {
+    let td = document.createElement("td")
+    td.innerText = row[field] || ""
+
+    if (mode === "edit") {
+        td.contentEditable = true
+        td.oninput = () => {
+            row[field] = td.innerText
+        }
+    }
+
+    tr.appendChild(td)
+}
+
 // ----------------------------
 function ujJarat() {
     let datum = document.getElementById("datum").value
-
-    if (!datum) return
 
     let now = new Date()
     now.setHours(now.getHours() + 1)
@@ -136,8 +132,6 @@ function ujJarat() {
     render()
 }
 
-// ----------------------------
-// ÚJ MEGÁLLÓ
 // ----------------------------
 function ujMegallo() {
     if (data.length === 0) return
@@ -156,24 +150,19 @@ function ujMegallo() {
 }
 
 // ----------------------------
-// SAVE
-// ----------------------------
 function saveAll() {
-    console.log("SAVE data:", data)
+    console.log("SAVE:", data)
 
     fetch("/save-all", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     })
-    .then(r => r.json())
-    .then(res => {
-        console.log("SAVE response:", res)
-        load()
-    })
+    .then(() => load())
 }
 </script>
 
 </body>
 </html>
+
 
