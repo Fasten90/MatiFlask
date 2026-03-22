@@ -382,11 +382,12 @@ def lego_survey():
 ########################
 # MatiGO 2.0
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import mysql.connector
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
+app = Flask(__name__)
 
 def database_connection():
     mydb = mysql.connector.connect(
@@ -399,9 +400,34 @@ def database_connection():
 
 TABLE = "mati_go_2_menetrend"
 
+# ----------------------------
+# Serializer (FIX)
+# ----------------------------
+def format_time(td):
+    if td is None:
+        return None
+    total_seconds = int(td.total_seconds())
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    return f"{hours:02}:{minutes:02}"
+
+def serialize_row(row):
+    return {
+        "id": row.get("id"),
+        "datum": row["datum"].isoformat() if isinstance(row.get("datum"), date) else row.get("datum"),
+        "idopont": format_time(row.get("idopont")),
+        "jarat": row.get("jarat"),
+        "irany": row.get("irany"),
+        "megallo": row.get("megallo")
+    }
+
+# ----------------------------
+# HTML
+# ----------------------------
 @app.route('/matigo2.0')
 def root_matigo20_html():
     return send_from_directory('static', 'matigo2.0.html')
+
 
 # ----------------------------
 # GET menetrend (egy nap)
@@ -422,6 +448,8 @@ def get_matigo20_menetrend():
     cursor.execute(query, (datum,))
     result = cursor.fetchall()
 
+    result = [serialize_row(r) for r in result]
+
     return jsonify(result)
 
 
@@ -439,7 +467,7 @@ def create_new_jarat():
     now = datetime.now()
     next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
-    datum = last["datum"] if last else now.date()
+    datum = last["datum"] if last and last.get("datum") else now.date()
 
     query = f"""
         INSERT INTO {TABLE} (datum, idopont, jarat, irany, megallo)
@@ -523,6 +551,8 @@ def search_megallo():
     cursor.execute(query, (f"%{megallo}%",))
     result = cursor.fetchall()
 
+    result = [serialize_row(r) for r in result]
+
     return jsonify(result)
 
 
@@ -560,6 +590,9 @@ def update_record():
 @app.route("/delete", methods=["POST"])
 def delete_records():
     ids = request.json.get("ids", [])
+
+    if not ids:
+        return jsonify({"message": "no ids"}), 400
 
     db = database_connection()
     cursor = db.cursor()
@@ -599,12 +632,14 @@ def upcoming():
         diff = int((dt - now).total_seconds() / 60)
 
         if diff >= 0:
-            row["minutes_left"] = diff
-            result.append(row)
+            r = serialize_row(row)
+            r["minutes_left"] = diff
+            result.append(r)
 
     return jsonify(result)
 
 
+# End of MatiGo 2.0
 #######################
 
 
