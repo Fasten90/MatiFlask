@@ -344,6 +344,41 @@ def tereles():
         return '[ERROR] ' + str(ex)
 
 
+@app.route("/lego_survey", methods=["GET", "POST"])
+def lego_survey():
+    if request.method == "POST":
+        # Dátum/idő fájlnévhez
+        timestamp = datetime.now().strftime("%Y%m%d_%H.%M.%S")
+        filename = f"survey_{timestamp}.txt"
+
+        # Adatok begyűjtése
+        data = {
+            "set_name": request.form.get("set_name", ""),
+            "from": request.form.getlist("from[]"),
+            "liked": request.form.get("liked", ""),
+            "rating": request.form.getlist("rating[]"),
+            "improve": request.form.get("improve", ""),
+            "future": request.form.getlist("future"),
+            "final_thoughts": request.form.get("final_thoughts", "")
+        }
+
+        # Mentés fájlba
+        os.makedirs("surveys", exist_ok=True)
+        filepath = os.path.join("surveys", filename)
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write("LEGO KÉRDŐÍV EREDMÉNY\n")
+            f.write("====================\n\n")
+            for key, value in data.items():
+                f.write(f"{key}: {value}\n")
+
+        return "<h2>Kérdőív kitöltve, köszönjük! 🙂</h2>"
+
+    # GET – üres kérdőív
+    return render_template("lego_survey.html")
+
+
+
 # For debug: Start debug mode this file
 if __name__ == '__main__':
     app.run()
