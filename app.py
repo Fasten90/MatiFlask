@@ -639,6 +639,47 @@ def upcoming():
     return jsonify(result)
 
 
+@app.route("/save-all", methods=["POST"])
+def save_all():
+    data = request.json  # lista
+
+    db = database_connection()
+    cursor = db.cursor()
+
+    for row in data:
+        if row.get("id"):  
+            # UPDATE
+            query = f"""
+                UPDATE {TABLE}
+                SET datum=%s, idopont=%s, jarat=%s, irany=%s, megallo=%s
+                WHERE id=%s
+            """
+            cursor.execute(query, (
+                row["datum"],
+                row["idopont"],
+                row["jarat"],
+                row["irany"],
+                row["megallo"],
+                row["id"]
+            ))
+        else:
+            # INSERT
+            query = f"""
+                INSERT INTO {TABLE} (datum, idopont, jarat, irany, megallo)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (
+                row["datum"],
+                row["idopont"],
+                row["jarat"],
+                row["irany"],
+                row["megallo"]
+            ))
+
+    db.commit()
+
+    return jsonify({"message": "saved"})
+
 # End of MatiGo 2.0
 #######################
 
