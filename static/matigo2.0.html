@@ -21,7 +21,13 @@
 <button onclick="setMode('user')">User mode</button>
 <button onclick="setMode('edit')">Edit mode</button>
 
-<div id="editControls" style="display:none;">
+<div id="searchBox" style="margin-top:10px;">
+    <input type="text" id="searchInput" placeholder="Megálló keresés">
+    <button onclick="search()">Keresés</button>
+    <button onclick="load()">Reset</button>
+</div>
+
+<div id="editControls" style="display:none; margin-top:10px;">
     <button onclick="ujJarat()">+ Új járat</button>
     <button onclick="ujMegallo()">+ Új megálló</button>
     <button onclick="saveAll()">💾 Mentés</button>
@@ -56,8 +62,13 @@ window.onload = () => {
 // ----------------------------
 function setMode(m) {
     mode = m
+
     document.getElementById("editControls").style.display =
         (mode === "edit") ? "block" : "none"
+
+    document.getElementById("searchBox").style.display =
+        (mode === "user") ? "block" : "none"
+
     render()
 }
 
@@ -65,12 +76,28 @@ function setMode(m) {
 function load() {
     let datum = document.getElementById("datum").value
 
-    console.log("LOAD:", datum)
-
     fetch(`/matigo2.0_menetrend?datum=${datum}`)
     .then(r => r.json())
     .then(res => {
-        console.log("API:", res)
+        data = res
+        render()
+    })
+}
+
+// ----------------------------
+// 🔍 SEARCH
+// ----------------------------
+function search() {
+    let val = document.getElementById("searchInput").value
+
+    if (!val) {
+        load()
+        return
+    }
+
+    fetch(`/search-megallo?megallo=${val}`)
+    .then(r => r.json())
+    .then(res => {
         data = res
         render()
     })
@@ -81,9 +108,17 @@ function render() {
     let tbody = document.querySelector("#tabla tbody")
     tbody.innerHTML = ""
 
-    console.log("RENDER DATA:", data)
+    if (data.length === 0) {
+        let tr = document.createElement("tr")
+        let td = document.createElement("td")
+        td.colSpan = 5
+        td.innerText = "Nincs találat"
+        tr.appendChild(td)
+        tbody.appendChild(tr)
+        return
+    }
 
-    data.forEach((row, i) => {
+    data.forEach((row) => {
         let tr = document.createElement("tr")
 
         if (!row.id) tr.classList.add("edit")
@@ -151,8 +186,6 @@ function ujMegallo() {
 
 // ----------------------------
 function saveAll() {
-    console.log("SAVE:", data)
-
     fetch("/save-all", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -164,5 +197,3 @@ function saveAll() {
 
 </body>
 </html>
-
-
