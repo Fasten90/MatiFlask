@@ -109,7 +109,16 @@ function search() {
     }
 
     data = originalData.filter(row =>
-        (row.megallo || "").toLowerCase().includes(val)
+        (row.megallo || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .startsWith(val) ||
+        (row.megallo || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .includes(val)
     )
 
     render()
