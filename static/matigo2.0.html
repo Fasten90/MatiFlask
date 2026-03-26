@@ -4,36 +4,38 @@
     <title>MatiGo 2.0</title>
     <style>
         body { font-family: Arial; }
-        table { border-collapse: collapse; }
-        td, th { border: 1px solid #000; padding: 5px; }
+        table { border-collapse: collapse; margin-top: 10px; }
+        td, th { border: 1px solid #000; padding: 5px; min-width: 80px; }
         .edit { background: #fff3cd; }
+        .toolbar { margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <h2>MatiGo 2.0</h2>
 
-<input type="date" id="datum">
-<button onclick="load()">Betöltés</button>
-
-<br><br>
-
-<button onclick="setMode('user')">User mode</button>
-<button onclick="setMode('edit')">Edit mode</button>
-
-<div id="searchBox" style="margin-top:10px;">
-    <input type="text" id="searchInput" placeholder="Megálló keresés">
-    <button onclick="search()">Keresés</button>
-    <button onclick="load()">Reset</button>
+<div class="toolbar">
+    <input type="date" id="datum">
+    <button onclick="load()">Betöltés</button>
 </div>
 
-<div id="editControls" style="display:none; margin-top:10px;">
+<div class="toolbar">
+    <button onclick="setMode('user')">User mode</button>
+    <button onclick="setMode('edit')">Edit mode</button>
+</div>
+
+<!-- 🔍 SEARCH (user mode only) -->
+<div id="searchBox" class="toolbar">
+    <input type="text" id="searchInput" placeholder="Megálló keresés" oninput="search()">
+    <button onclick="resetSearch()">Reset</button>
+</div>
+
+<!-- ✏️ EDIT CONTROLS -->
+<div id="editControls" class="toolbar" style="display:none;">
     <button onclick="ujJarat()">+ Új járat</button>
     <button onclick="ujMegallo()">+ Új megálló</button>
     <button onclick="saveAll()">💾 Mentés</button>
 </div>
-
-<br><br>
 
 <table id="tabla">
     <thead>
@@ -50,8 +52,11 @@
 
 <script>
 let data = []
+let originalData = []
 let mode = "user"
 
+// ----------------------------
+// INIT
 // ----------------------------
 window.onload = () => {
     let today = new Date().toISOString().split("T")[0]
@@ -59,6 +64,8 @@ window.onload = () => {
     load()
 }
 
+// ----------------------------
+// MODE
 // ----------------------------
 function setMode(m) {
     mode = m
@@ -73,36 +80,50 @@ function setMode(m) {
 }
 
 // ----------------------------
+// LOAD
+// ----------------------------
 function load() {
     let datum = document.getElementById("datum").value
+
+    if (!datum) return
 
     fetch(`/matigo2.0_menetrend?datum=${datum}`)
     .then(r => r.json())
     .then(res => {
-        data = res
+        originalData = res
+        data = [...res]
         render()
     })
 }
 
 // ----------------------------
-// 🔍 SEARCH
+// SEARCH (LOCAL)
 // ----------------------------
 function search() {
-    let val = document.getElementById("searchInput").value
+    let val = document.getElementById("searchInput").value.toLowerCase()
 
     if (!val) {
-        load()
+        data = [...originalData]
+        render()
         return
     }
 
-    fetch(`/search-megallo?megallo=${val}`)
-    .then(r => r.json())
-    .then(res => {
-        data = res
-        render()
-    })
+    data = originalData.filter(row =>
+        (row.megallo || "").toLowerCase().includes(val)
+    )
+
+    render()
 }
 
+// ----------------------------
+function resetSearch() {
+    document.getElementById("searchInput").value = ""
+    data = [...originalData]
+    render()
+}
+
+// ----------------------------
+// RENDER
 // ----------------------------
 function render() {
     let tbody = document.querySelector("#tabla tbody")
@@ -112,7 +133,7 @@ function render() {
         let tr = document.createElement("tr")
         let td = document.createElement("td")
         td.colSpan = 5
-        td.innerText = "Nincs találat"
+        td.innerText = "Nincs adat"
         tr.appendChild(td)
         tbody.appendChild(tr)
         return
@@ -149,8 +170,11 @@ function addCell(tr, row, field) {
 }
 
 // ----------------------------
+// ÚJ JÁRAT
+// ----------------------------
 function ujJarat() {
     let datum = document.getElementById("datum").value
+    if (!datum) return
 
     let now = new Date()
     now.setHours(now.getHours() + 1)
@@ -168,6 +192,8 @@ function ujJarat() {
 }
 
 // ----------------------------
+// ÚJ MEGÁLLÓ
+// ----------------------------
 function ujMegallo() {
     if (data.length === 0) return
 
@@ -184,6 +210,8 @@ function ujMegallo() {
     render()
 }
 
+// ----------------------------
+// SAVE
 // ----------------------------
 function saveAll() {
     fetch("/save-all", {
