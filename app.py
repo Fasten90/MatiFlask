@@ -1,14 +1,18 @@
 """ MatiFlask - Flask start point for web server """
 import os
 import traceback
-from datetime import datetime, date
+from datetime import datetime, timedelta, date
 import copy
 
-from flask import Flask, render_template, flash, request, send_from_directory
+from flask import Flask, render_template, flash, request, send_from_directory, jsonify
 from flask_wtf import csrf
 
 import mati_db
 import forms
+
+# MatiGo 2.0
+import mysql.connector
+
 
 # pylint: disable=locally-disabled, multiple-statements, fixme, line-too-long, missing-function-docstring, broad-except
 
@@ -381,13 +385,6 @@ def lego_survey():
 
 ########################
 # MatiGO 2.0
-
-from flask import Flask, request, jsonify, send_from_directory
-import mysql.connector
-import os
-from datetime import datetime, timedelta, date
-
-app = Flask(__name__)
 
 def database_connection():
     mydb = mysql.connector.connect(
