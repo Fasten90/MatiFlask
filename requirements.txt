@@ -21,3 +21,4 @@ werkzeug==3.0.1
 wrapt==1.12.1
 WTForms==3.0.0a1
 zipp==3.17.0
+pytz

@@ -7,6 +7,8 @@ from enum import Enum
 import copy
 import mysql.connector
 
+import pytz
+
 
 # pylint: disable=locally-disabled, multiple-statements, fixme, line-too-long, missing-function-docstring, broad-except, redefined-outer-name, too-many-lines
 
@@ -16,10 +18,12 @@ TIME_ARRIVE_NOW_TEXT = 'MOST'
 
 DEBUG = False
 
+tz = pytz.timezone("Europe/Budapest")
+
 
 def error_log(line):
     dirpath = os.path.dirname(os.path.abspath(__file__))
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     with open(dirpath + '/mati_db_error.log', 'a') as file:
         file.write(str(now) + ' ' + line + '\n')
 
@@ -169,7 +173,7 @@ def get_db_cities():
 def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
     """ Calculate the arrive minutes, and check the next,
         and return with how many minutes are remained """
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     actual_minute = now.minute
     actual_hour = now.hour
     min_hour = menetrend['min_hour']
@@ -253,7 +257,7 @@ def get_next_arrive(menetrend):  # pylint: disable=too-many-branches
 def precheck_menetrend(menetrend, get_all=False):
     """ Precheck menetrend, for it is travelling or not  """
     new_menetrend = []
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     actual_hour = now.hour
     for item in menetrend:
         min_hour = item['min_hour']
@@ -365,7 +369,7 @@ def extend_get_next_menetrends(result):
         if jaratsuruseg:
             new_result.append(item)
             for index in range(1, 28):
-                #now = datetime.now().time.minute
+                #now = datetime.now(tz).time.minute
                 # Last element is the 'arriving minute' - it is calculated
                 new_arrive_minute = item['arrive_minute'] + index * jaratsuruseg  # last arrive + n * járatsűrűség
                 modified_item = item.copy()
@@ -401,7 +405,7 @@ def extend_with_low_floor(result):
             if line not in floor_calculation:
                 floor_calculation[line] = {
                     # Random ~ module of hour
-                    'count': datetime.datetime.now().hour % (low_floor1+low_floor2),
+                    'count': datetime.datetime.now(tz).hour % (low_floor1+low_floor2),
                     'low_floor_limit': low_floor1,
                     'max': low_floor1 + low_floor2,
                     }
@@ -445,7 +449,7 @@ def check_if_proper_hour(min_hour, max_hour, arrive_time, time):  # pylint: disa
 def update_late_arrive_time_to_clock(menetrend):
     """ Update arrive minutes to real time """
     new_menetrend = []
-    time = datetime.datetime.now()
+    time = datetime.datetime.now(tz)
     for item in menetrend:
         arrive_minute = item['arrive_minute']
         max_hour = item['max_hour']
@@ -488,7 +492,7 @@ def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too
     html_result += '<html>\n'
     html_result += get_html_format_css()
     html_result += '<body>\n'
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     if station:
         if result:
             result = precheck_menetrend2(result)  # Check if they travel (day filter!)
@@ -505,7 +509,7 @@ def get_menetrend(jarat=None, station=None, result=None):  # pylint: disable=too
                 jarat_type = item['jarat_tipus']
                 low_floor = item['low_floor']
                 arrive_minute_remained = item['arrive_minute']
-                now = datetime.datetime.now()
+                now = datetime.datetime.now(tz)
                 try:
                     # 6 (minutes remained)
                     time = int(arrive_minute_remained)
@@ -608,7 +612,7 @@ def calculate_line_view(line, station, time):  # pylint: disable=too-many-locals
 
     is_found = False
     was_first = False
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     now_string = datetime.datetime.strftime(now, "%H:%M")
     now_with_fake_date = datetime.datetime.strptime(now_string, "%H:%M")
     # Calculate time for each field
@@ -839,7 +843,7 @@ def get_line_info(line):  # For 'Bus app'
     result = get_db(jarat=line)
     res_dict = {'line': line, 'end_station': 'végállomás', 'actual_bus_station': 'buszállomás', 'next_bus_station': 'Következő állomás'}
     if result:  # pylint: disable=too-many-nested-blocks
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(tz)
         end_station = 'Végállomás'
         last_start_minute = 0
         time_calculated = 0
@@ -947,7 +951,7 @@ class DayType(Enum):
 
 def check_actual_day_type():
     """ Check the day type of actual date """
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tz)
     if 1 <= now.isoweekday() <= 5:
         return DayType.WORKDAY
     return DayType.NOTWORKDAY

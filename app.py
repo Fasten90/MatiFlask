@@ -12,6 +12,7 @@ import forms
 
 # MatiGo 2.0
 import mysql.connector
+import pytz
 
 
 # pylint: disable=locally-disabled, multiple-statements, fixme, line-too-long, missing-function-docstring, broad-except
@@ -23,6 +24,9 @@ DEBUG = True
 
 app.debug = True
 app.config['SECRET_KEY'] = 'you-will-never-guess'
+
+
+tz = pytz.timezone("Europe/Budapest")
 
 
 @app.route('/')
@@ -45,7 +49,7 @@ def robots_txt():
 
 def error_log(line):
     dirpath = os.path.dirname(os.path.abspath(__file__))
-    now = datetime.now()
+    now = datetime.now(tz)
     with open(dirpath + '/app_error.log', 'a') as file:
         file.write(str(now) + ' ' + line + '\n')
 
@@ -74,7 +78,7 @@ def clock():  # pylint: disable=too-many-return-statements
                         return CLOCK_TIME
                     else:
                         # It was set once
-                        now_time = datetime.now()
+                        now_time = datetime.now(tz)
                         delta_time = now_time - LAST_SET_TIME
                         clock_time_object = datetime.strptime(CLOCK_TIME, '%H:%M:%S')
                         clock_time_object = datetime.combine(date.today(), clock_time_object.time())
@@ -82,7 +86,7 @@ def clock():  # pylint: disable=too-many-return-statements
                         return sending_time.strftime("%H:%M:%S")
                 else:
                     CLOCK_TIME = "{}:{}:{}".format(hour, minute, second)
-                    LAST_SET_TIME = datetime.now()
+                    LAST_SET_TIME = datetime.now(tz)
                     print('Set clock to: {}'.format(CLOCK_TIME))
                     return 'Successfully set'
             except Exception as ex:
@@ -352,7 +356,7 @@ def tereles():
 def lego_survey():
     if request.method == "POST":
         # Dátum/idő fájlnévhez
-        timestamp = datetime.now().strftime("%Y%m%d_%H.%M.%S")
+        timestamp = datetime.now(tz).strftime("%Y%m%d_%H.%M.%S")
         filename = f"survey_{timestamp}.txt"
 
         # Adatok begyűjtése
@@ -434,7 +438,7 @@ def get_matigo20_menetrend():
     datum = request.args.get("datum")
 
     if not datum:
-        datum = datetime.now().date()
+        datum = datetime.now(tz).date()
 
     db = database_connection()
     cursor = db.cursor(dictionary=True)
@@ -464,7 +468,7 @@ def create_new_jarat():
     cursor.execute(f"SELECT * FROM {TABLE} ORDER BY id DESC LIMIT 1")
     last = cursor.fetchone()
 
-    now = datetime.now()
+    now = datetime.now(tz)
     next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
     datum = last["datum"] if last and last.get("datum") else now.date()
@@ -613,7 +617,7 @@ def delete_records():
 def upcoming():
     datum = request.args.get("datum")
 
-    now = datetime.now()
+    now = datetime.now(tz)
 
     db = database_connection()
     cursor = db.cursor(dictionary=True)
