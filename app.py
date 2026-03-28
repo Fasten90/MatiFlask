@@ -6,6 +6,7 @@ import copy
 
 from flask import Flask, render_template, flash, request, send_from_directory, jsonify
 from flask_wtf import csrf
+from flask_wtf.csrf import exempt
 
 import mati_db
 import forms
@@ -644,6 +645,7 @@ def upcoming():
 
 
 @app.route("/save-all", methods=["POST"])
+@exempt  # CSRF off
 def save_all():
     data = request.json  # lista
 
