@@ -223,12 +223,39 @@ function ujMegallo() {
 // SAVE
 // ----------------------------
 function saveAll() {
+    console.log("=== SAVE START ===")
+    console.log("DATA:", data)
+    console.log("JSON:", JSON.stringify(data))
+
     fetch("/save-all", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
     })
-    .then(() => load())
+    .then(async res => {
+        console.log("STATUS:", res.status)
+
+        let text = await res.text()
+        console.log("RESPONSE TEXT:", text)
+
+        try {
+            let json = JSON.parse(text)
+            console.log("RESPONSE JSON:", json)
+        } catch (e) {
+            console.log("NOT JSON RESPONSE")
+        }
+
+        if (!res.ok) {
+            throw new Error("HTTP ERROR " + res.status)
+        }
+
+        load()
+    })
+    .catch(err => {
+        console.error("SAVE ERROR:", err)
+    })
 }
 </script>
 
