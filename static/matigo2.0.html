@@ -149,12 +149,29 @@ function render() {
     }
 
     data.forEach((row) => {
+
+        // USER MODE SZŰRÉS
+        if (mode === "user") {
+            let displayTime = getDisplayTime(row)
+            if (displayTime === null) return
+            row._displayTime = displayTime
+        }
+
         let tr = document.createElement("tr")
 
         if (!row.id) tr.classList.add("edit")
 
         addCell(tr, row, "datum")
-        addCell(tr, row, "idopont")
+
+        // ⬇️ EZ AZ EGYEDI IDŐ MEGJELENÍTÉS
+        if (mode === "user") {
+            let td = document.createElement("td")
+            td.innerText = row._displayTime
+            tr.appendChild(td)
+        } else {
+            addCell(tr, row, "idopont")
+        }
+
         addCell(tr, row, "jarat")
         addCell(tr, row, "irany")
         addCell(tr, row, "megallo")
@@ -256,6 +273,23 @@ function saveAll() {
     .catch(err => {
         console.error("SAVE ERROR:", err)
     })
+}
+
+
+function getDisplayTime(row) {
+    if (!row.datum || !row.idopont) return ""
+
+    let now = new Date()
+
+    let dt = new Date(row.datum + "T" + row.idopont)
+
+    let diffMin = Math.floor((dt - now) / 60000)
+
+    if (diffMin < 0) return null // múlt → ne jelenjen meg
+
+    if (diffMin < 60) return diffMin + " perc"
+
+    return row.idopont
 }
 </script>
 
