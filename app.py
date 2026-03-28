@@ -650,6 +650,7 @@ def save_all():
     db = database_connection()
     cursor = db.cursor()
 
+    print('Received: '.format(data))
     for row in data:
         if row.get("id"):  
             # UPDATE
@@ -666,6 +667,7 @@ def save_all():
                 row["megallo"],
                 row["id"]
             ))
+            print('Update')
         else:
             # INSERT
             query = f"""
@@ -679,6 +681,7 @@ def save_all():
                 row["irany"],
                 row["megallo"]
             ))
+            print('Insert')
 
     db.commit()
 
