@@ -30,6 +30,14 @@
     <button onclick="resetSearch()">Reset</button>
 </div>
 
+<!-- 🔄 AUTO-REFRESH (user mode only) -->
+<div id="autoRefreshBox" class="toolbar">
+    <label>
+        <input type="checkbox" id="autoRefresh" onchange="startAutoRefreshIfChecked()">
+        Auto-refresh (60s)
+    </label>
+</div>
+
 <!-- ✏️ EDIT CONTROLS -->
 <div id="editControls" class="toolbar" style="display:none;">
     <button onclick="ujJarat()">+ Új járat</button>
@@ -56,6 +64,27 @@ let originalData = []
 let mode = "user"
 
 // ----------------------------
+// AUTO-REFRESH
+// ----------------------------
+let autoRefreshInterval = null
+
+function startAutoRefreshIfChecked() {
+    stopAutoRefresh()
+    if (document.getElementById("autoRefresh").checked) {
+        autoRefreshInterval = setInterval(() => {
+            load()
+        }, 60000)
+    }
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval)
+        autoRefreshInterval = null
+    }
+}
+
+// ----------------------------
 // INIT
 // ----------------------------
 window.onload = () => {
@@ -75,6 +104,17 @@ function setMode(m) {
 
     document.getElementById("searchBox").style.display =
         (mode === "user") ? "block" : "none"
+
+    document.getElementById("autoRefreshBox").style.display =
+        (mode === "user") ? "block" : "none"
+
+    // Edit módba lépéskor leállítjuk az auto-refresht
+    if (mode === "edit") {
+        stopAutoRefresh()
+    } else {
+        // User módba visszalépve, ha be volt pipálva, újraindul
+        startAutoRefreshIfChecked()
+    }
 
     render()
 }
