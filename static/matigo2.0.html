@@ -8,8 +8,8 @@
         td, th { border: 1px solid #000; padding: 5px; min-width: 80px; }
         .edit { background: #fff3cd; }
         .toolbar { margin-bottom: 10px; }
-        .selected { background: #ffd0d0 !important; cursor: pointer; }
         tr:hover { background: #f0f0f0; }
+        .del-btn { background: #e74c3c; color: white; border: none; cursor: pointer; padding: 2px 7px; border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -45,7 +45,6 @@
     <button onclick="ujJarat()">+ Új járat</button>
     <button onclick="ujMegallo()">+ Új megálló</button>
     <button onclick="saveAll()">💾 Mentés</button>
-    <button id="deleteBtn" onclick="deleteSelected()" style="display:none; background:#e74c3c; color:white; border:none; padding:5px 10px; cursor:pointer;">🗑️ Törlés</button>
 </div>
 
 <table id="tabla">
@@ -56,6 +55,7 @@
             <th>Járat</th>
             <th>Irány</th>
             <th>Megálló</th>
+            <th id="thDelete" style="display:none;"></th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -65,7 +65,6 @@
 let data = []
 let originalData = []
 let mode = "user"
-let selectedRowId = null
 
 // ----------------------------
 // AUTO-REFRESH
@@ -112,13 +111,14 @@ function setMode(m) {
     document.getElementById("autoRefreshBox").style.display =
         (mode === "user") ? "block" : "none"
 
+    document.getElementById("thDelete").style.display =
+        (mode === "edit") ? "" : "none"
+
     // Edit módba lépéskor leállítjuk az auto-refresht
     if (mode === "edit") {
         stopAutoRefresh()
     } else {
-        // User módba visszalépve selection reset + ha be volt pipálva, újraindul
-        selectedRowId = null
-        document.getElementById("deleteBtn").style.display = "none"
+        // User módba visszalépve, ha be volt pipálva, újraindul
         startAutoRefreshIfChecked()
     }
 
@@ -178,45 +178,21 @@ function resetSearch() {
 }
 
 // ----------------------------
-// SELECT ROW (edit mode)
-// ----------------------------
-function selectRow(rowId, tr) {
-    // Ha ugyanazt kattintod újra → deselect
-    if (selectedRowId === rowId) {
-        selectedRowId = null
-        document.querySelectorAll("tr.selected").forEach(r => r.classList.remove("selected"))
-        document.getElementById("deleteBtn").style.display = "none"
-        return
-    }
-
-    selectedRowId = rowId
-    document.querySelectorAll("tr.selected").forEach(r => r.classList.remove("selected"))
-    tr.classList.add("selected")
-    document.getElementById("deleteBtn").style.display = "inline-block"
-}
-
-// ----------------------------
 // DELETE
 // ----------------------------
-function deleteSelected() {
-    if (!selectedRowId) return
-
+function deleteRow(id) {
     if (!confirm("Biztosan törlöd ezt a sort?")) return
 
     fetch("/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: [selectedRowId] })
+        body: JSON.stringify({ ids: [id] })
     })
     .then(res => {
         if (!res.ok) throw new Error("HTTP ERROR " + res.status)
         return res.json()
     })
-    .then(() => {
-        selectedRowId = null
-        document.getElementById("deleteBtn").style.display = "none"
-        load()
-    })
+    .then(() => load())
     .catch(err => {
         console.error("DELETE ERROR:", err)
         alert("Törlés sikertelen: " + err.message)
@@ -253,17 +229,6 @@ function render() {
 
         if (!row.id) tr.classList.add("edit")
 
-        // Edit módban sorra kattintva kijelölés
-        if (mode === "edit" && row.id) {
-            tr.style.cursor = "pointer"
-            tr.onclick = (e) => {
-                // Ne aktiválódjon ha épp szerkesztünk egy cellát
-                if (e.target.isContentEditable) return
-                selectRow(row.id, tr)
-            }
-            if (row.id === selectedRowId) tr.classList.add("selected")
-        }
-
         addCell(tr, row, "datum")
 
         // ⬇️ EZ AZ EGYEDI IDŐ MEGJELENÍTÉS
@@ -278,6 +243,19 @@ function render() {
         addCell(tr, row, "jarat")
         addCell(tr, row, "irany")
         addCell(tr, row, "megallo")
+
+        // Edit módban törlés gomb minden sorban
+        if (mode === "edit") {
+            let td = document.createElement("td")
+            if (row.id) {
+                let btn = document.createElement("button")
+                btn.className = "del-btn"
+                btn.innerText = "🗑️"
+                btn.onclick = () => deleteRow(row.id)
+                td.appendChild(btn)
+            }
+            tr.appendChild(td)
+        }
 
         tbody.appendChild(tr)
     })
