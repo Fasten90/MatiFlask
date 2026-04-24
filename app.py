@@ -592,6 +592,7 @@ def update_record():
 # DELETE (több ID is)
 # ----------------------------
 @app.route("/delete", methods=["POST"])
+@csrf.exempt
 def delete_records():
     ids = request.json.get("ids", [])
 
