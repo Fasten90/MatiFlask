@@ -10,6 +10,78 @@
         .toolbar { margin-bottom: 10px; }
         tr:hover { background: #f0f0f0; }
         .del-btn { background: #e74c3c; color: white; border: none; cursor: pointer; padding: 2px 7px; border-radius: 3px; }
+
+        /* Járat link */
+        .jarat-link {
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .jarat-link:hover {
+            color: #004499;
+        }
+
+        /* Modal */
+        #jaratModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        #jaratModal.open {
+            display: flex;
+        }
+        #modalBox {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px 24px;
+            min-width: 320px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        #modalTitle {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        #modalClose {
+            position: absolute;
+            top: 10px; right: 14px;
+            font-size: 1.4em;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #666;
+        }
+        #modalClose:hover { color: #000; }
+        #modalTable {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 6px;
+        }
+        #modalTable th, #modalTable td {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            text-align: left;
+        }
+        #modalTable th {
+            background: #f0f0f0;
+        }
+        .modal-current {
+            background: #fff3cd;
+            font-weight: bold;
+        }
+        .modal-past {
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -60,6 +132,23 @@
     </thead>
     <tbody></tbody>
 </table>
+
+<!-- JÁRAT MODAL -->
+<div id="jaratModal" onclick="closeModalOnBackdrop(event)">
+    <div id="modalBox">
+        <button id="modalClose" onclick="closeModal()">✕</button>
+        <div id="modalTitle"></div>
+        <table id="modalTable">
+            <thead>
+                <tr>
+                    <th>Idő</th>
+                    <th>Megálló</th>
+                </tr>
+            </thead>
+            <tbody id="modalBody"></tbody>
+        </table>
+    </div>
+</div>
 
 <script>
 let data = []
@@ -231,7 +320,7 @@ function render() {
 
         addCell(tr, row, "datum")
 
-        // ⬇️ EZ AZ EGYEDI IDŐ MEGJELENÍTÉS
+        // Idő cella
         if (mode === "user") {
             let td = document.createElement("td")
             td.innerText = row._displayTime
@@ -240,11 +329,23 @@ function render() {
             addCell(tr, row, "idopont")
         }
 
-        addCell(tr, row, "jarat")
+        // Járat cella – user módban kattintható link
+        if (mode === "user" && row.jarat) {
+            let td = document.createElement("td")
+            let span = document.createElement("span")
+            span.className = "jarat-link"
+            span.innerText = row.jarat
+            span.onclick = () => openJaratModal(row)
+            td.appendChild(span)
+            tr.appendChild(td)
+        } else {
+            addCell(tr, row, "jarat")
+        }
+
         addCell(tr, row, "irany")
         addCell(tr, row, "megallo")
 
-        // Edit módban törlés gomb minden sorban
+        // Edit módban törlés gomb
         if (mode === "edit") {
             let td = document.createElement("td")
             if (row.id) {
@@ -275,6 +376,73 @@ function addCell(tr, row, field) {
 
     tr.appendChild(td)
 }
+
+// ----------------------------
+// JÁRAT MODAL
+// ----------------------------
+function openJaratModal(clickedRow) {
+    let jaratNev = clickedRow.jarat
+    let datum = clickedRow.datum
+    let clickedIdopont = clickedRow.idopont
+
+    // Az originalData-ból kiszűrjük az adott járat összes megállóját,
+    // időrendben (az ORDER BY idopont már a backendtől jön, de biztosra megyünk)
+    let jaratSorok = originalData
+        .filter(r => r.jarat === jaratNev && r.datum === datum)
+        .sort((a, b) => (a.idopont > b.idopont ? 1 : -1))
+
+    // Ha nincs elég megálló (pl. csak 1 sor), akkor is megmutatjuk
+    let irany = jaratSorok.length > 0 ? jaratSorok[0].irany : ""
+
+    document.getElementById("modalTitle").innerText =
+        `🚌 ${jaratNev} járat${irany ? " – " + irany : ""} (${datum})`
+
+    let tbody = document.getElementById("modalBody")
+    tbody.innerHTML = ""
+
+    let now = new Date()
+
+    jaratSorok.forEach(row => {
+        let tr = document.createElement("tr")
+
+        // Jelenlegi / múlt / jövő megkülönböztetés
+        let dt = new Date(row.datum + "T" + row.idopont)
+        let diffMin = Math.floor((dt - now) / 60000)
+
+        if (row.idopont === clickedIdopont) {
+            tr.classList.add("modal-current")
+        } else if (diffMin < 0) {
+            tr.classList.add("modal-past")
+        }
+
+        let tdIdo = document.createElement("td")
+        tdIdo.innerText = row.idopont || ""
+
+        let tdMegallo = document.createElement("td")
+        tdMegallo.innerText = row.megallo || ""
+
+        tr.appendChild(tdIdo)
+        tr.appendChild(tdMegallo)
+        tbody.appendChild(tr)
+    })
+
+    document.getElementById("jaratModal").classList.add("open")
+}
+
+function closeModal() {
+    document.getElementById("jaratModal").classList.remove("open")
+}
+
+function closeModalOnBackdrop(event) {
+    if (event.target === document.getElementById("jaratModal")) {
+        closeModal()
+    }
+}
+
+// Escape gombra is bezár
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal()
+})
 
 // ----------------------------
 // ÚJ JÁRAT
