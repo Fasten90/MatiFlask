@@ -378,6 +378,15 @@ function addCell(tr, row, field) {
 }
 
 // ----------------------------
+// SEGÉDFÜGGVÉNY: "HH:MM" vagy "HH:MM:SS" → percek száma
+// ----------------------------
+function timeToMinutes(t) {
+    if (!t) return 0
+    let parts = t.split(":")
+    return parseInt(parts[0]) * 60 + parseInt(parts[1])
+}
+
+// ----------------------------
 // JÁRAT MODAL
 // ----------------------------
 function openJaratModal(clickedRow) {
@@ -400,18 +409,22 @@ function openJaratModal(clickedRow) {
     let tbody = document.getElementById("modalBody")
     tbody.innerHTML = ""
 
+    // Aktuális idő percben (HH*60+MM), időzóna-biztos összehasonlításhoz
     let now = new Date()
+    let nowMinutes = now.getHours() * 60 + now.getMinutes()
+
+    // A kattintott megálló ideje percben
+    let clickedMinutes = timeToMinutes(clickedIdopont)
 
     jaratSorok.forEach(row => {
         let tr = document.createElement("tr")
 
-        // Jelenlegi / múlt / jövő megkülönböztetés
-        let dt = new Date(row.datum + "T" + row.idopont)
-        let diffMin = Math.floor((dt - now) / 60000)
+        // Idő percben kifejezve, UTC/lokális probléma nélkül
+        let rowMinutes = timeToMinutes(row.idopont)
 
         if (row.idopont === clickedIdopont) {
             tr.classList.add("modal-current")
-        } else if (diffMin < 0) {
+        } else if (rowMinutes < nowMinutes) {
             tr.classList.add("modal-past")
         }
 
