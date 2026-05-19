@@ -394,14 +394,34 @@ function openJaratModal(clickedRow) {
     let datum = clickedRow.datum
     let clickedIdopont = clickedRow.idopont
 
-    // Az originalData-ból kiszűrjük az adott járat összes megállóját,
-    // időrendben (az ORDER BY idopont már a backendtől jön, de biztosra megyünk)
-    let jaratSorok = originalData
+    // Az originalData-ból kiszűrjük az adott járat összes megállóját, időrendben
+    let osszesSor = originalData
         .filter(r => r.jarat === jaratNev && r.datum === datum)
         .sort((a, b) => (a.idopont > b.idopont ? 1 : -1))
 
-    // Ha nincs elég megálló (pl. csak 1 sor), akkor is megmutatjuk
-    let irany = jaratSorok.length > 0 ? jaratSorok[0].irany : ""
+    // Megkeressük a kattintott sort az indexe alapján
+    let startIdx = osszesSor.findIndex(r =>
+        r.idopont === clickedIdopont && r.megallo === clickedRow.megallo
+    )
+    if (startIdx === -1) startIdx = 0
+
+    // A kattintott sor iránya az irányadó
+    let irany = osszesSor[startIdx].irany
+
+    // Visszafelé megkeressük az adott irány kezdetét (ahol ez az irány elkezdődik)
+    let iranyStart = startIdx
+    while (iranyStart > 0 && osszesSor[iranyStart - 1].irany === irany) {
+        iranyStart--
+    }
+
+    // Előre haladunk, amíg az irány nem változik → ez az aktuális "menet"
+    let iranyEnd = iranyStart
+    while (iranyEnd < osszesSor.length - 1 && osszesSor[iranyEnd + 1].irany === irany) {
+        iranyEnd++
+    }
+
+    // Csak az adott irányú, folytonos blokkot tartjuk meg
+    let jaratSorok = osszesSor.slice(iranyStart, iranyEnd + 1)
 
     document.getElementById("modalTitle").innerText =
         `🚌 ${jaratNev} járat${irany ? " – " + irany : ""} (${datum})`
@@ -414,7 +434,6 @@ function openJaratModal(clickedRow) {
     let nowMinutes = now.getHours() * 60 + now.getMinutes()
 
     // A kattintott megálló ideje percben
-    let clickedMinutes = timeToMinutes(clickedIdopont)
 
     jaratSorok.forEach(row => {
         let tr = document.createElement("tr")
